@@ -209,6 +209,43 @@ export function AppShell({ children }: AppShellProps) {
         }
     }, [workspaceId, refreshPages, currentPageId])
 
+    const handleMovePage = useCallback(async (pageId: string, newParentId: string | null) => {
+        if (!workspaceId) return
+
+        try {
+            // Don't allow moving a page to itself
+            if (pageId === newParentId) return
+
+            // Check if we're trying to move a page to one of its own descendants
+            const isDescendant = (parentId: string | null, targetId: string): boolean => {
+                if (!parentId) return false
+                if (parentId === targetId) return true
+                const findNode = (nodes: typeof pages): typeof pages[0] | undefined => {
+                    for (const n of nodes) {
+                        if (n.id === parentId) return n
+                        if (n.children) {
+                            const found = findNode(n.children)
+                            if (found) return found
+                        }
+                    }
+                    return undefined
+                }
+                const parentNode = findNode(pages)
+                return parentNode ? isDescendant(parentNode.parentPageId, targetId) : false
+            }
+
+            if (newParentId && isDescendant(newParentId, pageId)) {
+                console.warn('Cannot move a page to one of its descendants')
+                return
+            }
+
+            await updatePage(pageId, { parentPageId: newParentId })
+            await refreshPages(workspaceId)
+        } catch (error) {
+            console.error('Failed to move page:', error)
+        }
+    }, [workspaceId, refreshPages, pages])
+
     const confirmDelete = useCallback(async () => {
         if (!workspaceId || !deleteConfirm.pageId) return
 
@@ -268,6 +305,7 @@ export function AppShell({ children }: AppShellProps) {
                 onRenamePage={handleRenamePage}
                 onDeletePage={handleDeletePage}
                 onToggleFavorite={handleToggleFavorite}
+                onMovePage={handleMovePage}
                 onToggleCollapse={toggleSidebar}
             />
 

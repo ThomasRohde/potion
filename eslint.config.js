@@ -44,6 +44,8 @@ export default [
                 HTMLElement: 'readonly',
                 HTMLDivElement: 'readonly',
                 HTMLInputElement: 'readonly',
+                Element: 'readonly',
+                Node: 'readonly',
                 Event: 'readonly',
                 KeyboardEvent: 'readonly',
                 MouseEvent: 'readonly',

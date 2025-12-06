@@ -20,6 +20,7 @@ interface SidebarProps {
     onRenamePage?: (pageId: string, newTitle: string) => void
     onDeletePage?: (pageId: string, hasChildren: boolean) => void
     onToggleFavorite?: (pageId: string, isFavorite: boolean) => void
+    onMovePage?: (pageId: string, newParentId: string | null) => void
     onToggleCollapse: () => void
 }
 
@@ -33,9 +34,12 @@ export function Sidebar({
     onRenamePage,
     onDeletePage,
     onToggleFavorite,
+    onMovePage,
     onToggleCollapse
 }: SidebarProps) {
     const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set())
+    const [dragOverPageId, setDragOverPageId] = useState<string | null>(null)
+    const [dragOverRoot, setDragOverRoot] = useState(false)
 
     const toggleExpanded = useCallback((pageId: string) => {
         setExpandedPages(prev => {
@@ -111,19 +115,44 @@ export function Sidebar({
                             depth={0}
                             isSelected={selectedPageId === page.id}
                             isExpanded={expandedPages.has(page.id)}
+                            isDragOver={dragOverPageId === page.id}
                             onSelect={onPageSelect}
                             onToggleExpand={toggleExpanded}
                             onCreateChild={onCreatePage}
                             onRename={onRenamePage}
                             onDelete={onDeletePage}
                             onToggleFavorite={onToggleFavorite}
+                            onMovePage={onMovePage}
+                            onDragOverChange={setDragOverPageId}
                         />
                     ))}
                 </div>
             )}
 
             {/* Pages section */}
-            <div className="flex-1 overflow-y-auto px-2 py-3">
+            <div 
+                className={`flex-1 overflow-y-auto px-2 py-3 ${dragOverRoot ? 'bg-potion-50 dark:bg-potion-900/20' : ''}`}
+                onDragOver={(e) => {
+                    e.preventDefault()
+                    e.dataTransfer.dropEffect = 'move'
+                    setDragOverRoot(true)
+                }}
+                onDragLeave={(e) => {
+                    // Only set to false if we're leaving the container, not entering a child
+                    const related = e.relatedTarget as Element | null
+                    if (!related || !e.currentTarget.contains(related)) {
+                        setDragOverRoot(false)
+                    }
+                }}
+                onDrop={(e) => {
+                    e.preventDefault()
+                    setDragOverRoot(false)
+                    const pageId = e.dataTransfer.getData('text/plain')
+                    if (pageId && onMovePage) {
+                        onMovePage(pageId, null) // Move to root
+                    }
+                }}
+            >
                 <div className="flex items-center justify-between px-2 mb-2">
                     <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Pages
@@ -150,12 +179,15 @@ export function Sidebar({
                             depth={0}
                             isSelected={selectedPageId === page.id}
                             isExpanded={expandedPages.has(page.id)}
+                            isDragOver={dragOverPageId === page.id}
                             onSelect={onPageSelect}
                             onToggleExpand={toggleExpanded}
                             onCreateChild={onCreatePage}
                             onRename={onRenamePage}
                             onDelete={onDeletePage}
                             onToggleFavorite={onToggleFavorite}
+                            onMovePage={onMovePage}
+                            onDragOverChange={setDragOverPageId}
                         />
                     ))
                 )}
@@ -182,12 +214,15 @@ interface PageItemProps {
     depth: number
     isSelected: boolean
     isExpanded: boolean
+    isDragOver: boolean
     onSelect: (page: PageSummary) => void
     onToggleExpand: (pageId: string) => void
     onCreateChild: (parentPageId: string) => void
     onRename?: (pageId: string, newTitle: string) => void
     onDelete?: (pageId: string, hasChildren: boolean) => void
     onToggleFavorite?: (pageId: string, isFavorite: boolean) => void
+    onMovePage?: (pageId: string, newParentId: string | null) => void
+    onDragOverChange: (pageId: string | null) => void
 }
 
 function PageItem({
@@ -195,18 +230,22 @@ function PageItem({
     depth,
     isSelected,
     isExpanded,
+    isDragOver,
     onSelect,
     onToggleExpand,
     onCreateChild,
     onRename,
     onDelete,
-    onToggleFavorite
+    onToggleFavorite,
+    onMovePage,
+    onDragOverChange
 }: PageItemProps) {
     const hasChildren = page.children && page.children.length > 0
     const [showActions, setShowActions] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [editTitle, setEditTitle] = useState(page.title)
+    const [isDragging, setIsDragging] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
 
     // Focus input when editing starts
@@ -246,17 +285,68 @@ function PageItem({
         setShowMenu(false)
     }
 
+    // Drag and drop handlers
+    const handleDragStart = (e: React.DragEvent) => {
+        e.dataTransfer.setData('text/plain', page.id)
+        e.dataTransfer.effectAllowed = 'move'
+        setIsDragging(true)
+    }
+
+    const handleDragEnd = () => {
+        setIsDragging(false)
+        onDragOverChange(null)
+    }
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const draggedPageId = e.dataTransfer.types.includes('text/plain')
+        if (draggedPageId) {
+            e.dataTransfer.dropEffect = 'move'
+            onDragOverChange(page.id)
+        }
+    }
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        // Only clear if leaving this element, not entering a child
+        const related = e.relatedTarget as Element | null
+        if (!related || !e.currentTarget.contains(related)) {
+            onDragOverChange(null)
+        }
+    }
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        onDragOverChange(null)
+        const draggedPageId = e.dataTransfer.getData('text/plain')
+        // Don't allow dropping onto itself or its own children
+        if (draggedPageId && draggedPageId !== page.id && onMovePage) {
+            onMovePage(draggedPageId, page.id)
+        }
+    }
+
     return (
         <div className="relative">
             <div
                 className={`
-                    group flex items-center gap-1 px-2 py-1.5 rounded-lg cursor-pointer
+                    group flex items-center gap-1 px-2 py-1.5 rounded-lg cursor-pointer transition-all
+                    ${isDragging ? 'opacity-50' : ''}
+                    ${isDragOver ? 'ring-2 ring-potion-500 bg-potion-50 dark:bg-potion-900/30' : ''}
                     ${isSelected
                         ? 'bg-potion-100 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
                         : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
                     }
                 `}
                 style={{ paddingLeft: `${8 + depth * 16}px` }}
+                draggable={!isEditing}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 onClick={() => !isEditing && onSelect(page)}
                 onMouseEnter={() => setShowActions(true)}
                 onMouseLeave={() => { setShowActions(false); setShowMenu(false) }}
@@ -385,12 +475,15 @@ function PageItem({
                             depth={depth + 1}
                             isSelected={isSelected}
                             isExpanded={false}
+                            isDragOver={false}
                             onSelect={onSelect}
                             onToggleExpand={onToggleExpand}
                             onCreateChild={onCreateChild}
                             onRename={onRename}
                             onDelete={onDelete}
                             onToggleFavorite={onToggleFavorite}
+                            onMovePage={onMovePage}
+                            onDragOverChange={onDragOverChange}
                         />
                     ))}
                 </div>
