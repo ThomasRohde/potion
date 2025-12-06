@@ -26,7 +26,10 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "🚀 Starting development server..." -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Server will be available at: http://localhost:5173" -ForegroundColor Green
-Write-Host "Press Ctrl+C to stop the server" -ForegroundColor Gray
 Write-Host ""
 
-bun run dev
+# Start dev server in background so script doesn't block
+Start-Process -FilePath "bun" -ArgumentList "run", "dev" -WindowStyle Hidden
+
+Write-Host "✅ Development server started in background" -ForegroundColor Green
+Write-Host "   Run 'bun run dev' in foreground if you need to see server output" -ForegroundColor Gray
