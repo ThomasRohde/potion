@@ -12,6 +12,7 @@ import { Topbar } from './Topbar'
 import { ConfirmDialog } from './ConfirmDialog'
 import { SearchDialog } from './SearchDialog'
 import { ImportDialog } from './ImportDialog'
+import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile } from '../services'
@@ -43,6 +44,7 @@ export function AppShell({ children }: AppShellProps) {
     const [workspaceId, setWorkspaceId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
     const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
         isOpen: false,
         pageId: null,
@@ -108,20 +110,6 @@ export function AppShell({ children }: AppShellProps) {
         init()
     }, [refreshPages])
 
-    // Global keyboard shortcuts
-    useEffect(() => {
-        function handleKeyDown(e: KeyboardEvent) {
-            // Ctrl/Cmd+K to open search
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault()
-                setIsSearchOpen(true)
-            }
-        }
-
-        window.addEventListener('keydown', handleKeyDown)
-        return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [])
-
     const handlePageSelect = useCallback((page: PageSummary) => {
         navigate(`/page/${page.id}`)
     }, [navigate])
@@ -136,6 +124,34 @@ export function AppShell({ children }: AppShellProps) {
         await refreshPages(workspaceId)
         navigate(`/page/${newPage.id}`)
     }, [workspaceId, refreshPages, navigate])
+
+    // Global keyboard shortcuts - must be after handleCreatePage
+    useEffect(() => {
+        function handleKeyDown(e: KeyboardEvent) {
+            // Ctrl/Cmd+K to open search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault()
+                setIsSearchOpen(true)
+            }
+            // Ctrl/Cmd+N to create new page
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault()
+                handleCreatePage()
+            }
+            // ? to open keyboard shortcuts help
+            if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                const target = e.target as HTMLElement
+                // Only show if not in an input field
+                if (!['INPUT', 'TEXTAREA'].includes(target.tagName) && !target.isContentEditable) {
+                    e.preventDefault()
+                    setIsShortcutsOpen(true)
+                }
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [handleCreatePage])
 
     const handleRenamePage = useCallback(async (pageId: string, newTitle: string) => {
         if (!workspaceId) return
@@ -381,6 +397,7 @@ export function AppShell({ children }: AppShellProps) {
                 onToggleCollapse={toggleSidebar}
                 onExportWorkspace={handleExportWorkspace}
                 onImportWorkspace={handleImportWorkspace}
+                onShowHelp={() => setIsShortcutsOpen(true)}
             />
 
             {/* Main content area */}
@@ -431,6 +448,12 @@ export function AppShell({ children }: AppShellProps) {
                 file={importState.file}
                 onConfirm={confirmImport}
                 onCancel={cancelImport}
+            />
+
+            {/* Keyboard Shortcuts Dialog */}
+            <KeyboardShortcutsDialog
+                isOpen={isShortcutsOpen}
+                onClose={() => setIsShortcutsOpen(false)}
             />
         </div>
     )
