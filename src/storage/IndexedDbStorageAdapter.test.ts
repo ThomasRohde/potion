@@ -71,9 +71,11 @@ describe('Type contracts', () => {
             pageId: 'db-page-1',
             properties: [
                 { id: 'prop-1', name: 'Name', type: 'text' },
-                { id: 'prop-2', name: 'Status', type: 'select', options: [
-                    { id: 'opt-1', name: 'Done', color: 'green' }
-                ]}
+                {
+                    id: 'prop-2', name: 'Status', type: 'select', options: [
+                        { id: 'opt-1', name: 'Done', color: 'green' }
+                    ]
+                }
             ],
             views: [{
                 id: 'view-1',

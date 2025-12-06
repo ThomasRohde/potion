@@ -331,7 +331,7 @@ export function buildPageTree(pages: PageSummary[]): PageTreeNode[] {
     }
 
     // Sort by title
-    const sortByTitle = (a: PageTreeNode, b: PageTreeNode) => 
+    const sortByTitle = (a: PageTreeNode, b: PageTreeNode) =>
         a.title.localeCompare(b.title)
 
     const sortTree = (nodes: PageTreeNode[]) => {

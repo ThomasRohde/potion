@@ -18,7 +18,10 @@
             "passes": true,
             "verifiedAt": "2025-12-06T00:00:00Z",
             "verifiedBy": "agent-session-2",
-            "evidenceLinks": ["dist/index.html", "dist/assets/index-BtA4VGaR.js"],
+            "evidenceLinks": [
+                "dist/index.html",
+                "dist/assets/index-BtA4VGaR.js"
+            ],
             "notes": "Build passes, dev server runs, TailwindCSS styles visible in browser"
         },
         {
@@ -36,7 +39,11 @@
             "passes": true,
             "verifiedAt": "2025-12-06T00:00:00Z",
             "verifiedBy": "agent-session-2",
-            "evidenceLinks": ["src/storage/StorageAdapter.ts", "src/storage/IndexedDbStorageAdapter.ts", "src/storage/index.ts"],
+            "evidenceLinks": [
+                "src/storage/StorageAdapter.ts",
+                "src/storage/IndexedDbStorageAdapter.ts",
+                "src/storage/index.ts"
+            ],
             "notes": "Interface defined with full CRUD, export/import. IndexedDB implementation complete. Tests pass."
         },
         {
@@ -55,7 +62,10 @@
             "passes": true,
             "verifiedAt": "2025-12-06T00:00:00Z",
             "verifiedBy": "agent-session-2",
-            "evidenceLinks": ["src/services/workspaceService.ts", "src/types/index.ts"],
+            "evidenceLinks": [
+                "src/services/workspaceService.ts",
+                "src/types/index.ts"
+            ],
             "notes": "Workspace type defined, workspaceService with full CRUD. Tests pass."
         },
         {
@@ -75,7 +85,10 @@
             "passes": true,
             "verifiedAt": "2025-12-06T00:00:00Z",
             "verifiedBy": "agent-session-2",
-            "evidenceLinks": ["src/services/pageService.ts", "src/types/index.ts"],
+            "evidenceLinks": [
+                "src/services/pageService.ts",
+                "src/types/index.ts"
+            ],
             "notes": "Page type defined, pageService with full CRUD, tree building. Tests pass."
         },
         {
@@ -94,7 +107,11 @@
             "passes": true,
             "verifiedAt": "2025-12-06T00:00:00Z",
             "verifiedBy": "agent-session-2",
-            "evidenceLinks": ["src/components/AppShell.tsx", "src/components/Sidebar.tsx", "src/components/Topbar.tsx"],
+            "evidenceLinks": [
+                "src/components/AppShell.tsx",
+                "src/components/Sidebar.tsx",
+                "src/components/Topbar.tsx"
+            ],
             "notes": "Full app shell with sidebar, topbar, content area. Sidebar collapse works. Page tree displays."
         },
         {

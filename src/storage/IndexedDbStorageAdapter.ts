@@ -250,7 +250,7 @@ export class IndexedDbStorageAdapter implements StorageAdapter {
     async listRows(databasePageId: string): Promise<RowSummary[]> {
         const db = this.ensureDb()
         const rows = await db.getAllFromIndex(STORES.ROWS, 'by-database', databasePageId)
-        
+
         // Get associated page titles for row summaries
         const summaries: RowSummary[] = []
         for (const row of rows as Row[]) {
