@@ -8,6 +8,56 @@
 
 ## Session Log
 
+### Session 17 - 2025-12-06
+**Duration**: ~20 minutes
+**Focus**: Bug fixes for F053 (Markdown paste) and F054 (Full width toggle)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Bug Reports from User
+1. **Markdown paste**: Bold works, but headlines and bullets don't convert properly
+2. **Full width toggle**: Works but requires browser refresh to take effect
+
+#### Bug Fixes Applied
+
+##### Fix 1: Full Width Toggle Reactivity (F054)
+- **Root Cause**: PageView used local `page` state that was set once on load and never synced with store updates
+- **Solution**: Added a `useEffect` to sync `isFullWidth` from the store into local state when it changes
+- **Files Changed**: `src/pages/PageView.tsx`
+  - Added `storePageData` selector to get page summary from WorkspaceStore
+  - Added `useEffect` that syncs `isFullWidth` when store updates
+
+##### Fix 2: Markdown Detection Patterns (F053)
+- **Root Cause**: Markdown detection patterns were too lenient, triggering on patterns that BlockNote couldn't properly parse
+- **Solution**: Improved `looksLikeMarkdown()` regex patterns to be more precise:
+  - Headings: require actual content after `#`
+  - Lists: require content after bullet marker
+  - Better handling of italic vs list markers
+  - Added strikethrough pattern
+- **Files Changed**: `src/components/RichTextEditor.tsx`
+  - Rewrote `looksLikeMarkdown()` with improved patterns
+  - Added console.log for debugging parsed blocks
+  - Improved empty block detection for replace logic
+
+#### Files Modified
+- `src/pages/PageView.tsx` - Added store sync for isFullWidth
+- `src/components/RichTextEditor.tsx` - Improved markdown detection and paste handling
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| npm run build | 0 | ✅ 1467 modules |
+| npm test | 0 | ✅ 99 tests passed |
+| npm run lint | 0 | ✅ Clean |
+
+#### Commits
+1. `63748e8` - fix(editor,page): improve markdown paste and full-width reactivity
+2. `b925225` - fix(editor): improve markdown detection patterns for better parsing
+
+#### Current Status
+Both bug fixes have been applied and committed. The full width toggle should now react immediately without requiring a browser refresh. The markdown paste detection patterns are now more precise.
+
+---
+
 ### Session 16 - 2025-12-06
 **Duration**: ~30 minutes
 **Focus**: Implementing F053 (Markdown paste) and F054 (Full width toggle)
