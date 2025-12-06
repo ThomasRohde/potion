@@ -44,15 +44,57 @@ export interface RichTextEditorProps {
 
 /**
  * Convert our internal block content format to BlockNote blocks.
+ * Returns undefined for empty/invalid content to let BlockNote use its default.
  */
 function toBlockNoteBlocks(content: BlockContent | undefined): Block[] | undefined {
     if (!content || !content.blocks || content.blocks.length === 0) {
         return undefined
     }
 
-    // Our internal format is designed to be compatible with BlockNote's format
-    // For now, we pass through directly. In the future, we may need to transform.
-    return content.blocks as Block[]
+    // Validate and transform blocks to BlockNote format
+    const validBlocks: Block[] = []
+    for (const block of content.blocks) {
+        // Skip invalid blocks
+        if (!block || typeof block !== 'object') {
+            continue
+        }
+        
+        // Ensure block has required properties
+        if (!block.id || !block.type) {
+            continue
+        }
+
+        // Transform to BlockNote format
+        // We use unknown cast because BlockNote's type is very strict
+        // but we're doing runtime validation
+        const blockNoteBlock = {
+            id: block.id,
+            type: block.type,
+            // BlockNote requires these default props
+            props: {
+                textColor: 'default',
+                backgroundColor: 'default',
+                textAlignment: 'left',
+                // Merge any custom props (like level for headings)
+                ...(block.props || {})
+            },
+            // Ensure content is an array (BlockNote requires this)
+            content: Array.isArray(block.content) ? block.content : [],
+            // Ensure children is an array
+            children: Array.isArray(block.children) 
+                ? toBlockNoteBlocks({ version: 1, blocks: block.children }) || []
+                : []
+        } as unknown as Block
+
+        validBlocks.push(blockNoteBlock)
+    }
+
+    // Return undefined if no valid blocks (let BlockNote use default empty state)
+    if (validBlocks.length === 0) {
+        return undefined
+    }
+
+    return validBlocks
 }
 
 /**

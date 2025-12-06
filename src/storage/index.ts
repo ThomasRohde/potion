@@ -33,15 +33,30 @@ import { runMigrations, getMigrationState, getTargetVersion } from './migrations
 
 let defaultStorage: IndexedDbStorageAdapter | null = null
 let migrationsRun = false
+let initPromise: Promise<IndexedDbStorageAdapter> | null = null
 
 /**
  * Get the default storage adapter instance.
  * Initializes lazily on first call and runs migrations.
+ * Uses a single promise to prevent race conditions.
  */
 export async function getStorage(): Promise<IndexedDbStorageAdapter> {
-    if (!defaultStorage) {
-        defaultStorage = new IndexedDbStorageAdapter()
-        await defaultStorage.init()
+    // If already initialized, return immediately
+    if (defaultStorage && migrationsRun) {
+        return defaultStorage
+    }
+
+    // If initialization is in progress, wait for it
+    if (initPromise) {
+        return initPromise
+    }
+
+    // Start initialization
+    initPromise = (async () => {
+        if (!defaultStorage) {
+            defaultStorage = new IndexedDbStorageAdapter()
+            await defaultStorage.init()
+        }
 
         // Run migrations on first initialization
         if (!migrationsRun) {
@@ -62,8 +77,11 @@ export async function getStorage(): Promise<IndexedDbStorageAdapter> {
 
             migrationsRun = true
         }
-    }
-    return defaultStorage
+
+        return defaultStorage
+    })()
+
+    return initPromise
 }
 
 /**
@@ -74,5 +92,7 @@ export async function resetStorage(): Promise<void> {
     if (defaultStorage) {
         await defaultStorage.close()
         defaultStorage = null
+        migrationsRun = false
+        initPromise = null
     }
 }
