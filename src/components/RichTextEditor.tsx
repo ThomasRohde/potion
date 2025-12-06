@@ -43,7 +43,6 @@ const SUPPORTED_BLOCK_TYPES = new Set([
     'bulletListItem',
     'numberedListItem',
     'checkListItem',
-    'toggleListItem',
     'table',
     'image',
     'video',

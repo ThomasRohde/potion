@@ -1458,14 +1458,16 @@
                 "Table renders correctly in page view"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-06-19T18:30:00Z",
+            "verifiedBy": "coding-agent-session-21",
+            "evidenceLinks": [
+                "src/components/RichTextEditor.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Tables are in BlockNote default schema. Need to verify they work correctly with our content serialization."
+            "lastWorkedOn": "2025-06-19T18:30:00Z",
+            "notes": "Tables are in BlockNote default schema and work natively. Slash menu has 'Table' option. Supports row/column add/remove, Tab/arrow navigation, inline formatting."
         },
         {
             "id": "F061",
@@ -1483,14 +1485,14 @@
                 "Toggle indicator (▶/▼) shows current state"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
+            "status": "blocked",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote now includes toggleListItem in default schema. Added to SUPPORTED_BLOCK_TYPES in RichTextEditor."
+            "blockedBy": "Requires BlockNote v0.20.0+ for toggleListItem block type",
+            "lastWorkedOn": "2025-06-19T18:30:00Z",
+            "notes": "BlockNote v0.17.1 does not have toggleListItem. Toggle blocks were added in later versions."
         },
         {
             "id": "F062",
@@ -1508,14 +1510,14 @@
                 "Toggle indicator shows current state"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
+            "status": "blocked",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote supports isToggleable prop on heading blocks. Can be enabled via Turn Into menu."
+            "blockedBy": "Requires BlockNote v0.20.0+ for isToggleable heading prop",
+            "lastWorkedOn": "2025-06-19T18:30:00Z",
+            "notes": "BlockNote v0.17.1 does not support isToggleable prop on headings. Feature was added in later versions."
         },
         {
             "id": "F063",
@@ -1864,8 +1866,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-06-19T18:15:00Z",
+        "lastUpdated": "2025-06-19T18:30:00Z",
         "totalFeatures": 75,
-        "passingFeatures": 62
+        "passingFeatures": 63
     }
 }
