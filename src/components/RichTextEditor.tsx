@@ -22,6 +22,7 @@ import '@blocknote/mantine/style.css'
 
 import type { BlockContent } from '../types'
 import { CustomDragHandleMenu } from './CustomDragHandleMenu'
+import { useThemeStore, selectAppliedTheme } from '../stores/themeStore'
 
 /**
  * BlockNote's default supported block types.
@@ -361,6 +362,9 @@ export function RichTextEditor({
     onChange,
     readOnly = false
 }: RichTextEditorProps) {
+    // Get the current theme from the store
+    const appliedTheme = useThemeStore(selectAppliedTheme)
+
     // Convert initial content to BlockNote format
     const initialBlocks = useMemo(
         () => toBlockNoteBlocks(initialContent),
@@ -493,7 +497,7 @@ export function RichTextEditor({
             <BlockNoteView
                 editor={editor}
                 editable={!readOnly}
-                theme="light"
+                theme={appliedTheme}
                 sideMenu={false}
             >
                 {/* Custom side menu with Turn Into submenu */}
