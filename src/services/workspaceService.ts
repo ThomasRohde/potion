@@ -58,9 +58,12 @@ export async function getOrCreateDefaultWorkspace(): Promise<Workspace> {
         }
         await storage.upsertWorkspace(workspace)
 
-        // Create Welcome page for new workspace
-        const welcomePage = createWelcomePage(DEFAULT_WORKSPACE_ID, now)
-        await storage.upsertPage(welcomePage)
+        // Only create Welcome page if no pages exist yet
+        const existingPages = await storage.listPages(DEFAULT_WORKSPACE_ID)
+        if (existingPages.length === 0) {
+            const welcomePage = createWelcomePage(DEFAULT_WORKSPACE_ID, now)
+            await storage.upsertPage(welcomePage)
+        }
     }
 
     return workspace

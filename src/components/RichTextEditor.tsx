@@ -72,7 +72,7 @@ function transformInlineContent(item: unknown): unknown | null {
     }
 
     const i = item as Record<string, unknown>
-    
+
     if (!i.type || typeof i.type !== 'string') {
         return null
     }
@@ -82,8 +82,8 @@ function transformInlineContent(item: unknown): unknown | null {
         return {
             type: 'text',
             text: typeof i.text === 'string' ? i.text : '',
-            styles: (i.styles && typeof i.styles === 'object' && !Array.isArray(i.styles)) 
-                ? i.styles 
+            styles: (i.styles && typeof i.styles === 'object' && !Array.isArray(i.styles))
+                ? i.styles
                 : {}
         }
     } else if (i.type === 'link') {
@@ -139,7 +139,7 @@ function transformBlock(block: unknown): Block | null {
     if (!b.id || typeof b.id !== 'string') {
         return null
     }
-    
+
     if (!b.type || typeof b.type !== 'string') {
         return null
     }
