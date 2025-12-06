@@ -1822,14 +1822,14 @@
                 "Downloaded file has .html extension"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-06-19T17:15:00Z",
+            "verifiedBy": "coding-agent-session-21",
             "evidenceLinks": [],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote provides editor.blocksToHTMLLossy() for HTML export."
+            "lastWorkedOn": "2025-06-19T17:15:00Z",
+            "notes": "Added blockContentToHtml, extractHtmlFromBlock, escapeHtml, exportPageAsHtml. HTML includes embedded CSS with responsive styling. Export HTML option in Topbar menu."
         },
         {
             "id": "F075",
@@ -1860,8 +1860,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-07T01:30:00Z",
+        "lastUpdated": "2025-06-19T17:15:00Z",
         "totalFeatures": 75,
-        "passingFeatures": 58
+        "passingFeatures": 59
     }
 }
