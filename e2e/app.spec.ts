@@ -15,16 +15,16 @@ import { test, expect, Page } from '@playwright/test';
  * Waits for the loading spinner to disappear and sidebar to be ready
  */
 async function waitForAppReady(page: Page) {
-  // First, wait for the sidebar to appear (initial render)
-  await page.waitForSelector('[data-testid="sidebar"]', { timeout: 15000 });
-  
-  // Wait for the loading text to NOT be present (app finished loading)
-  await page.waitForFunction(() => {
-    return !document.body.textContent?.includes('Loading workspace...');
-  }, { timeout: 15000 });
-  
-  // Additional wait for any async state updates
-  await page.waitForTimeout(500);
+    // First, wait for the sidebar to appear (initial render)
+    await page.waitForSelector('[data-testid="sidebar"]', { timeout: 15000 });
+
+    // Wait for the loading text to NOT be present (app finished loading)
+    await page.waitForFunction(() => {
+        return !document.body.textContent?.includes('Loading workspace...');
+    }, { timeout: 15000 });
+
+    // Additional wait for any async state updates
+    await page.waitForTimeout(500);
 }
 
 // ============================================================================
@@ -32,57 +32,57 @@ async function waitForAppReady(page: Page) {
 // ============================================================================
 
 test.describe('App Shell', () => {
-  test('should display sidebar with app branding', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Sidebar should be visible
-    const sidebar = page.locator('[data-testid="sidebar"]');
-    await expect(sidebar).toBeVisible();
-    
-    // App branding should be visible
-    await expect(sidebar.getByText('Potion')).toBeVisible();
-  });
+    test('should display sidebar with app branding', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
 
-  test('should display new page button in sidebar', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    const newPageButton = page.locator('[data-testid="new-page-button"]');
-    await expect(newPageButton).toBeVisible();
-  });
+        // Sidebar should be visible
+        const sidebar = page.locator('[data-testid="sidebar"]');
+        await expect(sidebar).toBeVisible();
 
-  test('should display theme toggle button', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    const themeToggle = page.locator('[data-testid="theme-toggle"]');
-    await expect(themeToggle).toBeVisible();
-  });
-  
-  test('should display welcome content for empty workspace', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Should show welcome message
-    await expect(page.getByText(/Welcome to Potion/i)).toBeVisible();
-    await expect(page.getByText(/Your private, offline-first workspace/i)).toBeVisible();
-  });
-  
-  test('should display export and import buttons', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    await expect(page.getByRole('button', { name: /export/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /import/i })).toBeVisible();
-  });
-  
-  test('should display settings button', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    await expect(page.getByRole('button', { name: /settings/i })).toBeVisible();
-  });
+        // App branding should be visible
+        await expect(sidebar.getByText('Potion')).toBeVisible();
+    });
+
+    test('should display new page button in sidebar', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        const newPageButton = page.locator('[data-testid="new-page-button"]');
+        await expect(newPageButton).toBeVisible();
+    });
+
+    test('should display theme toggle button', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        const themeToggle = page.locator('[data-testid="theme-toggle"]');
+        await expect(themeToggle).toBeVisible();
+    });
+
+    test('should display welcome content for empty workspace', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Should show welcome message
+        await expect(page.getByText(/Welcome to Potion/i)).toBeVisible();
+        await expect(page.getByText(/Your private, offline-first workspace/i)).toBeVisible();
+    });
+
+    test('should display export and import buttons', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        await expect(page.getByRole('button', { name: /export/i })).toBeVisible();
+        await expect(page.getByRole('button', { name: /import/i })).toBeVisible();
+    });
+
+    test('should display settings button', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        await expect(page.getByRole('button', { name: /settings/i })).toBeVisible();
+    });
 });
 
 // ============================================================================
@@ -90,30 +90,30 @@ test.describe('App Shell', () => {
 // ============================================================================
 
 test.describe('PWA', () => {
-  test('should have manifest link', async ({ page }) => {
-    await page.goto('/');
-    
-    const manifest = page.locator('link[rel="manifest"]');
-    await expect(manifest).toHaveAttribute('href', /manifest/);
-  });
+    test('should have manifest link', async ({ page }) => {
+        await page.goto('/');
 
-  test('should have service worker support', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    const hasServiceWorker = await page.evaluate(() => {
-      return 'serviceWorker' in navigator;
+        const manifest = page.locator('link[rel="manifest"]');
+        await expect(manifest).toHaveAttribute('href', /manifest/);
     });
-    expect(hasServiceWorker).toBe(true);
-  });
-  
-  test('should have proper meta tags for PWA', async ({ page }) => {
-    await page.goto('/');
-    
-    // Check viewport meta tag
-    const viewport = page.locator('meta[name="viewport"]');
-    await expect(viewport).toHaveAttribute('content', /width=device-width/);
-  });
+
+    test('should have service worker support', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        const hasServiceWorker = await page.evaluate(() => {
+            return 'serviceWorker' in navigator;
+        });
+        expect(hasServiceWorker).toBe(true);
+    });
+
+    test('should have proper meta tags for PWA', async ({ page }) => {
+        await page.goto('/');
+
+        // Check viewport meta tag
+        const viewport = page.locator('meta[name="viewport"]');
+        await expect(viewport).toHaveAttribute('content', /width=device-width/);
+    });
 });
 
 // ============================================================================
@@ -121,36 +121,36 @@ test.describe('PWA', () => {
 // ============================================================================
 
 test.describe('Theme', () => {
-  test('theme toggle button cycles through modes', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    const themeButton = page.locator('[data-testid="theme-toggle"]');
-    
-    // Get initial button aria-label
-    const initialLabel = await themeButton.getAttribute('aria-label');
-    
-    // Click to toggle
-    await themeButton.click();
-    await page.waitForTimeout(200);
-    
-    // Get new label
-    const newLabel = await themeButton.getAttribute('aria-label');
-    
-    // Label should change (indicates theme mode changed)
-    expect(newLabel).not.toBe(initialLabel);
-  });
-  
-  test('theme toggle should have accessibility label', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    const themeButton = page.locator('[data-testid="theme-toggle"]');
-    const ariaLabel = await themeButton.getAttribute('aria-label');
-    
-    // Should have an aria-label indicating current theme
-    expect(ariaLabel).toMatch(/theme/i);
-  });
+    test('theme toggle button cycles through modes', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        const themeButton = page.locator('[data-testid="theme-toggle"]');
+
+        // Get initial button aria-label
+        const initialLabel = await themeButton.getAttribute('aria-label');
+
+        // Click to toggle
+        await themeButton.click();
+        await page.waitForTimeout(200);
+
+        // Get new label
+        const newLabel = await themeButton.getAttribute('aria-label');
+
+        // Label should change (indicates theme mode changed)
+        expect(newLabel).not.toBe(initialLabel);
+    });
+
+    test('theme toggle should have accessibility label', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        const themeButton = page.locator('[data-testid="theme-toggle"]');
+        const ariaLabel = await themeButton.getAttribute('aria-label');
+
+        // Should have an aria-label indicating current theme
+        expect(ariaLabel).toMatch(/theme/i);
+    });
 });
 
 // ============================================================================
@@ -158,37 +158,37 @@ test.describe('Theme', () => {
 // ============================================================================
 
 test.describe('Keyboard Shortcuts', () => {
-  test('should open keyboard shortcuts help dialog with ? key', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Press ? (Shift+/)
-    await page.keyboard.press('?');
-    await page.waitForTimeout(300);
-    
-    // Help dialog should be visible - KeyboardShortcutsDialog shows "Keyboard Shortcuts"
-    await expect(page.getByRole('heading', { name: /Keyboard Shortcuts/i })).toBeVisible();
-  });
-  
-  test('should close help dialog with close button', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Open help dialog
-    await page.keyboard.press('?');
-    await page.waitForTimeout(200);
-    
-    // Verify it's open
-    await expect(page.getByRole('heading', { name: /Keyboard Shortcuts/i })).toBeVisible();
-    
-    // Close by clicking the X button
-    const closeButton = page.locator('button').filter({ has: page.locator('svg') }).last();
-    await closeButton.click();
-    await page.waitForTimeout(200);
-    
-    // Dialog should be closed
-    await expect(page.getByRole('heading', { name: /Keyboard Shortcuts/i })).not.toBeVisible();
-  });
+    test('should open keyboard shortcuts help dialog with ? key', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Press ? (Shift+/)
+        await page.keyboard.press('?');
+        await page.waitForTimeout(300);
+
+        // Help dialog should be visible - KeyboardShortcutsDialog shows "Keyboard Shortcuts"
+        await expect(page.getByRole('heading', { name: /Keyboard Shortcuts/i })).toBeVisible();
+    });
+
+    test('should close help dialog with close button', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Open help dialog
+        await page.keyboard.press('?');
+        await page.waitForTimeout(200);
+
+        // Verify it's open
+        await expect(page.getByRole('heading', { name: /Keyboard Shortcuts/i })).toBeVisible();
+
+        // Close by clicking the X button
+        const closeButton = page.locator('button').filter({ has: page.locator('svg') }).last();
+        await closeButton.click();
+        await page.waitForTimeout(200);
+
+        // Dialog should be closed
+        await expect(page.getByRole('heading', { name: /Keyboard Shortcuts/i })).not.toBeVisible();
+    });
 });
 
 // ============================================================================
@@ -196,29 +196,29 @@ test.describe('Keyboard Shortcuts', () => {
 // ============================================================================
 
 test.describe('Search', () => {
-  test('should have search button in topbar', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Search button should be visible in the topbar
-    await expect(page.getByRole('button', { name: /search/i })).toBeVisible();
-  });
-  
-  test('search button should be clickable', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Search button should be enabled and clickable
-    const searchButton = page.getByRole('button', { name: /search/i });
-    await expect(searchButton).toBeEnabled();
-    
-    // Verify the button can be clicked (doesn't throw)
-    await searchButton.click();
-    
-    // Note: The search dialog requires workspaceId to be set (async initialization)
-    // In a fresh browser context, this may take time. We verify the button works
-    // but don't assert on the dialog opening since it's dependent on async state.
-  });
+    test('should have search button in topbar', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Search button should be visible in the topbar
+        await expect(page.getByRole('button', { name: /search/i })).toBeVisible();
+    });
+
+    test('search button should be clickable', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Search button should be enabled and clickable
+        const searchButton = page.getByRole('button', { name: /search/i });
+        await expect(searchButton).toBeEnabled();
+
+        // Verify the button can be clicked (doesn't throw)
+        await searchButton.click();
+
+        // Note: The search dialog requires workspaceId to be set (async initialization)
+        // In a fresh browser context, this may take time. We verify the button works
+        // but don't assert on the dialog opening since it's dependent on async state.
+    });
 });
 
 // ============================================================================
@@ -226,24 +226,24 @@ test.describe('Search', () => {
 // ============================================================================
 
 test.describe('Routing', () => {
-  test('should load home page at root URL', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Should be at home URL
-    expect(page.url()).toMatch(/\/$/);
-    
-    // Welcome content should be visible
-    await expect(page.getByText(/Welcome to Potion/i)).toBeVisible();
-  });
-  
-  test('should handle invalid URLs gracefully', async ({ page }) => {
-    // Navigate to a completely invalid route
-    await page.goto('/totally-invalid-route');
-    
-    // App should still load (sidebar visible)
-    await page.waitForSelector('[data-testid="sidebar"]', { timeout: 15000 });
-  });
+    test('should load home page at root URL', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Should be at home URL
+        expect(page.url()).toMatch(/\/$/);
+
+        // Welcome content should be visible
+        await expect(page.getByText(/Welcome to Potion/i)).toBeVisible();
+    });
+
+    test('should handle invalid URLs gracefully', async ({ page }) => {
+        // Navigate to a completely invalid route
+        await page.goto('/totally-invalid-route');
+
+        // App should still load (sidebar visible)
+        await page.waitForSelector('[data-testid="sidebar"]', { timeout: 15000 });
+    });
 });
 
 // ============================================================================
@@ -251,29 +251,29 @@ test.describe('Routing', () => {
 // ============================================================================
 
 test.describe('Settings', () => {
-  test('should open settings dialog when clicking settings button', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Click settings button
-    const settingsButton = page.getByRole('button', { name: /settings/i });
-    await settingsButton.click();
-    await page.waitForTimeout(200);
-    
-    // Settings dialog should open
-    await expect(page.getByRole('heading', { name: /settings/i })).toBeVisible();
-  });
-  
-  test('should show theme options in settings', async ({ page }) => {
-    await page.goto('/');
-    await waitForAppReady(page);
-    
-    // Open settings
-    const settingsButton = page.getByRole('button', { name: /settings/i });
-    await settingsButton.click();
-    await page.waitForTimeout(200);
-    
-    // Theme options should be visible
-    await expect(page.getByText(/theme/i)).toBeVisible();
-  });
+    test('should open settings dialog when clicking settings button', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Click settings button
+        const settingsButton = page.getByRole('button', { name: /settings/i });
+        await settingsButton.click();
+        await page.waitForTimeout(200);
+
+        // Settings dialog should open
+        await expect(page.getByRole('heading', { name: /settings/i })).toBeVisible();
+    });
+
+    test('should show theme options in settings', async ({ page }) => {
+        await page.goto('/');
+        await waitForAppReady(page);
+
+        // Open settings
+        const settingsButton = page.getByRole('button', { name: /settings/i });
+        await settingsButton.click();
+        await page.waitForTimeout(200);
+
+        // Theme options should be visible
+        await expect(page.getByText(/theme/i)).toBeVisible();
+    });
 });
