@@ -2,11 +2,13 @@
  * Settings Dialog Component
  * 
  * User preferences panel for theme, editor settings, and workspace configuration.
+ * Theme state managed by ThemeStore (zustand).
  */
 
 import { useState, useEffect, useCallback } from 'react'
 import type { Settings, ThemePreference } from '../types'
 import { getStorage } from '../storage'
+import { useThemeStore } from '../stores'
 
 interface SettingsDialogProps {
     isOpen: boolean
@@ -23,6 +25,10 @@ export function SettingsDialog({
     onClose,
     onWorkspaceNameChange
 }: SettingsDialogProps) {
+    // Theme from zustand store
+    const themePreference = useThemeStore(state => state.preference)
+    const setTheme = useThemeStore(state => state.setTheme)
+
     const [settings, setSettings] = useState<Settings>({
         id: DEFAULT_SETTINGS_ID,
         theme: 'system',
@@ -78,29 +84,16 @@ export function SettingsDialog({
             await storage.upsertSettings(updated)
             setSettings(updated)
 
-            // Apply theme immediately
+            // Apply theme immediately via ThemeStore
             if (newSettings.theme) {
-                applyTheme(newSettings.theme)
+                setTheme(newSettings.theme)
             }
         } catch (error) {
             console.error('Failed to save settings:', error)
         } finally {
             setIsSaving(false)
         }
-    }, [settings])
-
-    // Apply theme to document
-    const applyTheme = (theme: ThemePreference) => {
-        const effectiveTheme = theme === 'system'
-            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-            : theme
-
-        if (effectiveTheme === 'dark') {
-            document.documentElement.classList.add('dark')
-        } else {
-            document.documentElement.classList.remove('dark')
-        }
-    }
+    }, [settings, setTheme])
 
     // Handle workspace name change
     const handleWorkspaceNameSave = () => {
@@ -190,7 +183,7 @@ export function SettingsDialog({
                                                     key={themeOption}
                                                     onClick={() => saveSettings({ theme: themeOption })}
                                                     disabled={isSaving}
-                                                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${settings.theme === themeOption
+                                                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${themePreference === themeOption
                                                             ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
                                                             : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
                                                         }`}

@@ -4,10 +4,10 @@
  * Button to toggle between light, dark, and system themes.
  */
 
-import type { Theme } from '../hooks'
+import type { ThemePreference } from '../types'
 
 interface ThemeToggleProps {
-    theme: Theme
+    theme: ThemePreference
     onToggle: () => void
     className?: string
     'data-testid'?: string

@@ -61,26 +61,78 @@ bun run test:e2e
 
 - **Runtime**: Bun
 - **Framework**: React 18 + TypeScript
+- **State Management**: Zustand with Immer middleware
 - **Styling**: TailwindCSS
 - **Editor**: BlockNote (ProseMirror-based)
 - **Storage**: IndexedDB
 - **PWA**: Vite PWA Plugin + Workbox
+
+## 🧠 State Management
+
+Potion uses [Zustand](https://zustand-demo.pmnd.rs/) with [Immer](https://immerjs.github.io/immer/) middleware for state management. State is organized into three focused stores:
+
+### WorkspaceStore (`src/stores/workspaceStore.ts`)
+
+Manages workspace and page data:
+- **State**: `workspace`, `flatPages`, `pageTree`, `currentPageId`
+- **Actions**: `setWorkspace`, `setPages`, `refreshPages`, `setCurrentPageId`, `addPage`, `updatePage`, `removePage`
+- **Selectors**: `selectCurrentPage`, `selectFavoritePages`
+
+```typescript
+// Example usage
+const pages = useWorkspaceStore(state => state.flatPages);
+const currentPage = useWorkspaceStore(selectCurrentPage);
+```
+
+### UIStore (`src/stores/uiStore.ts`)
+
+Manages UI state with localStorage persistence:
+- **State**: `sidebarCollapsed`, `sidebarWidth`, `searchOpen`, `shortcutsOpen`, `settingsOpen`, `deleteConfirm`, `importData`
+- **Actions**: `toggleSidebar`, `setSidebarWidth`, `openSearch`, `closeSearch`, `toggleSearch`, `openDeleteConfirm`, `closeDeleteConfirm`, `openImport`, `closeImport`
+- **Persistence**: Sidebar preferences persist to localStorage
+
+```typescript
+// Example usage
+const { sidebarCollapsed, toggleSidebar } = useUIStore();
+```
+
+### ThemeStore (`src/stores/themeStore.ts`)
+
+Manages theme with system preference detection:
+- **State**: `preference` (light/dark/system), `applied` (resolved theme)
+- **Actions**: `setTheme`, `toggleTheme`, `syncSystemTheme`
+- **Selectors**: `selectThemePreference`, `selectIsDarkMode`
+- **Persistence**: Theme preference persists to localStorage
+- **Auto-sync**: Listens to system theme changes when preference is 'system'
+
+```typescript
+// Example usage
+const isDark = useThemeStore(selectIsDarkMode);
+const setTheme = useThemeStore(state => state.setTheme);
+```
+
+### Middleware
+
+- **Devtools**: Redux DevTools integration in development mode
+- **Persist**: localStorage persistence for UI preferences and theme
+- **Immer**: Immutable state updates with mutable syntax (WorkspaceStore)
 
 ## 📁 Project Structure
 
 ```
 potion/
 ├── src/
-│   ├── components/     # React components
-│   ├── hooks/          # Custom React hooks
-│   ├── lib/            # Core libraries
-│   │   ├── storage/    # StorageAdapter interface & implementations
-│   │   ├── editor/     # RichTextEditor wrapper
-│   │   └── models/     # Data models
-│   ├── pages/          # Route pages
-│   └── styles/         # Global styles
+│   ├── components/     # React components (AppShell, Sidebar, dialogs)
+│   ├── contexts/       # React contexts (deprecated - use stores)
+│   ├── hooks/          # Custom React hooks (useAutoSave)
+│   ├── pages/          # Route pages (HomePage, PageView)
+│   ├── services/       # Business logic (pageService, databaseService)
+│   ├── storage/        # StorageAdapter interface & IndexedDB implementation
+│   ├── stores/         # Zustand stores (workspaceStore, uiStore, themeStore)
+│   └── types/          # TypeScript type definitions
 ├── public/             # Static assets
-└── test/               # Test files
+├── e2e/                # Playwright E2E tests
+└── test-results/       # Test output
 ```
 
 ## 🔐 Privacy

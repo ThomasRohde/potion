@@ -3,9 +3,14 @@
  * 
  * Core layout component with sidebar, topbar, and content area.
  * Responsive design with collapsible sidebar.
+ * 
+ * State managed by zustand stores:
+ * - WorkspaceStore: workspace data, pages, current page
+ * - UIStore: sidebar, dialogs, modals
+ * - ThemeStore: light/dark/system theme
  */
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
@@ -16,114 +21,98 @@ import type { ImportMode, ImportResultData } from './ImportDialog'
 import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
-import type { PageTreeNode } from '../services/pageService'
-import { useTheme } from '../hooks'
-import { usePageContext } from '../contexts'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
+import { useWorkspaceStore, useUIStore, useThemeStore } from '../stores'
+import { getOrCreateDefaultWorkspace, listPages, createPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
 }
 
-interface DeleteConfirmState {
-    isOpen: boolean
-    pageId: string | null
-    pageTitle: string
-    hasChildren: boolean
-}
-
-interface ImportState {
-    isOpen: boolean
-    file: File | null
-}
-
 export function AppShell({ children }: AppShellProps) {
     const navigate = useNavigate()
     const location = useLocation()
-    const { theme, toggleTheme } = useTheme()
-    const { setRefreshPages } = usePageContext()
 
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-    const [sidebarWidth, setSidebarWidth] = useState(280)
-    const [pages, setPages] = useState<PageTreeNode[]>([])
-    const [currentPage, setCurrentPage] = useState<PageSummary | null>(null)
-    const [workspaceId, setWorkspaceId] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [isSearchOpen, setIsSearchOpen] = useState(false)
-    const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-    const [workspaceName, setWorkspaceName] = useState('Potion')
-    const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
-        isOpen: false,
-        pageId: null,
-        pageTitle: '',
-        hasChildren: false
-    })
-    const [importState, setImportState] = useState<ImportState>({
-        isOpen: false,
-        file: null
-    })
-    const [importResult, setImportResult] = useState<{ isOpen: boolean; result: ImportResultData | null }>({
+    // Workspace store
+    const workspaceId = useWorkspaceStore(state => state.workspaceId)
+    const workspaceName = useWorkspaceStore(state => state.workspaceName)
+    const pages = useWorkspaceStore(state => state.pageTree)
+    const flatPages = useWorkspaceStore(state => state.pages)
+    const currentPageId = useWorkspaceStore(state => state.currentPageId)
+    const isLoading = useWorkspaceStore(state => state.isLoading)
+    const setWorkspace = useWorkspaceStore(state => state.setWorkspace)
+    const setWorkspaceName = useWorkspaceStore(state => state.setWorkspaceName)
+    const setPages = useWorkspaceStore(state => state.setPages)
+    const refreshPages = useWorkspaceStore(state => state.refreshPages)
+    const setCurrentPageId = useWorkspaceStore(state => state.setCurrentPageId)
+    const setLoading = useWorkspaceStore(state => state.setLoading)
+
+    // UI store
+    const sidebarCollapsed = useUIStore(state => state.sidebarCollapsed)
+    const sidebarWidth = useUIStore(state => state.sidebarWidth)
+    const isSearchOpen = useUIStore(state => state.isSearchOpen)
+    const isShortcutsOpen = useUIStore(state => state.isShortcutsOpen)
+    const isSettingsOpen = useUIStore(state => state.isSettingsOpen)
+    const deleteConfirm = useUIStore(state => state.deleteConfirm)
+    const importState = useUIStore(state => state.importState)
+    const toggleSidebar = useUIStore(state => state.toggleSidebar)
+    const setSidebarWidth = useUIStore(state => state.setSidebarWidth)
+    const openSearch = useUIStore(state => state.openSearch)
+    const closeSearch = useUIStore(state => state.closeSearch)
+    const openShortcuts = useUIStore(state => state.openShortcuts)
+    const closeShortcuts = useUIStore(state => state.closeShortcuts)
+    const openSettings = useUIStore(state => state.openSettings)
+    const closeSettings = useUIStore(state => state.closeSettings)
+    const openDeleteConfirm = useUIStore(state => state.openDeleteConfirm)
+    const closeDeleteConfirm = useUIStore(state => state.closeDeleteConfirm)
+    const openImport = useUIStore(state => state.openImport)
+    const closeImport = useUIStore(state => state.closeImport)
+
+    // Theme store
+    const theme = useThemeStore(state => state.preference)
+    const toggleTheme = useThemeStore(state => state.toggleTheme)
+
+    // Import result state (kept local as it's transient)
+    const [importResult, setImportResult] = React.useState<{ isOpen: boolean; result: ImportResultData | null }>({
         isOpen: false,
         result: null
     })
 
+    // Get current page from flat pages list
+    const currentPage = flatPages.find(p => p.id === currentPageId) || null
+
     // Extract page ID from URL
-    const currentPageId = location.pathname.startsWith('/page/')
+    const urlPageId = location.pathname.startsWith('/page/')
         ? location.pathname.split('/page/')[1]?.split('/')[0] || null
         : null
 
-    const refreshPages = useCallback(async (wsId: string) => {
-        const pageSummaries = await listPages(wsId)
-        const tree = buildPageTree(pageSummaries)
-        setPages(tree)
-    }, [])
-
-    // Load current page info when URL changes
+    // Sync URL page ID with store
     useEffect(() => {
-        async function loadCurrentPage() {
-            if (currentPageId) {
-                const page = await getPage(currentPageId)
-                if (page) {
-                    setCurrentPage({
-                        id: page.id,
-                        workspaceId: page.workspaceId,
-                        parentPageId: page.parentPageId,
-                        title: page.title,
-                        type: page.type,
-                        isFavorite: page.isFavorite,
-                        icon: page.icon,
-                        createdAt: page.createdAt,
-                        updatedAt: page.updatedAt
-                    })
-                } else {
-                    setCurrentPage(null)
-                }
-            } else {
-                setCurrentPage(null)
-            }
+        if (urlPageId !== currentPageId) {
+            setCurrentPageId(urlPageId)
         }
-        loadCurrentPage()
-    }, [currentPageId])
+    }, [urlPageId, currentPageId, setCurrentPageId])
+
+    const refreshPagesFromStorage = useCallback(async (wsId: string) => {
+        const pageSummaries = await listPages(wsId)
+        refreshPages(pageSummaries)
+    }, [refreshPages])
 
     // Initialize workspace and load pages
     useEffect(() => {
         async function init() {
             try {
                 const workspace = await getOrCreateDefaultWorkspace()
-                setWorkspaceId(workspace.id)
-                setWorkspaceName(workspace.name)
-                await refreshPages(workspace.id)
-                // Register refresh function with context for cross-component access
-                setRefreshPages(() => refreshPages(workspace.id))
+                setWorkspace(workspace.id, workspace.name)
+                const pageSummaries = await listPages(workspace.id)
+                setPages(pageSummaries)
             } catch (error) {
                 console.error('Failed to initialize workspace:', error)
             } finally {
-                setIsLoading(false)
+                setLoading(false)
             }
         }
         init()
-    }, [refreshPages, setRefreshPages])
+    }, [setWorkspace, setPages, setLoading])
 
     const handlePageSelect = useCallback((page: PageSummary) => {
         navigate(`/page/${page.id}`)
@@ -136,9 +125,9 @@ export function AppShell({ children }: AppShellProps) {
             parentPageId: parentPageId ?? null
         })
 
-        await refreshPages(workspaceId)
+        await refreshPagesFromStorage(workspaceId)
         navigate(`/page/${newPage.id}`)
-    }, [workspaceId, refreshPages, navigate])
+    }, [workspaceId, refreshPagesFromStorage, navigate])
 
     const handleCreateDatabase = useCallback(async (parentPageId?: string) => {
         if (!workspaceId) return
@@ -147,17 +136,17 @@ export function AppShell({ children }: AppShellProps) {
             parentPageId: parentPageId ?? null
         })
 
-        await refreshPages(workspaceId)
+        await refreshPagesFromStorage(workspaceId)
         navigate(`/page/${page.id}`)
-    }, [workspaceId, refreshPages, navigate])
+    }, [workspaceId, refreshPagesFromStorage, navigate])
 
-    // Global keyboard shortcuts - must be after handleCreatePage
+    // Global keyboard shortcuts
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
             // Ctrl/Cmd+K to open search
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault()
-                setIsSearchOpen(true)
+                openSearch()
                 return
             }
             // Ctrl/Cmd+N to create new page
@@ -172,96 +161,43 @@ export function AppShell({ children }: AppShellProps) {
                 // Only show if not in an input field
                 if (!['INPUT', 'TEXTAREA'].includes(target.tagName) && !target.isContentEditable) {
                     e.preventDefault()
-                    setIsShortcutsOpen(true)
+                    openShortcuts()
                 }
             }
         }
 
         window.addEventListener('keydown', handleKeyDown, true)
         return () => window.removeEventListener('keydown', handleKeyDown, true)
-    }, [handleCreatePage])
+    }, [handleCreatePage, openSearch, openShortcuts])
 
     const handleRenamePage = useCallback(async (pageId: string, newTitle: string) => {
         if (!workspaceId) return
 
         try {
             await updatePageTitle(pageId, newTitle)
-            await refreshPages(workspaceId)
-
-            // If current page was renamed, update the current page state
-            if (currentPageId === pageId) {
-                const updatedPage = await getPage(pageId)
-                if (updatedPage) {
-                    setCurrentPage({
-                        id: updatedPage.id,
-                        workspaceId: updatedPage.workspaceId,
-                        parentPageId: updatedPage.parentPageId,
-                        title: updatedPage.title,
-                        type: updatedPage.type,
-                        isFavorite: updatedPage.isFavorite,
-                        icon: updatedPage.icon,
-                        createdAt: updatedPage.createdAt,
-                        updatedAt: updatedPage.updatedAt
-                    })
-                }
-            }
+            await refreshPagesFromStorage(workspaceId)
         } catch (error) {
             console.error('Failed to rename page:', error)
         }
-    }, [workspaceId, refreshPages, currentPageId])
+    }, [workspaceId, refreshPagesFromStorage])
 
-    const handleDeletePage = useCallback(async (pageId: string, hasChildren: boolean) => {
+    const handleDeletePage = useCallback(async (pageId: string, _hasChildren: boolean) => {
         // Find the page to get its title
-        const findPage = (nodes: PageTreeNode[]): PageTreeNode | null => {
-            for (const node of nodes) {
-                if (node.id === pageId) return node
-                if (node.children) {
-                    const found = findPage(node.children)
-                    if (found) return found
-                }
-            }
-            return null
-        }
-
-        const pageToDelete = findPage(pages)
+        const pageToDelete = flatPages.find(p => p.id === pageId)
         const pageTitle = pageToDelete?.title || 'Untitled'
-
-        setDeleteConfirm({
-            isOpen: true,
-            pageId,
-            pageTitle,
-            hasChildren
-        })
-    }, [pages])
+        openDeleteConfirm(pageId, pageTitle)
+    }, [flatPages, openDeleteConfirm])
 
     const handleToggleFavorite = useCallback(async (pageId: string, isFavorite: boolean) => {
         if (!workspaceId) return
 
         try {
             await updatePage(pageId, { isFavorite })
-            await refreshPages(workspaceId)
-
-            // If current page was toggled, update the current page state
-            if (currentPageId === pageId) {
-                const updatedPage = await getPage(pageId)
-                if (updatedPage) {
-                    setCurrentPage({
-                        id: updatedPage.id,
-                        workspaceId: updatedPage.workspaceId,
-                        parentPageId: updatedPage.parentPageId,
-                        title: updatedPage.title,
-                        type: updatedPage.type,
-                        isFavorite: updatedPage.isFavorite,
-                        icon: updatedPage.icon,
-                        createdAt: updatedPage.createdAt,
-                        updatedAt: updatedPage.updatedAt
-                    })
-                }
-            }
+            await refreshPagesFromStorage(workspaceId)
         } catch (error) {
             console.error('Failed to toggle favorite:', error)
         }
-    }, [workspaceId, refreshPages, currentPageId])
+    }, [workspaceId, refreshPagesFromStorage])
 
     const handleMovePage = useCallback(async (pageId: string, newParentId: string | null) => {
         if (!workspaceId) return
@@ -274,17 +210,7 @@ export function AppShell({ children }: AppShellProps) {
             const isDescendant = (parentId: string | null, targetId: string): boolean => {
                 if (!parentId) return false
                 if (parentId === targetId) return true
-                const findNode = (nodes: typeof pages): typeof pages[0] | undefined => {
-                    for (const n of nodes) {
-                        if (n.id === parentId) return n
-                        if (n.children) {
-                            const found = findNode(n.children)
-                            if (found) return found
-                        }
-                    }
-                    return undefined
-                }
-                const parentNode = findNode(pages)
+                const parentNode = flatPages.find(p => p.id === parentId)
                 return parentNode ? isDescendant(parentNode.parentPageId, targetId) : false
             }
 
@@ -294,26 +220,29 @@ export function AppShell({ children }: AppShellProps) {
             }
 
             await updatePage(pageId, { parentPageId: newParentId })
-            await refreshPages(workspaceId)
+            await refreshPagesFromStorage(workspaceId)
         } catch (error) {
             console.error('Failed to move page:', error)
         }
-    }, [workspaceId, refreshPages, pages])
+    }, [workspaceId, refreshPagesFromStorage, flatPages])
 
     const confirmDelete = useCallback(async () => {
         if (!workspaceId || !deleteConfirm.pageId) return
 
         try {
+            // Check if page has children
+            const children = await getChildPages(deleteConfirm.pageId)
+            const hasChildren = children.length > 0
+
             // If page has children, first orphan them (move to root)
-            if (deleteConfirm.hasChildren) {
-                const children = await getChildPages(deleteConfirm.pageId)
+            if (hasChildren) {
                 for (const child of children) {
                     await updatePage(child.id, { parentPageId: null })
                 }
             }
 
             await deletePage(deleteConfirm.pageId)
-            await refreshPages(workspaceId)
+            await refreshPagesFromStorage(workspaceId)
 
             // If we deleted the current page, navigate to home
             if (currentPageId === deleteConfirm.pageId) {
@@ -322,20 +251,15 @@ export function AppShell({ children }: AppShellProps) {
         } catch (error) {
             console.error('Failed to delete page:', error)
         } finally {
-            setDeleteConfirm({ isOpen: false, pageId: null, pageTitle: '', hasChildren: false })
+            closeDeleteConfirm()
         }
-    }, [workspaceId, deleteConfirm, refreshPages, currentPageId, navigate])
-
-    const cancelDelete = useCallback(() => {
-        setDeleteConfirm({ isOpen: false, pageId: null, pageTitle: '', hasChildren: false })
-    }, [])
+    }, [workspaceId, deleteConfirm.pageId, refreshPagesFromStorage, currentPageId, navigate, closeDeleteConfirm])
 
     const handleExportWorkspace = useCallback(async () => {
         try {
             await exportWorkspaceToFile()
         } catch (error) {
             console.error('Failed to export workspace:', error)
-            // Could show a toast/notification here
         }
     }, [])
 
@@ -344,7 +268,6 @@ export function AppShell({ children }: AppShellProps) {
             await exportPageToFile(pageId, includeChildren)
         } catch (error) {
             console.error('Failed to export page:', error)
-            // Could show a toast/notification here
         }
     }, [])
 
@@ -358,21 +281,31 @@ export function AppShell({ children }: AppShellProps) {
             const file = (e.target as HTMLInputElement).files?.[0]
             if (!file) return
 
-            // Open the import dialog with the file
-            setImportState({ isOpen: true, file })
+            // Read and parse file to open import dialog
+            try {
+                const text = await file.text()
+                const data = JSON.parse(text)
+                openImport(data)
+            } catch (error) {
+                console.error('Failed to parse import file:', error)
+            }
         }
 
         input.click()
-    }, [])
+    }, [openImport])
 
     const confirmImport = useCallback(async (mode: ImportMode) => {
-        if (!importState.file) return
+        if (!importState.data) return
 
         try {
-            const result = await importWorkspaceFromFile(importState.file, mode)
+            // Create a file-like object from the data
+            const blob = new Blob([JSON.stringify(importState.data)], { type: 'application/json' })
+            const file = new File([blob], 'import.json', { type: 'application/json' })
+
+            const result = await importWorkspaceFromFile(file, mode)
 
             // Close the import dialog
-            setImportState({ isOpen: false, file: null })
+            closeImport()
 
             // Show the result dialog
             setImportResult({
@@ -386,17 +319,15 @@ export function AppShell({ children }: AppShellProps) {
                 }
             })
 
-            if (result.success) {
+            if (result.success && workspaceId) {
                 // Refresh the pages after import
-                if (workspaceId) {
-                    await refreshPages(workspaceId)
-                }
+                await refreshPagesFromStorage(workspaceId)
                 // Navigate to home after import
                 navigate('/')
             }
         } catch (error) {
             console.error('Failed to import workspace:', error)
-            setImportState({ isOpen: false, file: null })
+            closeImport()
             setImportResult({
                 isOpen: true,
                 result: {
@@ -408,11 +339,7 @@ export function AppShell({ children }: AppShellProps) {
                 }
             })
         }
-    }, [importState.file, workspaceId, refreshPages, navigate])
-
-    const cancelImport = useCallback(() => {
-        setImportState({ isOpen: false, file: null })
-    }, [])
+    }, [importState.data, workspaceId, refreshPagesFromStorage, navigate, closeImport])
 
     const handleWorkspaceNameChange = useCallback(async (newName: string) => {
         if (!workspaceId) return
@@ -423,11 +350,7 @@ export function AppShell({ children }: AppShellProps) {
         } catch (error) {
             console.error('Failed to update workspace name:', error)
         }
-    }, [workspaceId])
-
-    const toggleSidebar = useCallback(() => {
-        setSidebarCollapsed(prev => !prev)
-    }, [])
+    }, [workspaceId, setWorkspaceName])
 
     if (isLoading) {
         return (
@@ -460,8 +383,8 @@ export function AppShell({ children }: AppShellProps) {
                 onToggleCollapse={toggleSidebar}
                 onExportWorkspace={handleExportWorkspace}
                 onImportWorkspace={handleImportWorkspace}
-                onShowHelp={() => setIsShortcutsOpen(true)}
-                onOpenSettings={() => setIsSettingsOpen(true)}
+                onShowHelp={openShortcuts}
+                onOpenSettings={openSettings}
                 theme={theme}
                 onToggleTheme={toggleTheme}
             />
@@ -471,7 +394,7 @@ export function AppShell({ children }: AppShellProps) {
                 {/* Topbar */}
                 <Topbar
                     currentPage={currentPage}
-                    onOpenSearch={() => setIsSearchOpen(true)}
+                    onOpenSearch={openSearch}
                     onRenameTitle={currentPage ? (newTitle) => handleRenamePage(currentPage.id, newTitle) : undefined}
                     onToggleFavorite={currentPage ? () => handleToggleFavorite(currentPage.id, !currentPage.isFavorite) : undefined}
                     onExportPage={currentPage ? () => handleExportPage(currentPage.id, true) : undefined}
@@ -488,16 +411,12 @@ export function AppShell({ children }: AppShellProps) {
             <ConfirmDialog
                 isOpen={deleteConfirm.isOpen}
                 title="Delete Page"
-                message={
-                    deleteConfirm.hasChildren
-                        ? `Are you sure you want to delete "${deleteConfirm.pageTitle}"? Child pages will be moved to the root level.`
-                        : `Are you sure you want to delete "${deleteConfirm.pageTitle}"? This action cannot be undone.`
-                }
+                message={`Are you sure you want to delete "${deleteConfirm.pageTitle}"? This action cannot be undone.`}
                 confirmLabel="Delete"
                 cancelLabel="Cancel"
                 variant="danger"
                 onConfirm={confirmDelete}
-                onCancel={cancelDelete}
+                onCancel={closeDeleteConfirm}
             />
 
             {/* Search Dialog */}
@@ -505,7 +424,7 @@ export function AppShell({ children }: AppShellProps) {
                 <SearchDialog
                     isOpen={isSearchOpen}
                     workspaceId={workspaceId}
-                    onClose={() => setIsSearchOpen(false)}
+                    onClose={closeSearch}
                     onSelectPage={(pageId) => navigate(`/page/${pageId}`)}
                 />
             )}
@@ -513,9 +432,10 @@ export function AppShell({ children }: AppShellProps) {
             {/* Import Dialog */}
             <ImportDialog
                 isOpen={importState.isOpen}
-                file={importState.file}
+                file={null}
+                data={importState.data}
                 onConfirm={confirmImport}
-                onCancel={cancelImport}
+                onCancel={closeImport}
             />
 
             {/* Import Result Dialog */}
@@ -528,14 +448,14 @@ export function AppShell({ children }: AppShellProps) {
             {/* Keyboard Shortcuts Dialog */}
             <KeyboardShortcutsDialog
                 isOpen={isShortcutsOpen}
-                onClose={() => setIsShortcutsOpen(false)}
+                onClose={closeShortcuts}
             />
 
             {/* Settings Dialog */}
             <SettingsDialog
                 isOpen={isSettingsOpen}
                 workspaceName={workspaceName}
-                onClose={() => setIsSettingsOpen(false)}
+                onClose={closeSettings}
                 onWorkspaceNameChange={handleWorkspaceNameChange}
             />
         </div>

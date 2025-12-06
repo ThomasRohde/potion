@@ -9,16 +9,17 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle } from '../services'
+import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle, listPages } from '../services'
 import { RichTextEditor, SaveStatusIndicator, DatabasePage } from '../components'
 import { useAutoSave } from '../hooks'
-import { usePageContext } from '../contexts'
+import { useWorkspaceStore } from '../stores'
 import type { Page, BlockContent } from '../types'
 
 export function PageView() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
-    const { refreshPages } = usePageContext()
+    const refreshPages = useWorkspaceStore(state => state.refreshPages)
+    const workspaceId = useWorkspaceStore(state => state.workspaceId)
     const [page, setPage] = useState<Page | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -86,8 +87,11 @@ export function PageView() {
         await updatePageTitle(page.id, title)
         setPage(prev => prev ? { ...prev, title } : null)
         // Refresh sidebar to show updated title
-        await refreshPages()
-    }, [page, refreshPages])
+        if (workspaceId) {
+            const pageSummaries = await listPages(workspaceId)
+            refreshPages(pageSummaries)
+        }
+    }, [page, workspaceId, refreshPages])
 
     if (isLoading) {
         return (

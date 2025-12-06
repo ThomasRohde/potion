@@ -7,12 +7,14 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { validateExportFile } from '../services'
+import type { WorkspaceExport } from '../types'
 
 export type ImportMode = 'replace' | 'merge'
 
 interface ImportDialogProps {
     isOpen: boolean
     file: File | null
+    data?: WorkspaceExport | null
     onConfirm: (mode: ImportMode) => void
     onCancel: () => void
 }
@@ -26,17 +28,36 @@ interface ValidationResult {
     errors: string[]
 }
 
-export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialogProps) {
+export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: ImportDialogProps) {
     const [validation, setValidation] = useState<ValidationResult | null>(null)
     const [isValidating, setIsValidating] = useState(false)
     const [importMode, setImportMode] = useState<ImportMode>('replace')
 
-    // Validate the file when dialog opens
+    // Validate the file or data when dialog opens
     useEffect(() => {
         async function validate() {
-            if (!isOpen || !file) {
+            if (!isOpen) {
                 setValidation(null)
                 setImportMode('replace') // Reset to default
+                return
+            }
+
+            // If data is provided directly (from zustand store), use it
+            if (data) {
+                setValidation({
+                    valid: true,
+                    version: data.version,
+                    pageCount: data.pages?.length || 0,
+                    workspaceName: data.workspace?.name || null,
+                    exportedAt: data.exportedAt || null,
+                    errors: []
+                })
+                return
+            }
+
+            // Otherwise validate from file
+            if (!file) {
+                setValidation(null)
                 return
             }
 
@@ -58,7 +79,7 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
             }
         }
         validate()
-    }, [isOpen, file])
+    }, [isOpen, file, data])
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (!isOpen) return

@@ -6,9 +6,8 @@
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import type { PageSummary } from '../types'
+import type { PageSummary, ThemePreference } from '../types'
 import type { PageTreeNode } from '../services/pageService'
-import type { Theme } from '../hooks'
 import { ThemeToggle } from './ThemeToggle'
 
 interface SidebarProps {
@@ -30,7 +29,7 @@ interface SidebarProps {
     onImportWorkspace?: () => void
     onShowHelp?: () => void
     onOpenSettings?: () => void
-    theme?: Theme
+    theme?: ThemePreference
     onToggleTheme?: () => void
 }
 
