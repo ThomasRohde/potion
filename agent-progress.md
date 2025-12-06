@@ -2,11 +2,64 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: ✅ 52/54 Features Complete (96%)
+## Current Status: ✅ 54/54 Features Complete (100%)
 
 ---
 
 ## Session Log
+
+### Session 16 - 2025-12-06
+**Duration**: ~30 minutes
+**Focus**: Implementing F053 (Markdown paste) and F054 (Full width toggle)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed Features
+
+##### F053: Paste Markdown content into BlockNote editor
+- Added custom paste handler using DOM event listener (capture phase)
+- Implemented `looksLikeMarkdown()` function with pattern detection for:
+  - Headings (#, ##, ###)
+  - Bold/italic (**text**, *text*, __text__, _text_)
+  - Links [text](url)
+  - Lists (-, *, 1.)
+  - Blockquotes (>)
+  - Code blocks (``` and inline `code`)
+  - Tables (|col1|col2|)
+  - Images (![alt](url))
+- Uses `editor.tryParseMarkdownToBlocks()` for conversion
+- Inserts parsed blocks at cursor position via `editor.insertBlocks()`
+- Falls back to plain text on parsing failure
+- Works via Ctrl+V keyboard shortcut
+
+##### F054: Per-page full width toggle in topbar menu
+- Added `isFullWidth` property to Page and PageSummary types
+- Added Full Width toggle option to Topbar three-dot menu
+- Toggle shows expand/collapse icon based on current state
+- Checkmark indicator when full width is active
+- PageView applies dynamic width class (`max-w-4xl` vs `w-full`)
+- Preference persists per-page via IndexedDB
+
+#### Files Modified
+- `src/components/RichTextEditor.tsx` - Added paste handler with markdown detection
+- `src/components/Topbar.tsx` - Added isFullWidth prop and toggle menu option
+- `src/components/AppShell.tsx` - Added handleToggleFullWidth callback
+- `src/pages/PageView.tsx` - Dynamic container width based on isFullWidth
+- `src/types/index.ts` - Added isFullWidth to Page and PageSummary
+- `src/services/pageService.ts` - Added isFullWidth to updatePage options
+- `src/storage/IndexedDbStorageAdapter.ts` - Include isFullWidth in toPageSummary
+- `eslint.config.js` - Added ClipboardEvent global
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 1467 modules |
+| bun run test | 0 | ✅ 99 tests passed |
+| bun run lint | 0 | ✅ Clean |
+
+#### Final Status
+🎉 **ALL 54 FEATURES VERIFIED (100%)**
+
+---
 
 ### Session 15 - 2025-12-06
 **Duration**: ~5 minutes

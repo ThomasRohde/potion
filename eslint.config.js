@@ -50,6 +50,7 @@ export default [
                 Event: 'readonly',
                 KeyboardEvent: 'readonly',
                 MouseEvent: 'readonly',
+                ClipboardEvent: 'readonly',
                 CustomEvent: 'readonly',
                 crypto: 'readonly'
             }

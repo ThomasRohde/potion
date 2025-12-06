@@ -207,6 +207,7 @@ export class IndexedDbStorageAdapter implements StorageAdapter {
             title: page.title,
             type: page.type,
             isFavorite: page.isFavorite,
+            isFullWidth: page.isFullWidth,
             icon: page.icon,
             createdAt: page.createdAt,
             updatedAt: page.updatedAt

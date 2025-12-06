@@ -27,6 +27,7 @@ export interface Page {
     title: string
     type: PageType
     isFavorite: boolean
+    isFullWidth?: boolean // Per-page full width preference
     content: BlockContent // Editor document JSON
     createdAt: string
     updatedAt: string
@@ -42,6 +43,7 @@ export interface PageSummary {
     title: string
     type: PageType
     isFavorite: boolean
+    isFullWidth?: boolean // Per-page full width preference
     icon?: string
     createdAt: string
     updatedAt: string

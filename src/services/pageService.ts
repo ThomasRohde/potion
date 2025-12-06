@@ -138,7 +138,7 @@ export async function updatePageContent(pageId: string, content: BlockContent): 
  */
 export async function updatePage(
     pageId: string,
-    updates: Partial<Pick<Page, 'title' | 'content' | 'isFavorite' | 'icon' | 'parentPageId' | 'coverImage'>>
+    updates: Partial<Pick<Page, 'title' | 'content' | 'isFavorite' | 'isFullWidth' | 'icon' | 'parentPageId' | 'coverImage'>>
 ): Promise<Page> {
     const storage = await getStorage()
     const page = await storage.getPage(pageId)

@@ -137,8 +137,13 @@ export function PageView() {
         return <DatabasePage page={page} onTitleChange={handleTitleChange} />
     }
 
+    // Determine container width class based on page's full width preference
+    const containerClass = page.isFullWidth
+        ? 'w-full px-8 py-8'
+        : 'max-w-4xl mx-auto px-8 py-8'
+
     return (
-        <div className="max-w-4xl mx-auto px-8 py-8">
+        <div className={containerClass}>
             <div className="flex items-center justify-end mb-6">
                 <SaveStatusIndicator status={status} />
             </div>

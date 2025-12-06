@@ -10,7 +10,7 @@
  * - Provides onChange callback for auto-save integration
  */
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useCreateBlockNote } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
 import type { Block, BlockNoteEditor } from '@blocknote/core'
@@ -239,6 +239,31 @@ function fromBlockNoteBlocks(blocks: Block[]): BlockContent {
     }
 }
 
+/**
+ * Detect if text content looks like markdown.
+ * Returns true if the text contains common markdown patterns.
+ */
+function looksLikeMarkdown(text: string): boolean {
+    // Common markdown patterns to detect
+    const markdownPatterns = [
+        /^#{1,6}\s+/m,           // Headings: # ## ### etc.
+        /\*\*[^*]+\*\*/,         // Bold: **text**
+        /\*[^*]+\*/,             // Italic: *text*
+        /__[^_]+__/,             // Bold: __text__
+        /_[^_]+_/,               // Italic: _text_
+        /\[.+\]\(.+\)/,          // Links: [text](url)
+        /^[-*+]\s+/m,            // Unordered lists: - item or * item
+        /^\d+\.\s+/m,            // Ordered lists: 1. item
+        /^>\s+/m,                // Blockquotes: > text
+        /`[^`]+`/,               // Inline code: `code`
+        /^```/m,                 // Code blocks: ```
+        /^\|.+\|$/m,             // Tables: |col1|col2|
+        /!\[.+\]\(.+\)/,         // Images: ![alt](url)
+    ]
+
+    return markdownPatterns.some(pattern => pattern.test(text))
+}
+
 export function RichTextEditor({
     initialContent,
     onChange,
@@ -250,11 +275,83 @@ export function RichTextEditor({
         [initialContent]
     )
 
+    // Ref for the editor container to attach paste handler
+    const containerRef = useRef<HTMLDivElement>(null)
+
     // Create the BlockNote editor instance
     const editor: BlockNoteEditor = useCreateBlockNote({
         initialContent: initialBlocks,
         defaultStyles: true
     })
+
+    /**
+     * Handle paste events to detect and convert markdown content.
+     * This effect attaches a paste handler to intercept clipboard events.
+     */
+    useEffect(() => {
+        const container = containerRef.current
+        if (!container || readOnly) return
+
+        const handlePaste = async (event: ClipboardEvent) => {
+            const clipboardData = event.clipboardData
+            if (!clipboardData) return
+
+            // Get plain text from clipboard
+            const plainText = clipboardData.getData('text/plain')
+            
+            // If we have HTML content, let BlockNote handle it natively
+            const hasHtml = clipboardData.types.includes('text/html')
+            if (hasHtml) return
+
+            // If the text looks like markdown, parse and insert it
+            if (plainText && looksLikeMarkdown(plainText)) {
+                // Prevent default paste behavior
+                event.preventDefault()
+                event.stopPropagation()
+
+                try {
+                    // Parse markdown to blocks
+                    const blocks = await editor.tryParseMarkdownToBlocks(plainText)
+                    
+                    if (blocks.length > 0) {
+                        // Get current cursor position
+                        const cursorPos = editor.getTextCursorPosition()
+                        
+                        if (cursorPos && cursorPos.block) {
+                            // Insert parsed blocks after the current block
+                            editor.insertBlocks(blocks, cursorPos.block, 'after')
+                        } else {
+                            // If no cursor position, append to document
+                            const lastBlock = editor.document[editor.document.length - 1]
+                            if (lastBlock) {
+                                editor.insertBlocks(blocks, lastBlock, 'after')
+                            }
+                        }
+                    }
+                } catch (err) {
+                    // If markdown parsing fails, let the default paste happen
+                    console.warn('Markdown paste parsing failed, falling back to plain text:', err)
+                    // Re-dispatch a new paste event with just plain text
+                    // Actually, since we prevented default, we need to insert manually
+                    const textContent = [{
+                        type: 'paragraph' as const,
+                        content: [{ type: 'text' as const, text: plainText, styles: {} }]
+                    }]
+                    const cursorPos = editor.getTextCursorPosition()
+                    if (cursorPos && cursorPos.block) {
+                        editor.insertBlocks(textContent, cursorPos.block, 'after')
+                    }
+                }
+            }
+        }
+
+        // Use capture phase to intercept before BlockNote handles it
+        container.addEventListener('paste', handlePaste, { capture: true })
+        
+        return () => {
+            container.removeEventListener('paste', handlePaste, { capture: true })
+        }
+    }, [editor, readOnly])
 
     // Handle content changes
     useEffect(() => {
@@ -271,7 +368,7 @@ export function RichTextEditor({
     }, [editor, onChange, readOnly])
 
     return (
-        <div className="rich-text-editor">
+        <div ref={containerRef} className="rich-text-editor">
             <BlockNoteView
                 editor={editor}
                 editable={!readOnly}

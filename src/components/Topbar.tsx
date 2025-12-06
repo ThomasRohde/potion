@@ -9,9 +9,11 @@ import type { PageSummary } from '../types'
 
 interface TopbarProps {
     currentPage: PageSummary | null
+    isFullWidth?: boolean
     onOpenSearch?: () => void
     onRenameTitle?: (newTitle: string) => void
     onToggleFavorite?: () => void
+    onToggleFullWidth?: () => void
     onDuplicatePage?: () => void
     onExportPage?: () => void
     onDeletePage?: () => void
@@ -19,9 +21,11 @@ interface TopbarProps {
 
 export function Topbar({
     currentPage,
+    isFullWidth = false,
     onOpenSearch,
     onRenameTitle,
     onToggleFavorite,
+    onToggleFullWidth,
     onDuplicatePage,
     onExportPage,
     onDeletePage
@@ -212,6 +216,31 @@ export function Topbar({
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                         </svg>
                                         Duplicate
+                                    </button>
+                                )}
+                                {onToggleFullWidth && (
+                                    <button
+                                        onClick={() => {
+                                            onToggleFullWidth()
+                                            setShowMenu(false)
+                                        }}
+                                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                    >
+                                        {isFullWidth ? (
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+                                            </svg>
+                                        ) : (
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                                            </svg>
+                                        )}
+                                        <span className="flex-1">Full width</span>
+                                        {isFullWidth && (
+                                            <svg className="w-4 h-4 text-potion-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        )}
                                     </button>
                                 )}
                                 {onExportPage && (

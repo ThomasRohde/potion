@@ -199,6 +199,17 @@ export function AppShell({ children }: AppShellProps) {
         }
     }, [workspaceId, refreshPagesFromStorage])
 
+    const handleToggleFullWidth = useCallback(async (pageId: string, isFullWidth: boolean) => {
+        if (!workspaceId) return
+
+        try {
+            await updatePage(pageId, { isFullWidth })
+            await refreshPagesFromStorage(workspaceId)
+        } catch (error) {
+            console.error('Failed to toggle full width:', error)
+        }
+    }, [workspaceId, refreshPagesFromStorage])
+
     const handleMovePage = useCallback(async (pageId: string, newParentId: string | null) => {
         if (!workspaceId) return
 
@@ -394,9 +405,11 @@ export function AppShell({ children }: AppShellProps) {
                 {/* Topbar */}
                 <Topbar
                     currentPage={currentPage}
+                    isFullWidth={currentPage?.isFullWidth ?? false}
                     onOpenSearch={openSearch}
                     onRenameTitle={currentPage ? (newTitle) => handleRenamePage(currentPage.id, newTitle) : undefined}
                     onToggleFavorite={currentPage ? () => handleToggleFavorite(currentPage.id, !currentPage.isFavorite) : undefined}
+                    onToggleFullWidth={currentPage ? () => handleToggleFullWidth(currentPage.id, !currentPage.isFullWidth) : undefined}
                     onExportPage={currentPage ? () => handleExportPage(currentPage.id, true) : undefined}
                     onDeletePage={currentPage ? () => handleDeletePage(currentPage.id, false) : undefined}
                 />
