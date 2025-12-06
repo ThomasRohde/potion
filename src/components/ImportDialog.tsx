@@ -164,11 +164,10 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                     <button
                         onClick={onConfirm}
                         disabled={!validation?.valid || isValidating}
-                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            validation?.valid && !isValidating
+                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${validation?.valid && !isValidating
                                 ? 'bg-potion-600 text-white hover:bg-potion-700'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                            }`}
                     >
                         Import & Replace
                     </button>
