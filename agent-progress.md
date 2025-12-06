@@ -2,15 +2,15 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import + Settings + Migrations + E2E Tests + Database Pages (97%)
+## Current Status: ✅ ALL FEATURES COMPLETE (100%)
 
 ---
 
 ## Session Log
 
 ### Session 10 - 2025-12-06
-**Duration**: ~45 minutes
-**Focus**: Database page type implementation (F015, F016)
+**Duration**: ~60 minutes
+**Focus**: Database page type implementation (F015, F016, F017)
 **Agent**: GitHub Copilot (Claude Opus 4.5)
 
 #### Completed
@@ -30,11 +30,19 @@
   - Property values stored in page.properties field
   - Rows persist to IndexedDB via existing storage layer
 
+- **F017**: Database filtering and sorting
+  - Filter bar UI with property selection dropdown
+  - Filter pills with editable operator and value
+  - All operators: equals, notEquals, contains, notContains, isEmpty, isNotEmpty, gt, gte, lt, lte
+  - Sort indicators on column headers (click to toggle asc/desc/none)
+  - Filter/sort state persists to database view in IndexedDB
+  - Added 10 new unit tests for filter and sort logic
+
 #### Technical Additions
 - Created `src/services/databaseService.ts` - Database CRUD, row operations, property management
-- Created `src/services/databaseService.test.ts` - 14 unit tests
+- Created `src/services/databaseService.test.ts` - 24 unit tests (14 original + 10 filter/sort)
 - Created `src/components/DatabasePage.tsx` - Database page wrapper
-- Created `src/components/DatabaseView.tsx` - Table view with inline editing
+- Created `src/components/DatabaseView.tsx` - Table view with inline editing, filtering, sorting
 - Created `src/components/PropertyEditor.tsx` - Property schema editor with select options
 - Updated `src/components/AppShell.tsx` - Added handleCreateDatabase
 - Updated `src/components/Sidebar.tsx` - Added "New" dropdown with database option
@@ -47,15 +55,21 @@
 | Command | Exit Code | Notes |
 |---------|-----------|-------|
 | bun run build | 0 | ✅ 1458 modules, 33 PWA entries |
-| bun run test | 0 | ✅ 63 tests passed (49 + 14 new) |
+| bun run test | 0 | ✅ 73 tests passed (49 + 24 new) |
 | bun run lint | 0 | ✅ |
 
-#### Blockers
-- None
+#### Final Status
+🎉 **ALL 35 FEATURES VERIFIED (100%)**
 
-#### Recommended Next Steps
-1. Implement F017: Database filtering and sorting UI
-2. Consider project MVP complete at 34/35 (97%)
+The Potion project is now feature-complete with:
+- Core editor functionality with BlockNote
+- Workspace and page management
+- Database page type with properties, rows, filtering, and sorting
+- Export/import with merge support
+- Settings and customization
+- PWA with offline support
+- Schema migrations
+- E2E test infrastructure
 
 ---
 

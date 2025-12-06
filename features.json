@@ -362,12 +362,14 @@
                 "Filters support basic operators (equals, contains, etc.)",
                 "Filter/sort state persists"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T15:30:00Z",
+            "verifiedBy": "agent-session-10",
+            "evidenceLinks": [
+                "src/components/DatabaseView.tsx"
+            ],
+            "notes": "Filter bar with property dropdown, filter pills with editable operators/values. Sort by clicking column headers (asc/desc/none). All operators supported. State persists to IndexedDB via updateDatabaseViews."
         },
         {
             "id": "F018",
@@ -781,8 +783,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T15:00:00Z",
+        "lastUpdated": "2025-12-06T15:30:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 34
+        "passingFeatures": 35
     }
 }
