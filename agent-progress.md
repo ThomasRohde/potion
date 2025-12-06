@@ -2,15 +2,15 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import Complete (74%)
+## Current Status: Core Editor + Export/Import Complete (77%)
 
 ---
 
 ## Session Log
 
 ### Session 7 - 2025-12-06
-**Duration**: ~15 minutes
-**Focus**: Export subset (single page with children)
+**Duration**: ~30 minutes
+**Focus**: Export subset and keyboard shortcuts
 **Agent**: GitHub Copilot (Claude Opus 4.5)
 
 #### Completed
@@ -21,11 +21,21 @@
   - Filename uses sanitized page title: `potion-{title}-{date}.json`
   - Database export already supported via exportDatabase in storage adapter
   - Added 3 unit tests for page export structure
+- **F025**: Implemented keyboard shortcuts documentation
+  - Ctrl/Cmd+N to create new page
+  - Ctrl/Cmd+K to open search (was already implemented)
+  - ? to show keyboard shortcuts help dialog
+  - Created KeyboardShortcutsDialog component
+  - Help button (?) added to sidebar footer
+  - Shortcuts grouped by: Navigation, Pages, Text Formatting, Blocks
+  - BlockNote provides editor shortcuts (bold, italic, etc.)
 
 #### Technical Additions
 - Added handleExportPage callback to AppShell
 - Added onExportPage prop to Sidebar and PageItem components
-- Export menu option in page dropdown menu
+- Created KeyboardShortcutsDialog.tsx component
+- Added global keyboard handler for Ctrl+N and ?
+- Added onShowHelp prop and help button to Sidebar
 
 #### Pre-Commit Verification
 | Command | Exit Code | Notes |
@@ -41,10 +51,9 @@
 - None
 
 #### Recommended Next Steps
-1. Implement F025: Keyboard shortcuts documentation
-2. Implement F026: Light/dark theme support
-3. Implement F022: Import merge mode with conflict resolution
-4. Implement F035: Settings panel for user preferences
+1. Implement F026: Light/dark theme support
+2. Implement F022: Import merge mode with conflict resolution
+3. Implement F035: Settings panel for user preferences
 
 ---
 
@@ -392,6 +401,7 @@ bun run dev
 | F021 | Import workspace (replace mode) | ✅ verified |
 | F023 | PWA manifest and service worker for offline support | ✅ verified |
 | F024 | Auto-save with 1 second idle debounce | ✅ verified |
+| F025 | Keyboard shortcuts for common actions | ✅ verified |
 | F027 | Welcome page and onboarding experience | ✅ verified |
 | F029 | Unit test infrastructure with Bun test runner | ✅ verified |
 | F031 | Client-side routing for page navigation | ✅ verified |
@@ -409,8 +419,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 26 (74%)
-- **Remaining**: 9
+- **Passing**: 27 (77%)
+- **Remaining**: 8
 
 ### Tech Stack
 - **Runtime**: Bun
