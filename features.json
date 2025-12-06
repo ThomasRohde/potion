@@ -1381,14 +1381,14 @@
                 "No duplicate paste handling from both DOM and BlockNote"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
+            "status": "blocked",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote docs show pasteHandler option with plainTextAsMarkdown flag. This is more reliable than current DOM paste event approach."
+            "blockedBy": "Requires BlockNote upgrade - pasteHandler option with plainTextAsMarkdown was added in v0.27.0. Current version is v0.17.1.",
+            "lastWorkedOn": "2025-06-19T18:10:00Z",
+            "notes": "The pasteHandler option with defaultPasteHandler({ plainTextAsMarkdown }) API was introduced in BlockNote v0.27.0. Our current v0.17.1 doesn't have this feature."
         },
         {
             "id": "F058",
@@ -1611,14 +1611,16 @@
                 "Works with paragraph, heading, and list blocks"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-06-19T18:15:00Z",
+            "verifiedBy": "coding-agent-session-21",
+            "evidenceLinks": [
+                "src/components/RichTextEditor.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote provides TextAlignButton component. Default schema includes textAlignment prop on all text blocks."
+            "lastWorkedOn": "2025-06-19T18:15:00Z",
+            "notes": "Added custom FormattingToolbar with TextAlignButton components for left, center, right, and justify alignment. Build passes, tests pass."
         },
         {
             "id": "F067",
@@ -1713,14 +1715,16 @@
                 "No flash of unstyled content during load"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-06-19T18:00:00Z",
+            "verifiedBy": "coding-agent-session-21",
+            "evidenceLinks": [
+                "src/pages/PageView.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote is a large dependency. Using React.lazy() and Suspense can improve initial load time."
+            "lastWorkedOn": "2025-06-19T18:00:00Z",
+            "notes": "RichTextEditor lazy loaded with React.lazy(). BlockNote split into separate 817KB chunk. EditorLoadingFallback shows skeleton while loading."
         },
         {
             "id": "F071",
@@ -1860,8 +1864,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-06-19T17:30:00Z",
+        "lastUpdated": "2025-06-19T18:15:00Z",
         "totalFeatures": 75,
-        "passingFeatures": 60
+        "passingFeatures": 62
     }
 }

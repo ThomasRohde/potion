@@ -14,7 +14,16 @@ import { useEffect, useMemo, useRef } from 'react'
 import {
     useCreateBlockNote,
     SideMenuController,
-    SideMenu
+    SideMenu,
+    FormattingToolbarController,
+    FormattingToolbar,
+    BasicTextStyleButton,
+    TextAlignButton,
+    ColorStyleButton,
+    NestBlockButton,
+    UnnestBlockButton,
+    CreateLinkButton,
+    BlockTypeSelect
 } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
 import type { Block, BlockNoteEditor } from '@blocknote/core'
@@ -499,6 +508,7 @@ export function RichTextEditor({
                 editable={!readOnly}
                 theme={appliedTheme}
                 sideMenu={false}
+                formattingToolbar={false}
             >
                 {/* Custom side menu with Turn Into submenu */}
                 <SideMenuController
@@ -507,6 +517,30 @@ export function RichTextEditor({
                             {...props}
                             dragHandleMenu={CustomDragHandleMenu}
                         />
+                    )}
+                />
+                {/* Custom formatting toolbar with text alignment buttons */}
+                <FormattingToolbarController
+                    formattingToolbar={() => (
+                        <FormattingToolbar>
+                            <BlockTypeSelect key="blockTypeSelect" />
+
+                            <BasicTextStyleButton basicTextStyle="bold" key="boldStyleButton" />
+                            <BasicTextStyleButton basicTextStyle="italic" key="italicStyleButton" />
+                            <BasicTextStyleButton basicTextStyle="underline" key="underlineStyleButton" />
+                            <BasicTextStyleButton basicTextStyle="strike" key="strikeStyleButton" />
+                            <BasicTextStyleButton basicTextStyle="code" key="codeStyleButton" />
+
+                            <TextAlignButton textAlignment="left" key="textAlignLeftButton" />
+                            <TextAlignButton textAlignment="center" key="textAlignCenterButton" />
+                            <TextAlignButton textAlignment="right" key="textAlignRightButton" />
+                            <TextAlignButton textAlignment="justify" key="textAlignJustifyButton" />
+
+                            <ColorStyleButton key="colorStyleButton" />
+                            <NestBlockButton key="nestBlockButton" />
+                            <UnnestBlockButton key="unnestBlockButton" />
+                            <CreateLinkButton key="createLinkButton" />
+                        </FormattingToolbar>
                     )}
                 />
             </BlockNoteView>
