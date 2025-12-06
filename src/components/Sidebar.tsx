@@ -8,6 +8,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
+import type { Theme } from '../hooks'
+import { ThemeToggle } from './ThemeToggle'
 
 interface SidebarProps {
     pages: PageTreeNode[]
@@ -26,6 +28,8 @@ interface SidebarProps {
     onExportWorkspace?: () => void
     onImportWorkspace?: () => void
     onShowHelp?: () => void
+    theme?: Theme
+    onToggleTheme?: () => void
 }
 
 export function Sidebar({
@@ -43,7 +47,9 @@ export function Sidebar({
     onToggleCollapse,
     onExportWorkspace,
     onImportWorkspace,
-    onShowHelp
+    onShowHelp,
+    theme,
+    onToggleTheme
 }: SidebarProps) {
     const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set())
     const [dragOverPageId, setDragOverPageId] = useState<string | null>(null)
@@ -244,6 +250,13 @@ export function Sidebar({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
+                    {theme && onToggleTheme && (
+                        <ThemeToggle
+                            theme={theme}
+                            onToggle={onToggleTheme}
+                            className="px-2 py-1.5"
+                        />
+                    )}
                 </div>
             </div>
         </div>

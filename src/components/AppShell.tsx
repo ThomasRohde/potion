@@ -15,6 +15,7 @@ import { ImportDialog } from './ImportDialog'
 import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
+import { useTheme } from '../hooks'
 import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile } from '../services'
 
 interface AppShellProps {
@@ -36,6 +37,7 @@ interface ImportState {
 export function AppShell({ children }: AppShellProps) {
     const navigate = useNavigate()
     const location = useLocation()
+    const { theme, toggleTheme } = useTheme()
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
     const [sidebarWidth, setSidebarWidth] = useState(280)
@@ -398,6 +400,8 @@ export function AppShell({ children }: AppShellProps) {
                 onExportWorkspace={handleExportWorkspace}
                 onImportWorkspace={handleImportWorkspace}
                 onShowHelp={() => setIsShortcutsOpen(true)}
+                theme={theme}
+                onToggleTheme={toggleTheme}
             />
 
             {/* Main content area */}
