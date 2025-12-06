@@ -1792,14 +1792,18 @@
                 "Downloaded file has .md extension"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-07T01:30:00Z",
+            "verifiedBy": "agent-session-21",
+            "evidenceLinks": [
+                "src/services/workspaceService.ts",
+                "src/components/Topbar.tsx",
+                "src/components/AppShell.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote provides editor.blocksToMarkdownLossy() for markdown export."
+            "lastWorkedOn": "2025-12-07T01:30:00Z",
+            "notes": "Added blockContentToMarkdown function and exportPageAsMarkdown. Export Markdown option in Topbar menu. Supports headings, lists, code blocks, images, inline styles."
         },
         {
             "id": "F074",
@@ -1856,8 +1860,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-07T01:15:00Z",
+        "lastUpdated": "2025-12-07T01:30:00Z",
         "totalFeatures": 75,
-        "passingFeatures": 57
+        "passingFeatures": 58
     }
 }

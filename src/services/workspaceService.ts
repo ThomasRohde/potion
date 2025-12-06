@@ -13,6 +13,106 @@ const DEFAULT_WORKSPACE_ID = 'default-workspace'
 const CURRENT_SCHEMA_VERSION = 1
 
 /**
+ * Convert BlockContent to Markdown string.
+ * This is a lossy conversion that approximates the content in Markdown format.
+ */
+export function blockContentToMarkdown(content: BlockContent | undefined): string {
+    if (!content || !content.blocks || content.blocks.length === 0) {
+        return ''
+    }
+
+    const lines: string[] = []
+
+    for (const block of content.blocks) {
+        const textContent = extractTextFromBlock(block)
+        
+        switch (block.type) {
+            case 'heading': {
+                const level = (block.props?.level as number) || 1
+                const prefix = '#'.repeat(Math.min(level, 6))
+                lines.push(`${prefix} ${textContent}`)
+                lines.push('')
+                break
+            }
+            case 'bulletListItem':
+                lines.push(`- ${textContent}`)
+                break
+            case 'numberedListItem':
+                lines.push(`1. ${textContent}`)
+                break
+            case 'checkListItem': {
+                const checked = block.props?.checked ? 'x' : ' '
+                lines.push(`- [${checked}] ${textContent}`)
+                break
+            }
+            case 'codeBlock': {
+                const language = block.props?.language || ''
+                lines.push(`\`\`\`${language}`)
+                lines.push(textContent)
+                lines.push('```')
+                lines.push('')
+                break
+            }
+            case 'image': {
+                const url = block.props?.url || ''
+                const caption = block.props?.caption || ''
+                lines.push(`![${caption}](${url})`)
+                lines.push('')
+                break
+            }
+            case 'paragraph':
+            default:
+                if (textContent) {
+                    lines.push(textContent)
+                    lines.push('')
+                }
+                break
+        }
+
+        // Recursively handle children
+        if (block.children && block.children.length > 0) {
+            for (const child of block.children) {
+                const childMarkdown = blockContentToMarkdown({ version: 1, blocks: [child] })
+                if (childMarkdown.trim()) {
+                    // Indent child content
+                    const indentedLines = childMarkdown.split('\n').map(line => line ? `  ${line}` : '')
+                    lines.push(...indentedLines)
+                }
+            }
+        }
+    }
+
+    return lines.join('\n').trim()
+}
+
+/**
+ * Extract plain text from a block's content.
+ */
+function extractTextFromBlock(block: BlockContent['blocks'][0]): string {
+    if (!block.content || !Array.isArray(block.content)) {
+        return ''
+    }
+
+    const parts: string[] = []
+    for (const item of block.content) {
+        if (item.type === 'text') {
+            let text = item.text || ''
+            // Apply inline styles
+            if (item.styles?.bold) text = `**${text}**`
+            if (item.styles?.italic) text = `*${text}*`
+            if (item.styles?.code) text = `\`${text}\``
+            if (item.styles?.strikethrough) text = `~~${text}~~`
+            parts.push(text)
+        } else if (item.type === 'link') {
+            const linkText = item.text || ''
+            const href = item.href || ''
+            parts.push(`[${linkText}](${href})`)
+        }
+    }
+    return parts.join('')
+}
+
+/**
  * Create a new workspace.
  */
 export async function createWorkspace(name: string): Promise<Workspace> {
@@ -303,6 +403,53 @@ export async function exportPageToFile(pageId: string, includeChildren: boolean 
 
     // Create blob and trigger download
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+}
+
+/**
+ * Export a single page to a Markdown file.
+ * This is a lossy conversion - some block types may not convert perfectly.
+ * @param pageId - The page ID to export
+ */
+export async function exportPageAsMarkdown(pageId: string): Promise<void> {
+    const storage = await getStorage()
+    const page = await storage.getPage(pageId)
+
+    if (!page) {
+        throw new Error(`Page not found: ${pageId}`)
+    }
+
+    // Build markdown content
+    const lines: string[] = []
+
+    // Add title as H1
+    lines.push(`# ${page.title || 'Untitled'}`)
+    lines.push('')
+
+    // Convert block content to markdown
+    if (page.content) {
+        const contentMarkdown = blockContentToMarkdown(page.content)
+        if (contentMarkdown) {
+            lines.push(contentMarkdown)
+        }
+    }
+
+    const markdown = lines.join('\n')
+
+    // Get page title for filename
+    const title = page.title?.replace(/[^a-z0-9]/gi, '-').toLowerCase() ?? 'page'
+    const filename = `${title}.md`
+
+    // Create blob and trigger download
+    const blob = new Blob([markdown], { type: 'text/markdown' })
     const url = URL.createObjectURL(blob)
 
     const link = document.createElement('a')

@@ -22,7 +22,7 @@ import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
 import { useWorkspaceStore, useUIStore, useThemeStore } from '../stores'
-import { getOrCreateDefaultWorkspace, listPages, createPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, createPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, exportPageAsMarkdown, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
@@ -282,6 +282,14 @@ export function AppShell({ children }: AppShellProps) {
         }
     }, [])
 
+    const handleExportMarkdown = useCallback(async (pageId: string) => {
+        try {
+            await exportPageAsMarkdown(pageId)
+        } catch (error) {
+            console.error('Failed to export page as markdown:', error)
+        }
+    }, [])
+
     const handleImportWorkspace = useCallback(async () => {
         // Create a hidden file input and trigger it
         const input = document.createElement('input')
@@ -411,6 +419,7 @@ export function AppShell({ children }: AppShellProps) {
                     onToggleFavorite={currentPage ? () => handleToggleFavorite(currentPage.id, !currentPage.isFavorite) : undefined}
                     onToggleFullWidth={currentPage ? () => handleToggleFullWidth(currentPage.id, !currentPage.isFullWidth) : undefined}
                     onExportPage={currentPage ? () => handleExportPage(currentPage.id, true) : undefined}
+                    onExportMarkdown={currentPage ? () => handleExportMarkdown(currentPage.id) : undefined}
                     onDeletePage={currentPage ? () => handleDeletePage(currentPage.id, false) : undefined}
                 />
 
