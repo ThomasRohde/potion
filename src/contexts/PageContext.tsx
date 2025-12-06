@@ -12,7 +12,7 @@ interface PageContextValue {
      * Trigger a refresh of the page tree in the sidebar
      */
     refreshPages: () => Promise<void>
-    
+
     /**
      * Register the refresh function from AppShell
      */
@@ -23,17 +23,17 @@ const PageContext = createContext<PageContextValue | null>(null)
 
 export function PageContextProvider({ children }: { children: React.ReactNode }) {
     const [refreshFn, setRefreshFn] = useState<(() => Promise<void>) | null>(null)
-    
+
     const refreshPages = useCallback(async () => {
         if (refreshFn) {
             await refreshFn()
         }
     }, [refreshFn])
-    
+
     const setRefreshPages = useCallback((fn: () => Promise<void>) => {
         setRefreshFn(() => fn)
     }, [])
-    
+
     return (
         <PageContext.Provider value={{ refreshPages, setRefreshPages }}>
             {children}
