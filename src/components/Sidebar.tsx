@@ -130,7 +130,7 @@ export function Sidebar({
             )}
 
             {/* Pages section */}
-            <div 
+            <div
                 className={`flex-1 overflow-y-auto px-2 py-3 ${dragOverRoot ? 'bg-potion-50 dark:bg-potion-900/20' : ''}`}
                 onDragOver={(e) => {
                     e.preventDefault()
