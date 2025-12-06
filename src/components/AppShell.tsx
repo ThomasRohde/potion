@@ -10,6 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { ConfirmDialog } from './ConfirmDialog'
+import { SearchDialog } from './SearchDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages } from '../services'
@@ -35,6 +36,7 @@ export function AppShell({ children }: AppShellProps) {
     const [currentPage, setCurrentPage] = useState<PageSummary | null>(null)
     const [workspaceId, setWorkspaceId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
         isOpen: false,
         pageId: null,
@@ -95,6 +97,20 @@ export function AppShell({ children }: AppShellProps) {
         }
         init()
     }, [refreshPages])
+
+    // Global keyboard shortcuts
+    useEffect(() => {
+        function handleKeyDown(e: KeyboardEvent) {
+            // Ctrl/Cmd+K to open search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault()
+                setIsSearchOpen(true)
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [])
 
     const handlePageSelect = useCallback((page: PageSummary) => {
         navigate(`/page/${page.id}`)
@@ -262,6 +278,7 @@ export function AppShell({ children }: AppShellProps) {
                     currentPage={currentPage}
                     sidebarCollapsed={sidebarCollapsed}
                     onToggleSidebar={toggleSidebar}
+                    onOpenSearch={() => setIsSearchOpen(true)}
                 />
 
                 {/* Content */}
@@ -285,6 +302,16 @@ export function AppShell({ children }: AppShellProps) {
                 onConfirm={confirmDelete}
                 onCancel={cancelDelete}
             />
+
+            {/* Search Dialog */}
+            {workspaceId && (
+                <SearchDialog
+                    isOpen={isSearchOpen}
+                    workspaceId={workspaceId}
+                    onClose={() => setIsSearchOpen(false)}
+                    onSelectPage={(pageId) => navigate(`/page/${pageId}`)}
+                />
+            )}
         </div>
     )
 }

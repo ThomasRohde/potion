@@ -21,7 +21,8 @@ export {
     deletePage,
     orphanChildren,
     searchPages,
+    searchPagesWithSnippets,
     duplicatePage,
     buildPageTree
 } from './pageService'
-export type { PageTreeNode } from './pageService'
+export type { PageTreeNode, SearchResult } from './pageService'

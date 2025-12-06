@@ -280,6 +280,90 @@ export async function searchPages(workspaceId: string, query: string): Promise<P
 }
 
 /**
+ * Search result with match context.
+ */
+export interface SearchResult {
+    page: PageSummary
+    matchType: 'title' | 'content' | 'both'
+    snippet: string | null
+}
+
+/**
+ * Search pages by title and content with snippets.
+ */
+export async function searchPagesWithSnippets(
+    workspaceId: string,
+    query: string
+): Promise<SearchResult[]> {
+    const storage = await getStorage()
+    const allPages = await storage.listPages(workspaceId)
+    const lowerQuery = query.toLowerCase()
+    const results: SearchResult[] = []
+
+    for (const pageSummary of allPages) {
+        // Get full page for content search
+        const page = await storage.getPage(pageSummary.id)
+        if (!page) continue
+
+        const titleMatch = page.title.toLowerCase().includes(lowerQuery)
+        let contentMatch = false
+        let snippet: string | null = null
+
+        // Search in content
+        if (page.content?.blocks) {
+            const textContent = extractTextFromBlocks(page.content.blocks)
+            const lowerContent = textContent.toLowerCase()
+            const matchIndex = lowerContent.indexOf(lowerQuery)
+
+            if (matchIndex !== -1) {
+                contentMatch = true
+                // Extract snippet around match
+                const start = Math.max(0, matchIndex - 30)
+                const end = Math.min(textContent.length, matchIndex + query.length + 50)
+                snippet = (start > 0 ? '...' : '') +
+                    textContent.slice(start, end).trim() +
+                    (end < textContent.length ? '...' : '')
+            }
+        }
+
+        if (titleMatch || contentMatch) {
+            results.push({
+                page: pageSummary,
+                matchType: titleMatch && contentMatch ? 'both' : titleMatch ? 'title' : 'content',
+                snippet
+            })
+        }
+    }
+
+    // Sort: title matches first, then by title alphabetically
+    results.sort((a, b) => {
+        if (a.matchType === 'title' && b.matchType !== 'title') return -1
+        if (a.matchType !== 'title' && b.matchType === 'title') return 1
+        return a.page.title.localeCompare(b.page.title)
+    })
+
+    return results
+}
+
+/**
+ * Extract plain text from block content.
+ */
+function extractTextFromBlocks(blocks: BlockContent['blocks']): string {
+    let text = ''
+    for (const block of blocks) {
+        if (block.content) {
+            for (const inline of block.content) {
+                text += inline.text + ' '
+            }
+        }
+        if (block.children) {
+            text += extractTextFromBlocks(block.children)
+        }
+    }
+    return text
+}
+
+/**
  * Duplicate a page (without children).
  */
 export async function duplicatePage(pageId: string): Promise<Page> {

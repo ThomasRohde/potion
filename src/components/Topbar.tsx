@@ -10,12 +10,14 @@ interface TopbarProps {
     currentPage: PageSummary | null
     sidebarCollapsed: boolean
     onToggleSidebar: () => void
+    onOpenSearch?: () => void
 }
 
 export function Topbar({
     currentPage,
     sidebarCollapsed,
-    onToggleSidebar
+    onToggleSidebar,
+    onOpenSearch
 }: TopbarProps) {
     return (
         <header className="h-12 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center px-4 gap-2">
@@ -57,6 +59,20 @@ export function Topbar({
 
             {/* Actions */}
             <div className="flex items-center gap-1">
+                {/* Search button */}
+                {onOpenSearch && (
+                    <button
+                        onClick={onOpenSearch}
+                        className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
+                        title="Search (Ctrl+K)"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span className="hidden sm:inline text-sm">Search</span>
+                        <kbd className="hidden sm:inline px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">⌘K</kbd>
+                    </button>
+                )}
                 {/* Favorite toggle */}
                 {currentPage && (
                     <button
