@@ -51,12 +51,12 @@
                 "Can update workspace name",
                 "Workspace persists across page reloads"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T00:00:00Z",
+            "verifiedBy": "agent-session-2",
+            "evidenceLinks": ["src/services/workspaceService.ts", "src/types/index.ts"],
+            "notes": "Workspace type defined, workspaceService with full CRUD. Tests pass."
         },
         {
             "id": "F004",
@@ -71,12 +71,12 @@
                 "Can delete a page",
                 "Pages persist across page reloads"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T00:00:00Z",
+            "verifiedBy": "agent-session-2",
+            "evidenceLinks": ["src/services/pageService.ts", "src/types/index.ts"],
+            "notes": "Page type defined, pageService with full CRUD, tree building. Tests pass."
         },
         {
             "id": "F005",
@@ -665,6 +665,6 @@
         "createdAt": "2025-12-06T00:00:00Z",
         "lastUpdated": "2025-12-06T00:00:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 2
+        "passingFeatures": 4
     }
 }
