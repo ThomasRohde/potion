@@ -274,6 +274,83 @@ function looksLikeMarkdown(text: string): boolean {
     return markdownPatterns.some(pattern => pattern.test(text))
 }
 
+/**
+ * Manually parse simple markdown patterns that BlockNote might not handle.
+ * BlockNote's tryParseMarkdownToBlocks requires headings to have content after them,
+ * so we need to handle simple cases ourselves.
+ */
+function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record<string, unknown>; content: Array<{ type: string; text: string; styles: Record<string, boolean> }> }> | null {
+    const blocks: Array<{ type: string; props?: Record<string, unknown>; content: Array<{ type: string; text: string; styles: Record<string, boolean> }> }> = []
+    const lines = text.split('\n')
+    
+    for (const line of lines) {
+        const trimmedLine = line.trim()
+        if (!trimmedLine) continue
+        
+        // Check for headings: # Heading
+        const headingMatch = trimmedLine.match(/^(#{1,6})\s+(.+)$/)
+        if (headingMatch) {
+            const level = headingMatch[1].length as 1 | 2 | 3 | 4 | 5 | 6
+            const headingText = headingMatch[2]
+            blocks.push({
+                type: 'heading',
+                props: { level: Math.min(level, 3) as 1 | 2 | 3 }, // BlockNote only supports 1-3
+                content: [{ type: 'text', text: headingText, styles: {} }]
+            })
+            continue
+        }
+        
+        // Check for unordered list items: - item, * item, + item
+        const ulMatch = trimmedLine.match(/^[-*+]\s+(.+)$/)
+        if (ulMatch) {
+            blocks.push({
+                type: 'bulletListItem',
+                content: [{ type: 'text', text: ulMatch[1], styles: {} }]
+            })
+            continue
+        }
+        
+        // Check for ordered list items: 1. item
+        const olMatch = trimmedLine.match(/^\d+\.\s+(.+)$/)
+        if (olMatch) {
+            blocks.push({
+                type: 'numberedListItem',
+                content: [{ type: 'text', text: olMatch[1], styles: {} }]
+            })
+            continue
+        }
+        
+        // Check for blockquotes: > text
+        const quoteMatch = trimmedLine.match(/^>\s*(.+)$/)
+        if (quoteMatch) {
+            blocks.push({
+                type: 'paragraph', // BlockNote doesn't have a quote block in default schema
+                content: [{ type: 'text', text: quoteMatch[1], styles: {} }]
+            })
+            continue
+        }
+        
+        // Check for checkbox items: - [ ] item or - [x] item
+        const checkboxMatch = trimmedLine.match(/^[-*+]\s+\[([ xX])\]\s+(.+)$/)
+        if (checkboxMatch) {
+            blocks.push({
+                type: 'checkListItem',
+                props: { checked: checkboxMatch[1].toLowerCase() === 'x' },
+                content: [{ type: 'text', text: checkboxMatch[2], styles: {} }]
+            })
+            continue
+        }
+        
+        // Default to paragraph for unrecognized lines
+        blocks.push({
+            type: 'paragraph',
+            content: [{ type: 'text', text: trimmedLine, styles: {} }]
+        })
+    }
+    
+    return blocks.length > 0 ? blocks : null
+}
+
 export function RichTextEditor({
     initialContent,
     onChange,
@@ -321,10 +398,24 @@ export function RichTextEditor({
                 event.stopPropagation()
 
                 try {
-                    // Parse markdown to blocks
-                    const blocks = await editor.tryParseMarkdownToBlocks(plainText)
+                    // First try BlockNote's built-in markdown parser
+                    let blocks = await editor.tryParseMarkdownToBlocks(plainText)
                     
-                    console.log('Parsed markdown blocks:', blocks)
+                    console.log('BlockNote parsed blocks:', blocks)
+
+                    // Check if BlockNote failed to parse (returned only paragraphs for markdown that should be other types)
+                    const allParagraphs = blocks.every((b: { type: string }) => b.type === 'paragraph')
+                    const hasStructuredMarkdown = /^#{1,6}\s|^[-*+]\s|^\d+\.\s|^>\s/m.test(plainText)
+                    
+                    if (allParagraphs && hasStructuredMarkdown) {
+                        // BlockNote didn't recognize the markdown, use our simple parser
+                        const simpleBlocks = parseSimpleMarkdown(plainText)
+                        console.log('Fallback simple parsed blocks:', simpleBlocks)
+                        if (simpleBlocks && simpleBlocks.length > 0) {
+                            // Use unknown as intermediate to satisfy TypeScript - BlockNote's insertBlocks accepts partial blocks
+                            blocks = simpleBlocks as unknown as typeof blocks
+                        }
+                    }
 
                     if (blocks.length > 0) {
                         // Get current cursor position
