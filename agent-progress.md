@@ -11,6 +11,31 @@
 ### Session 10 (continued) - 2025-12-06
 **Focus**: Bug fixes for storage race condition and BlockNote content format
 
+#### Bug Fixes (Round 2)
+- **BlockNote content format (continued)**: Additional fix for block props validation
+  - Root cause: Old stored data had `props: null` values which failed `Object.entries()` in BlockNote
+  - Solution: Rewrote `toBlockNoteBlocks()` with separate `transformBlock()` function
+  - Now iterates props explicitly and filters out null/undefined values
+  - Recursively validates and transforms nested children blocks
+  
+- **Missing PWA manifest**: `manifest.webmanifest` was referenced but didn't exist
+  - Created complete manifest with app metadata and icons
+  
+- **React Router future flag warnings**: Suppressed v7 migration warnings
+  - Added `v7_startTransition` and `v7_relativeSplatPath` flags to BrowserRouter
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ |
+| bun run test | 0 | ✅ 73 tests passed |
+| bun run lint | 0 | ✅ |
+
+---
+
+### Session 10 (bug fixes) - 2025-12-06
+**Focus**: Bug fixes for storage race condition and BlockNote content format
+
 #### Bug Fixes
 - **Storage race condition**: Multiple components calling `getStorage()` simultaneously caused "Database not initialized" errors
   - Solution: Added `initPromise` singleton to ensure only one initialization happens

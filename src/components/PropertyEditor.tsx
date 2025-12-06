@@ -32,7 +32,7 @@ export function PropertyEditor({ properties, onChange, readOnly = false }: Prope
     }, [properties, onChange])
 
     const handleUpdateProperty = useCallback((propertyId: string, updates: Partial<PropertyDefinition>) => {
-        onChange(properties.map(p => 
+        onChange(properties.map(p =>
             p.id === propertyId ? { ...p, ...updates } : p
         ))
     }, [properties, onChange])
@@ -47,12 +47,12 @@ export function PropertyEditor({ properties, onChange, readOnly = false }: Prope
     const handleMoveProperty = useCallback((propertyId: string, direction: 'up' | 'down') => {
         const index = properties.findIndex(p => p.id === propertyId)
         if (index === -1) return
-        
+
         const newIndex = direction === 'up' ? index - 1 : index + 1
         if (newIndex < 0 || newIndex >= properties.length) return
 
         const newProperties = [...properties]
-        ;[newProperties[index], newProperties[newIndex]] = [newProperties[newIndex], newProperties[index]]
+            ;[newProperties[index], newProperties[newIndex]] = [newProperties[newIndex], newProperties[index]]
         onChange(newProperties)
     }, [properties, onChange])
 
@@ -200,11 +200,10 @@ function PropertyRow({
                                         onUpdate?.({ type, ...(type === 'select' || type === 'multiSelect' ? { options: [] } : {}) })
                                         setShowTypeMenu(false)
                                     }}
-                                    className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm transition-colors ${
-                                        type === property.type
+                                    className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm transition-colors ${type === property.type
                                             ? 'bg-potion-100 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
                                             : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                    }`}
+                                        }`}
                                 >
                                     <span className="w-5 text-center">{PROPERTY_TYPE_ICONS[type]}</span>
                                     {PROPERTY_TYPE_LABELS[type]}
@@ -305,7 +304,7 @@ function SelectOptionsEditor({ options, onChange }: SelectOptionsEditorProps) {
     return (
         <div className="space-y-2">
             <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Options</div>
-            
+
             {options.map(option => (
                 <div key={option.id} className="flex items-center gap-2">
                     <select

@@ -107,10 +107,10 @@ export function DatabaseView({
     const filteredRows = useMemo(() => {
         return rows.filter(row => {
             for (const filter of filters) {
-                const value = filter.propertyId === 'title' 
+                const value = filter.propertyId === 'title'
                     ? rowTitles[row.id] || ''
                     : row.values[filter.propertyId]
-                
+
                 if (!matchesFilter(value, filter)) {
                     return false
                 }
@@ -125,13 +125,13 @@ export function DatabaseView({
 
         return [...filteredRows].sort((a, b) => {
             for (const sort of sorts) {
-                const aVal = sort.propertyId === 'title' 
+                const aVal = sort.propertyId === 'title'
                     ? rowTitles[a.id] || ''
                     : a.values[sort.propertyId]
-                const bVal = sort.propertyId === 'title' 
+                const bVal = sort.propertyId === 'title'
                     ? rowTitles[b.id] || ''
                     : b.values[sort.propertyId]
-                
+
                 const comparison = compareValues(aVal, bVal)
                 if (comparison !== 0) {
                     return sort.direction === 'asc' ? comparison : -comparison
@@ -173,7 +173,7 @@ export function DatabaseView({
     const handleToggleSort = useCallback((propertyId: string) => {
         const existingIndex = sorts.findIndex(s => s.propertyId === propertyId)
         let newSorts: Sort[]
-        
+
         if (existingIndex === -1) {
             // Add ascending sort
             newSorts = [{ propertyId, direction: 'asc' }]
@@ -184,7 +184,7 @@ export function DatabaseView({
             // Remove sort
             newSorts = []
         }
-        
+
         setSorts(newSorts)
         persistView(filters, newSorts)
     }, [sorts, filters, persistView])
@@ -250,7 +250,7 @@ export function DatabaseView({
                         onRemove={() => handleRemoveFilter(index)}
                     />
                 ))}
-                
+
                 {/* Add Filter Button */}
                 <div className="relative">
                     <button
@@ -262,7 +262,7 @@ export function DatabaseView({
                         </svg>
                         Filter
                     </button>
-                    
+
                     {showFilterMenu && (
                         <div className="absolute left-0 top-full z-20 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 min-w-[150px]">
                             <button
@@ -449,10 +449,10 @@ function SortIndicator({ direction }: SortIndicatorProps) {
     }
 
     return (
-        <svg 
-            className={`w-3 h-3 text-potion-500 ${direction === 'desc' ? 'rotate-180' : ''}`} 
-            fill="none" 
-            stroke="currentColor" 
+        <svg
+            className={`w-3 h-3 text-potion-500 ${direction === 'desc' ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
         >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
@@ -476,7 +476,7 @@ interface FilterPillProps {
 function FilterPill({ filter, propertyName, propertyType, properties, onUpdate, onRemove }: FilterPillProps) {
     const [showEditor, setShowEditor] = useState(false)
     const operators = OPERATORS_BY_TYPE[propertyType]
-    
+
     // Get the property for select options
     const property = properties.find(p => p.id === filter.propertyId)
 
@@ -784,7 +784,7 @@ function EditableCell({
     // Select - show dropdown
     if (type === 'select') {
         const selectedOption = options?.find(o => o.id === value)
-        
+
         if (isEditing) {
             return (
                 <select
@@ -983,12 +983,12 @@ function matchesFilter(value: unknown, filter: Filter): boolean {
 
     // Handle isEmpty/isNotEmpty first
     if (operator === 'isEmpty') {
-        return value === null || value === undefined || value === '' || 
-               (Array.isArray(value) && value.length === 0)
+        return value === null || value === undefined || value === '' ||
+            (Array.isArray(value) && value.length === 0)
     }
     if (operator === 'isNotEmpty') {
-        return value !== null && value !== undefined && value !== '' && 
-               !(Array.isArray(value) && value.length === 0)
+        return value !== null && value !== undefined && value !== '' &&
+            !(Array.isArray(value) && value.length === 0)
     }
 
     // Handle checkbox (boolean)

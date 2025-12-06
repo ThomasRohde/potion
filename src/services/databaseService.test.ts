@@ -17,7 +17,7 @@ import {
 describe('Database Service - createPropertyDefinition', () => {
     it('should create a text property with auto-generated ID', () => {
         const property = createPropertyDefinition('Name', 'text')
-        
+
         expect(property.id).toBeDefined()
         expect(property.id.length).toBeGreaterThan(0)
         expect(property.name).toBe('Name')
@@ -31,7 +31,7 @@ describe('Database Service - createPropertyDefinition', () => {
             { id: '2', name: 'Option 2', color: 'red' }
         ]
         const property = createPropertyDefinition('Status', 'select', options)
-        
+
         expect(property.type).toBe('select')
         expect(property.options).toHaveLength(2)
         expect(property.options?.[0].name).toBe('Option 1')
@@ -39,7 +39,7 @@ describe('Database Service - createPropertyDefinition', () => {
 
     it('should support all property types', () => {
         const types: PropertyType[] = ['text', 'number', 'date', 'checkbox', 'select', 'multiSelect', 'url']
-        
+
         types.forEach(type => {
             const property = createPropertyDefinition(`Test ${type}`, type)
             expect(property.type).toBe(type)
@@ -51,7 +51,7 @@ describe('Database Service - createPropertyDefinition', () => {
 describe('Database Service - createSelectOption', () => {
     it('should create a select option with auto-generated ID', () => {
         const option = createSelectOption('In Progress', 'blue')
-        
+
         expect(option.id).toBeDefined()
         expect(option.id.length).toBeGreaterThan(0)
         expect(option.name).toBe('In Progress')
@@ -62,7 +62,7 @@ describe('Database Service - createSelectOption', () => {
 describe('Database Service - Constants', () => {
     it('should have labels for all property types', () => {
         const types: PropertyType[] = ['text', 'number', 'date', 'checkbox', 'select', 'multiSelect', 'url']
-        
+
         types.forEach(type => {
             expect(PROPERTY_TYPE_LABELS[type]).toBeDefined()
             expect(typeof PROPERTY_TYPE_LABELS[type]).toBe('string')
@@ -71,7 +71,7 @@ describe('Database Service - Constants', () => {
 
     it('should have icons for all property types', () => {
         const types: PropertyType[] = ['text', 'number', 'date', 'checkbox', 'select', 'multiSelect', 'url']
-        
+
         types.forEach(type => {
             expect(PROPERTY_TYPE_ICONS[type]).toBeDefined()
             expect(typeof PROPERTY_TYPE_ICONS[type]).toBe('string')
@@ -104,7 +104,7 @@ describe('Database Type Contracts', () => {
                 }
             ]
         }
-        
+
         expect(database.pageId).toBe('page-123')
         expect(database.properties).toHaveLength(2)
         expect(database.views).toHaveLength(1)
@@ -129,7 +129,7 @@ describe('Database Type Contracts', () => {
             options: []
         }
         const urlProp: PropertyDefinition = { id: '7', name: 'Link', type: 'url' }
-        
+
         expect(textProp.type).toBe('text')
         expect(numberProp.type).toBe('number')
         expect(dateProp.type).toBe('date')
@@ -156,7 +156,7 @@ describe('Database Type Contracts', () => {
             createdAt: '2025-01-01T00:00:00Z',
             updatedAt: '2025-01-01T00:00:00Z'
         }
-        
+
         expect(row.id).toBe('row-123')
         expect(row.databasePageId).toBe('db-page-456')
         expect(row.pageId).toBe('page-789')
@@ -183,7 +183,7 @@ describe('Database Type Contracts', () => {
             createdAt: '2025-01-01T00:00:00Z',
             updatedAt: '2025-01-01T00:00:00Z'
         }
-        
+
         expect(typeof row.values.text).toBe('string')
         expect(typeof row.values.number).toBe('number')
         expect(typeof row.values.checkbox).toBe('boolean')
@@ -207,7 +207,7 @@ describe('Database View Types', () => {
                 sorts: []
             }]
         }
-        
+
         expect(database.views[0].type).toBe('table')
     })
 
@@ -225,7 +225,7 @@ describe('Database View Types', () => {
                 sorts: []
             }]
         }
-        
+
         expect(database.views[0].filters).toHaveLength(1)
         expect(database.views[0].filters[0].operator).toBe('equals')
     })
@@ -244,7 +244,7 @@ describe('Database View Types', () => {
                 ]
             }]
         }
-        
+
         expect(database.views[0].sorts).toHaveLength(1)
         expect(database.views[0].sorts[0].direction).toBe('desc')
     })
@@ -284,7 +284,7 @@ describe('Database Filter Logic', () => {
         expect(gtFilter.operator).toBe('gt')
         expect(15 > (gtFilter.value as number)).toBe(true)
         expect(5 > (gtFilter.value as number)).toBe(false)
-        
+
         const lteFilter = { propertyId: 'amount', operator: 'lte' as const, value: 10 }
         expect(lteFilter.operator).toBe('lte')
         expect(10 <= (lteFilter.value as number)).toBe(true)
@@ -323,7 +323,7 @@ describe('Database Sort Logic', () => {
 
     it('should sort dates correctly', () => {
         const dates = ['2024-03-15', '2024-01-01', '2024-12-31']
-        const sorted = [...dates].sort((a, b) => 
+        const sorted = [...dates].sort((a, b) =>
             new Date(a).getTime() - new Date(b).getTime()
         )
         expect(sorted).toEqual(['2024-01-01', '2024-03-15', '2024-12-31'])

@@ -51,9 +51,9 @@ function transformBlock(block: unknown): Block | null {
     if (!block || typeof block !== 'object') {
         return null
     }
-    
+
     const b = block as Record<string, unknown>
-    
+
     // Ensure block has required properties
     if (!b.id || typeof b.id !== 'string' || !b.type || typeof b.type !== 'string') {
         return null
@@ -65,7 +65,7 @@ function transformBlock(block: unknown): Block | null {
         backgroundColor: 'default',
         textAlignment: 'left'
     }
-    
+
     // Only merge props if it's a valid non-null object
     if (b.props && typeof b.props === 'object' && !Array.isArray(b.props)) {
         const existingProps = b.props as Record<string, unknown>
@@ -80,7 +80,7 @@ function transformBlock(block: unknown): Block | null {
     // Safely extract content - must be an array
     let safeContent: unknown[] = []
     if (Array.isArray(b.content)) {
-        safeContent = b.content.filter((item): item is object => 
+        safeContent = b.content.filter((item): item is object =>
             item !== null && item !== undefined && typeof item === 'object'
         )
     }
