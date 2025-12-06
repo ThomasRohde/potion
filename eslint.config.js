@@ -42,6 +42,7 @@ export default [
                 requestAnimationFrame: 'readonly',
                 cancelAnimationFrame: 'readonly',
                 HTMLElement: 'readonly',
+                HTMLButtonElement: 'readonly',
                 HTMLDivElement: 'readonly',
                 HTMLInputElement: 'readonly',
                 Element: 'readonly',

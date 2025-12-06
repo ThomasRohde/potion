@@ -2,11 +2,106 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: ✅ ALL FEATURES COMPLETE (100%)
+## Current Status: 🔄 35/40 Features Complete (87.5%)
 
 ---
 
 ## Session Log
+
+### Session 11 - 2025-12-06
+**Duration**: ~5 minutes
+**Focus**: Adding bug fix features to features.json
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Added Features (Bug Fixes)
+User reported 5 UI bugs that need to be addressed. Added as new features:
+
+| ID | Priority | Category | Description |
+|----|----------|----------|-------------|
+| F036 | 1 | ui | Fix page context menu disappearing before selection |
+| F037 | 1 | ui | Enable page title editing in topbar or page view |
+| F038 | 1 | ui | Wire up topbar star and menu action buttons |
+| F039 | 2 | ui | Remove redundant navigation elements (chevron vs burger) |
+| F040 | 1 | ui | Fix Ctrl+K keyboard shortcut to open search |
+
+#### Feature Details
+
+##### F036: Fix page context menu (three dots) disappearing before selection
+**Priority**: 1 (Critical)
+**Category**: ui
+**Dependencies**: None
+**Estimated Effort**: Small
+
+**Acceptance Criteria**:
+1. Page context menu opens on click and stays open
+2. User can hover over menu items and click to select
+3. Menu closes only on item selection, click outside, or Escape key
+4. Menu does not disappear on mouse movement between trigger and menu
+
+##### F037: Enable page title editing in topbar or page view
+**Priority**: 1 (Critical)
+**Category**: ui
+**Dependencies**: None
+**Estimated Effort**: Medium
+
+**Acceptance Criteria**:
+1. User can click on page title in topbar or page view to edit it
+2. Title field becomes editable input on click
+3. Changes save on blur or Enter key press
+4. Escape key cancels edit and reverts to original title
+5. Updated title reflects in sidebar page tree
+
+##### F038: Wire up topbar star and menu action buttons
+**Priority**: 1 (Critical)
+**Category**: ui
+**Dependencies**: None
+**Estimated Effort**: Medium
+
+**Acceptance Criteria**:
+1. Star button in topbar toggles page favorite state
+2. Star button shows filled state when page is favorited
+3. Three-dot menu button opens page actions menu
+4. Menu includes options: Rename, Duplicate, Export, Delete
+5. All menu actions work correctly
+
+##### F039: Remove redundant navigation elements (keep only chevron)
+**Priority**: 2 (High)
+**Category**: ui
+**Dependencies**: None
+**Estimated Effort**: Small
+
+**Acceptance Criteria**:
+1. Only one sidebar toggle control exists (chevron >>)
+2. Burger menu icon is removed or consolidated
+3. Toggle functionality works correctly
+4. UI is clean without duplicate controls
+
+##### F040: Fix Ctrl+K keyboard shortcut to open search
+**Priority**: 1 (Critical)
+**Category**: ui
+**Dependencies**: F018
+**Estimated Effort**: Small
+
+**Acceptance Criteria**:
+1. Pressing Ctrl+K (or Cmd+K on Mac) opens the search dialog
+2. Shortcut works when focus is in the main content area
+3. Shortcut works when focus is in the sidebar
+4. Search dialog receives focus after opening
+5. Shortcut does not conflict with browser defaults
+
+#### Updated Statistics
+- **Total Features**: 35 → 40
+- **Passing**: 35 (87.5%)
+- **New Features by Category**: 5 ui bugs
+
+#### Recommended Next Steps
+1. Fix F036: Context menu disappearing (likely CSS/event handler issue)
+2. Fix F040: Ctrl+K not opening search (likely event listener issue)
+3. Fix F037: Page title editing
+4. Fix F038: Topbar action buttons
+5. Fix F039: Redundant navigation elements
+
+---
 
 ### Session 10 (Final Bug Fixes) - 2025-12-06
 **Duration**: ~30 minutes

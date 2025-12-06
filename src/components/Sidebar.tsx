@@ -356,6 +356,36 @@ function PageItem({
     const [editTitle, setEditTitle] = useState(page.title)
     const [isDragging, setIsDragging] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
+    const menuRef = useRef<HTMLDivElement>(null)
+    const menuButtonRef = useRef<HTMLButtonElement>(null)
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        if (!showMenu) return
+
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node
+            if (
+                menuRef.current && !menuRef.current.contains(target) &&
+                menuButtonRef.current && !menuButtonRef.current.contains(target)
+            ) {
+                setShowMenu(false)
+            }
+        }
+
+        const handleEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setShowMenu(false)
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener('keydown', handleEscape)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('keydown', handleEscape)
+        }
+    }, [showMenu])
 
     // Focus input when editing starts
     useEffect(() => {
@@ -458,7 +488,7 @@ function PageItem({
                 onDrop={handleDrop}
                 onClick={() => !isEditing && onSelect(page)}
                 onMouseEnter={() => setShowActions(true)}
-                onMouseLeave={() => { setShowActions(false); setShowMenu(false) }}
+                onMouseLeave={() => setShowActions(false)}
             >
                 {/* Expand/collapse toggle */}
                 <button
@@ -517,6 +547,7 @@ function PageItem({
                             </svg>
                         </button>
                         <button
+                            ref={menuButtonRef}
                             onClick={(e) => {
                                 e.stopPropagation()
                                 setShowMenu(!showMenu)
@@ -535,8 +566,8 @@ function PageItem({
             {/* Dropdown menu */}
             {showMenu && (
                 <div
+                    ref={menuRef}
                     className="absolute right-2 top-full z-50 mt-1 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
-                    onMouseLeave={() => setShowMenu(false)}
                 >
                     <button
                         onClick={(e) => {
