@@ -2,11 +2,62 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import + Settings + Migrations + E2E Tests (91%)
+## Current Status: Core Editor + Export/Import + Settings + Migrations + E2E Tests + Database Pages (97%)
 
 ---
 
 ## Session Log
+
+### Session 10 - 2025-12-06
+**Duration**: ~45 minutes
+**Focus**: Database page type implementation (F015, F016)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F015**: Database page type with properties schema
+  - Created `databaseService.ts` with full CRUD operations for databases
+  - Supports 7 property types: text, number, date, checkbox, select, multiSelect, url
+  - Property definitions with configurable select options and colors
+  - Created `PropertyEditor.tsx` for schema editing UI
+  - Created `DatabaseView.tsx` for table display with inline editing
+  - Created `DatabasePage.tsx` wrapper component
+  - Added 14 unit tests for database service
+
+- **F016**: Database rows as pages
+  - Rows created as full Page objects via `createRow`
+  - Inline editing for all property types in table view
+  - "Open as page" button to view row in full page view
+  - Property values stored in page.properties field
+  - Rows persist to IndexedDB via existing storage layer
+
+#### Technical Additions
+- Created `src/services/databaseService.ts` - Database CRUD, row operations, property management
+- Created `src/services/databaseService.test.ts` - 14 unit tests
+- Created `src/components/DatabasePage.tsx` - Database page wrapper
+- Created `src/components/DatabaseView.tsx` - Table view with inline editing
+- Created `src/components/PropertyEditor.tsx` - Property schema editor with select options
+- Updated `src/components/AppShell.tsx` - Added handleCreateDatabase
+- Updated `src/components/Sidebar.tsx` - Added "New" dropdown with database option
+- Updated `src/pages/PageView.tsx` - Conditional rendering for database pages
+- Updated `src/services/index.ts` - Exported database service functions
+- Updated `src/components/index.ts` - Exported new components
+- Updated `eslint.config.js` - Added crypto global
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 1458 modules, 33 PWA entries |
+| bun run test | 0 | ✅ 63 tests passed (49 + 14 new) |
+| bun run lint | 0 | ✅ |
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F017: Database filtering and sorting UI
+2. Consider project MVP complete at 34/35 (97%)
+
+---
 
 ### Session 9 - 2025-06-30
 **Duration**: ~30 minutes
