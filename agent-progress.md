@@ -8,6 +8,50 @@
 
 ## Session Log
 
+### Session 10 (Final Bug Fixes) - 2025-12-06
+**Duration**: ~30 minutes
+**Focus**: Fixing remaining BlockNote content format errors and duplicate welcome pages
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Bug Fixes (Round 3)
+- **BlockNote unsupported block types**: "node type divider not found in schema" error
+  - Root cause: BlockNote doesn't support `divider` block type in default schema
+  - Solution: Added `SUPPORTED_BLOCK_TYPES` set to filter/convert unsupported types
+  - Unsupported blocks are converted to `paragraph` to preserve content
+  - Removed `divider` from welcome page content
+  
+- **Inline content format**: BlockNote's `StyledText` requires `styles` property
+  - Added `transformInlineContent()` function to ensure proper structure
+  - Text items get empty `styles: {}` if missing
+  - Links get proper `content` and `href` properties
+  
+- **Duplicate welcome pages**: Two "Welcome to Potion" pages appearing
+  - Root cause: Welcome page created on every workspace init
+  - Solution: Check if pages exist before creating welcome page
+
+- **Updated type definitions**: 
+  - Removed `divider` from BlockType (not supported by BlockNote)
+  - Added `video`, `audio`, `file`, `toggleListItem` block types
+
+#### Files Changed
+- `src/components/RichTextEditor.tsx` - Added SUPPORTED_BLOCK_TYPES, transformInlineContent, improved transformBlock
+- `src/services/workspaceService.ts` - Check for existing pages before creating welcome page, removed divider block
+- `src/types/index.ts` - Updated BlockType definition
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 1458 modules |
+| bun run test | 0 | ✅ 73 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### Technical Notes
+- BlockNote default schema supports: paragraph, heading, bulletListItem, numberedListItem, checkListItem, toggleListItem, table, image, video, audio, file, codeBlock
+- Old IndexedDB data with unsupported block types will be converted to paragraph on load
+- Users with duplicate welcome pages should delete one or clear IndexedDB
+
+---
+
 ### Session 10 (continued) - 2025-12-06
 **Focus**: Bug fixes for storage race condition and BlockNote content format
 
