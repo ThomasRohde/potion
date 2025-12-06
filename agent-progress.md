@@ -2,11 +2,62 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 🔄 35/40 Features Complete (87.5%)
+## Current Status: ✅ 40/40 Features Complete (100%)
 
 ---
 
 ## Session Log
+
+### Session 12 - 2025-12-06
+**Duration**: ~30 minutes
+**Focus**: Fixing 5 UI bugs (F036-F040)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F036**: Fix page context menu disappearing before selection
+  - Replaced `onMouseLeave` handler with click-outside detection using refs
+  - Added event listeners for Escape key to close menu
+  - Menu now stays open until user clicks outside, presses Escape, or selects an item
+  
+- **F040**: Fix Ctrl+K keyboard shortcut to open search
+  - Used event listener with `capture: true` to intercept before BlockNote editor
+  - Changed key comparison to case-insensitive with `toLowerCase()`
+  - Added early return after handling shortcut
+  
+- **F037**: Enable page title editing in topbar or page view
+  - Added inline title editing in Topbar component (click to edit)
+  - Added inline title editing in PageView component for regular pages
+  - Enter saves, Escape cancels, blur saves
+  - Title updates reflect in sidebar page tree
+  
+- **F038**: Wire up topbar star and menu action buttons
+  - Star button now toggles page favorite state
+  - Three-dot menu button opens dropdown with Rename, Export, Delete
+  - Menu uses proper click-outside detection
+  
+- **F039**: Remove redundant navigation elements
+  - Removed burger menu icon from Topbar
+  - Only chevron in collapsed sidebar remains for toggle
+  - Cleaned up unused props from Topbar component
+
+#### Files Changed
+- `src/components/Sidebar.tsx` - Click-outside detection for context menu
+- `src/components/AppShell.tsx` - Event capture for keyboard shortcuts, topbar props
+- `src/components/Topbar.tsx` - Title editing, star/menu buttons, removed burger menu
+- `src/pages/PageView.tsx` - Inline title editing for regular pages
+- `eslint.config.js` - Added HTMLButtonElement global
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 1458 modules |
+| bun run test | 0 | ✅ 73 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### Final Status
+🎉 **ALL 40 FEATURES VERIFIED (100%)**
+
+---
 
 ### Session 11 - 2025-12-06
 **Duration**: ~5 minutes

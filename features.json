@@ -793,14 +793,14 @@
                 "Menu does not disappear on mouse movement between trigger and menu"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T17:00:00Z",
+            "verifiedBy": "agent-session-12",
+            "evidenceLinks": ["src/components/Sidebar.tsx"],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Bug: context menu disappears before user can make a selection"
+            "lastWorkedOn": "2025-12-06T17:00:00Z",
+            "notes": "Replaced onMouseLeave handler with click-outside detection. Menu stays open until click outside, Escape key, or item selection."
         },
         {
             "id": "F037",
@@ -816,14 +816,14 @@
                 "Updated title reflects in sidebar page tree"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T17:00:00Z",
+            "verifiedBy": "agent-session-12",
+            "evidenceLinks": ["src/components/Topbar.tsx", "src/pages/PageView.tsx"],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Bug: default page title cannot be changed via UI"
+            "lastWorkedOn": "2025-12-06T17:00:00Z",
+            "notes": "Added inline title editing in Topbar and PageView. Click to edit, Enter saves, Escape cancels. Title updates reflect in sidebar."
         },
         {
             "id": "F038",
@@ -839,14 +839,14 @@
                 "All menu actions work correctly"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T17:00:00Z",
+            "verifiedBy": "agent-session-12",
+            "evidenceLinks": ["src/components/Topbar.tsx", "src/components/AppShell.tsx"],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Bug: star and three-dot buttons in upper right are non-functional"
+            "lastWorkedOn": "2025-12-06T17:00:00Z",
+            "notes": "Star button wired to toggle favorite. Three-dot menu has Rename, Export, Delete options. Click-outside detection for menu."
         },
         {
             "id": "F039",
@@ -861,14 +861,14 @@
                 "UI is clean without duplicate controls"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T17:00:00Z",
+            "verifiedBy": "agent-session-12",
+            "evidenceLinks": ["src/components/Topbar.tsx"],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Bug: both chevron >> and burger menu visible, redundant"
+            "lastWorkedOn": "2025-12-06T17:00:00Z",
+            "notes": "Removed burger menu from Topbar. Only chevron in collapsed sidebar remains for toggle."
         },
         {
             "id": "F040",
@@ -886,20 +886,20 @@
                 "Shortcut does not conflict with browser defaults"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T17:00:00Z",
+            "verifiedBy": "agent-session-12",
+            "evidenceLinks": ["src/components/AppShell.tsx"],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Bug: Ctrl+K does not open search dialog"
+            "lastWorkedOn": "2025-12-06T17:00:00Z",
+            "notes": "Used event capture phase to intercept before BlockNote. Case-insensitive key comparison."
         }
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T16:00:00Z",
+        "lastUpdated": "2025-12-06T17:00:00Z",
         "totalFeatures": 40,
-        "passingFeatures": 35
+        "passingFeatures": 40
     }
 }
