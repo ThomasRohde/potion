@@ -2,11 +2,67 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Editor & Core UX Complete
+## Current Status: Search & Onboarding Complete
 
 ---
 
 ## Session Log
+
+### Session 4 - 2025-12-06
+**Duration**: ~45 minutes
+**Focus**: Search, favorites, onboarding, and test coverage
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F014**: Implemented page favorites functionality
+  - Toggle favorite via dropdown menu with star icon
+  - Favorites section shows at top of sidebar
+  - State persists via IndexedDB
+- **F018**: Implemented search across pages
+  - SearchDialog component with Ctrl+K shortcut
+  - Search button in topbar for discoverability
+  - Searches page titles and content
+  - Shows snippets for content matches
+  - Keyboard navigation (arrows, enter, escape)
+  - searchPagesWithSnippets function in pageService
+- **F027**: Implemented welcome page and onboarding
+  - Welcome page auto-created for new workspaces
+  - Explains local-only nature and privacy
+  - Documents export/import for backup
+  - Getting started tips with keyboard shortcuts
+- **F029**: Expanded unit test coverage
+  - Added BlockContent structure tests
+  - Added SearchResult type contract tests
+  - Added Welcome page structure tests
+  - Increased test count from 20 to 31 (55% increase)
+
+#### Technical Additions
+- Created `src/components/SearchDialog.tsx`
+- Added searchPagesWithSnippets function with content extraction
+- Added onOpenSearch prop to Topbar
+- Added global keyboard shortcut handler in AppShell
+- Created welcome page content in workspaceService
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ ~1MB bundle |
+| bun run test | 0 | ✅ 31 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### In Progress
+- None
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F013: Page tree navigation with drag-and-drop
+2. Implement F007-F009: Block types (text formatting, headings, etc.)
+3. Implement F011: Slash command palette
+4. Implement F019-F021: Export/import functionality
+
+---
 
 ### Session 3 - 2025-12-06
 **Duration**: ~60 minutes
@@ -174,6 +230,10 @@ bun run dev
 | F024 | Auto-save with 1 second idle debounce | ✅ verified |
 | F031 | Client-side routing for page navigation | ✅ verified |
 | F032 | Page creation, renaming, and deletion UI | ✅ verified |
+| F014 | Page favorites functionality | ✅ verified |
+| F018 | Search across pages by title and content | ✅ verified |
+| F027 | Welcome page and onboarding experience | ✅ verified |
+| F029 | Unit test infrastructure with Bun test runner | ✅ verified |
 | F023 | PWA manifest and service worker for offline support | ⏳ not-started |
 | F034 | CSP and security headers for privacy | ⏳ not-started |
 
@@ -185,12 +245,18 @@ bun run dev
 | ui | 10 |
 | testing | 2 |
 
+### Current Progress
+- **Total Features**: 35
+- **Passing**: 13 (37%)
+- **Remaining**: 22
+
 ### Tech Stack
 - **Runtime**: Bun
 - **Framework**: React 18 with TypeScript
 - **Styling**: TailwindCSS
 - **Editor**: BlockNote (ProseMirror-based)
 - **Storage**: IndexedDB via StorageAdapter abstraction
+- **Routing**: react-router-dom v6
 - **PWA**: Workbox service worker
 
 ---
@@ -201,19 +267,31 @@ bun run dev
 - **RichTextEditor wrapper**: BlockNote will be wrapped to isolate the app from editor library changes
 - **StorageAdapter interface**: All storage operations go through interface, enabling future backend swaps
 - **Export format**: JSON with base64-encoded images (ZIP packaging deferred to v1.1)
+- **Search**: Client-side search with content extraction from block content
 
 ### Known Considerations
 - Safari/iOS IndexedDB quirks may require testing and fallbacks
 - BlockNote is the primary editor choice; Tiptap is fallback if issues arise
 - CSP must be strict to ensure no external network calls
+- BlockNote ProseMirror warning about `__serializeForClipboard` is non-critical
 
-### Code Structure (as of Session 2)
+### Code Structure (as of Session 4)
 ```
 src/
 ├── components/       # React components
-│   ├── AppShell.tsx   # Main layout
-│   ├── Sidebar.tsx    # Page tree navigation
-│   └── Topbar.tsx     # Current page header
+│   ├── AppShell.tsx   # Main layout with routing
+│   ├── Sidebar.tsx    # Page tree navigation with favorites
+│   ├── Topbar.tsx     # Current page header with search
+│   ├── SearchDialog.tsx # Global search overlay
+│   ├── ConfirmDialog.tsx
+│   ├── RichTextEditor.tsx
+│   └── SaveStatusIndicator.tsx
+├── pages/            # Route pages
+│   ├── PageView.tsx
+│   ├── HomePage.tsx
+│   └── NotFound.tsx
+├── hooks/            # Custom hooks
+│   └── useAutoSave.ts
 ├── services/         # Business logic
 │   ├── pageService.ts
 │   └── workspaceService.ts

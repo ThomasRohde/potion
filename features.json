@@ -280,12 +280,15 @@
                 "Favorites section appears at top of sidebar",
                 "Favorite state persists across reloads"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T08:30:00Z",
+            "verifiedBy": "agent-session-4",
+            "evidenceLinks": [
+                "src/components/Sidebar.tsx",
+                "src/components/AppShell.tsx"
+            ],
+            "notes": "Toggle favorite via dropdown menu. Favorites section shows at top of sidebar. State persists via IndexedDB."
         },
         {
             "id": "F015",
@@ -356,12 +359,17 @@
                 "Clicking result navigates to page",
                 "Search completes in < 200ms for hundreds of pages"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T08:45:00Z",
+            "verifiedBy": "agent-session-4",
+            "evidenceLinks": [
+                "src/components/SearchDialog.tsx",
+                "src/services/pageService.ts",
+                "src/components/AppShell.tsx",
+                "src/components/Topbar.tsx"
+            ],
+            "notes": "Ctrl+K opens search dialog. Searches titles and content with snippets. Keyboard navigation and search button in topbar."
         },
         {
             "id": "F019",
@@ -529,12 +537,14 @@
                 "Welcome page shows export/import basics",
                 "Welcome page links to help/documentation"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T09:00:00Z",
+            "verifiedBy": "agent-session-4",
+            "evidenceLinks": [
+                "src/services/workspaceService.ts"
+            ],
+            "notes": "Welcome page auto-created for new workspaces. Explains privacy, local storage, export/import, and getting started tips."
         },
         {
             "id": "F028",
@@ -567,12 +577,16 @@
                 "Tests run with bun test command",
                 "Test coverage is measurable"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T09:15:00Z",
+            "verifiedBy": "agent-session-4",
+            "evidenceLinks": [
+                "src/services/pageService.test.ts",
+                "src/services/workspaceService.test.ts",
+                "src/storage/IndexedDbStorageAdapter.test.ts"
+            ],
+            "notes": "31 unit tests across 3 test files. Tests for pageService, workspaceService, and storage adapter. All run in <150ms."
         },
         {
             "id": "F030",
@@ -697,8 +711,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T07:45:00Z",
+        "lastUpdated": "2025-12-06T09:15:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 9
+        "passingFeatures": 13
     }
 }
