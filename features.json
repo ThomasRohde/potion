@@ -797,7 +797,9 @@
             "passes": true,
             "verifiedAt": "2025-12-06T17:00:00Z",
             "verifiedBy": "agent-session-12",
-            "evidenceLinks": ["src/components/Sidebar.tsx"],
+            "evidenceLinks": [
+                "src/components/Sidebar.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T17:00:00Z",
             "notes": "Replaced onMouseLeave handler with click-outside detection. Menu stays open until click outside, Escape key, or item selection."
@@ -820,7 +822,10 @@
             "passes": true,
             "verifiedAt": "2025-12-06T17:00:00Z",
             "verifiedBy": "agent-session-12",
-            "evidenceLinks": ["src/components/Topbar.tsx", "src/pages/PageView.tsx"],
+            "evidenceLinks": [
+                "src/components/Topbar.tsx",
+                "src/pages/PageView.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T17:00:00Z",
             "notes": "Added inline title editing in Topbar and PageView. Click to edit, Enter saves, Escape cancels. Title updates reflect in sidebar."
@@ -843,7 +848,10 @@
             "passes": true,
             "verifiedAt": "2025-12-06T17:00:00Z",
             "verifiedBy": "agent-session-12",
-            "evidenceLinks": ["src/components/Topbar.tsx", "src/components/AppShell.tsx"],
+            "evidenceLinks": [
+                "src/components/Topbar.tsx",
+                "src/components/AppShell.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T17:00:00Z",
             "notes": "Star button wired to toggle favorite. Three-dot menu has Rename, Export, Delete options. Click-outside detection for menu."
@@ -865,7 +873,9 @@
             "passes": true,
             "verifiedAt": "2025-12-06T17:00:00Z",
             "verifiedBy": "agent-session-12",
-            "evidenceLinks": ["src/components/Topbar.tsx"],
+            "evidenceLinks": [
+                "src/components/Topbar.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T17:00:00Z",
             "notes": "Removed burger menu from Topbar. Only chevron in collapsed sidebar remains for toggle."
@@ -890,7 +900,9 @@
             "passes": true,
             "verifiedAt": "2025-12-06T17:00:00Z",
             "verifiedBy": "agent-session-12",
-            "evidenceLinks": ["src/components/AppShell.tsx"],
+            "evidenceLinks": [
+                "src/components/AppShell.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T17:00:00Z",
             "notes": "Used event capture phase to intercept before BlockNote. Case-insensitive key comparison."

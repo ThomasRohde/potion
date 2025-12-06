@@ -12,11 +12,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle } from '../services'
 import { RichTextEditor, SaveStatusIndicator, DatabasePage } from '../components'
 import { useAutoSave } from '../hooks'
+import { usePageContext } from '../contexts'
 import type { Page, BlockContent } from '../types'
 
 export function PageView() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
+    const { refreshPages } = usePageContext()
     const [page, setPage] = useState<Page | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -86,7 +88,9 @@ export function PageView() {
         if (!page) return
         await updatePageTitle(page.id, title)
         setPage(prev => prev ? { ...prev, title } : null)
-    }, [page])
+        // Refresh sidebar to show updated title
+        await refreshPages()
+    }, [page, refreshPages])
 
     // Focus title input when editing starts
     useEffect(() => {

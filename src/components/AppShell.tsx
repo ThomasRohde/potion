@@ -18,6 +18,7 @@ import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { useTheme } from '../hooks'
+import { usePageContext } from '../contexts'
 import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
 
 interface AppShellProps {
@@ -40,6 +41,7 @@ export function AppShell({ children }: AppShellProps) {
     const navigate = useNavigate()
     const location = useLocation()
     const { theme, toggleTheme } = useTheme()
+    const { setRefreshPages } = usePageContext()
 
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
     const [sidebarWidth, setSidebarWidth] = useState(280)
@@ -112,6 +114,8 @@ export function AppShell({ children }: AppShellProps) {
                 setWorkspaceId(workspace.id)
                 setWorkspaceName(workspace.name)
                 await refreshPages(workspace.id)
+                // Register refresh function with context for cross-component access
+                setRefreshPages(() => refreshPages(workspace.id))
             } catch (error) {
                 console.error('Failed to initialize workspace:', error)
             } finally {
@@ -119,7 +123,7 @@ export function AppShell({ children }: AppShellProps) {
             }
         }
         init()
-    }, [refreshPages])
+    }, [refreshPages, setRefreshPages])
 
     const handlePageSelect = useCallback((page: PageSummary) => {
         navigate(`/page/${page.id}`)
