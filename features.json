@@ -420,12 +420,16 @@
                 "User can export a database with all rows",
                 "Exported subset maintains valid structure"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T11:00:00Z",
+            "verifiedBy": "agent-session-7",
+            "evidenceLinks": [
+                "src/services/workspaceService.ts",
+                "src/components/Sidebar.tsx",
+                "src/components/AppShell.tsx"
+            ],
+            "notes": "Export option in page context menu. Exports page with children. Database export also supported via exportDatabase in storage adapter."
         },
         {
             "id": "F021",
@@ -743,8 +747,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T10:00:00Z",
+        "lastUpdated": "2025-12-06T11:00:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 25
+        "passingFeatures": 26
     }
 }

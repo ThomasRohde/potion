@@ -2,11 +2,51 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import Complete (71%)
+## Current Status: Core Editor + Export/Import Complete (74%)
 
 ---
 
 ## Session Log
+
+### Session 7 - 2025-12-06
+**Duration**: ~15 minutes
+**Focus**: Export subset (single page with children)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F020**: Implemented export subset functionality
+  - Export option added to page context menu (via "..." dropdown)
+  - exportPageToFile function wired up in AppShell
+  - Page export includes children by default
+  - Filename uses sanitized page title: `potion-{title}-{date}.json`
+  - Database export already supported via exportDatabase in storage adapter
+  - Added 3 unit tests for page export structure
+
+#### Technical Additions
+- Added handleExportPage callback to AppShell
+- Added onExportPage prop to Sidebar and PageItem components
+- Export menu option in page dropdown menu
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 33 PWA entries precached |
+| bun run test | 0 | ✅ 37 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### In Progress
+- None
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F025: Keyboard shortcuts documentation
+2. Implement F026: Light/dark theme support
+3. Implement F022: Import merge mode with conflict resolution
+4. Implement F035: Settings panel for user preferences
+
+---
 
 ### Session 6 - 2025-12-06
 **Duration**: ~30 minutes
@@ -348,6 +388,7 @@ bun run dev
 | F014 | Page favorites functionality | ✅ verified |
 | F018 | Search across pages by title and content | ✅ verified |
 | F019 | Export workspace to JSON file | ✅ verified |
+| F020 | Export subset (single page, subtree) | ✅ verified |
 | F021 | Import workspace (replace mode) | ✅ verified |
 | F023 | PWA manifest and service worker for offline support | ✅ verified |
 | F024 | Auto-save with 1 second idle debounce | ✅ verified |
@@ -368,8 +409,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 25 (71%)
-- **Remaining**: 10
+- **Passing**: 26 (74%)
+- **Remaining**: 9
 
 ### Tech Stack
 - **Runtime**: Bun
