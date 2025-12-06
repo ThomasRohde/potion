@@ -2,7 +2,7 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import + Theme Support (80%)
+## Current Status: Core Editor + Export/Import + Settings (83%)
 
 ---
 
@@ -35,15 +35,25 @@
   - ThemeToggle button in sidebar footer
   - Theme persists to IndexedDB settings
   - TailwindCSS darkMode 'class' strategy
+- **F035**: Implemented settings panel
+  - Created SettingsDialog component
+  - Settings accessible via gear icon in sidebar footer
+  - Theme selection with light/dark/system options
+  - Font size slider (12-24px)
+  - Editor width options (narrow/medium/wide/full)
+  - Workspace name editable
+  - About section with app info
+  - All settings persist to IndexedDB
 
 #### Technical Additions
 - Created `src/hooks/useTheme.ts` - theme state with persistence
 - Created `src/components/ThemeToggle.tsx` - cycling toggle button
+- Created `src/components/SettingsDialog.tsx` - settings panel
 - Added handleExportPage callback to AppShell
 - Added onExportPage prop to Sidebar and PageItem components
 - Created KeyboardShortcutsDialog.tsx component
 - Added global keyboard handler for Ctrl+N and ?
-- Added onShowHelp, theme, onToggleTheme props to Sidebar
+- Added onShowHelp, onOpenSettings, theme, onToggleTheme props to Sidebar
 
 #### Pre-Commit Verification
 | Command | Exit Code | Notes |
@@ -56,9 +66,9 @@
 - None
 
 #### Recommended Next Steps
-1. Implement F035: Settings panel for user preferences
-2. Implement F022: Import merge mode with conflict resolution
-3. Implement F015-F017: Database page type (advanced features)
+1. Implement F022: Import merge mode with conflict resolution
+2. Implement F015-F017: Database page type (advanced features)
+3. Implement F028: Schema migrations with versioning
 4. Implement F030: E2E test infrastructure with Playwright
 
 ---
@@ -464,6 +474,7 @@ bun run dev
 | F032 | Page creation, renaming, and deletion UI | ✅ verified |
 | F033 | Block keyboard navigation (enter, backspace, arrows) | ✅ verified |
 | F034 | CSP and security headers for privacy | ✅ verified |
+| F035 | Settings panel for user preferences | ✅ verified |
 
 ### Feature Categories
 | Category | Count |
@@ -475,8 +486,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 28 (80%)
-- **Remaining**: 7
+- **Passing**: 29 (83%)
+- **Remaining**: 6
 
 ### Tech Stack
 - **Runtime**: Bun
