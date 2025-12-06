@@ -13,10 +13,11 @@ import { ConfirmDialog } from './ConfirmDialog'
 import { SearchDialog } from './SearchDialog'
 import { ImportDialog } from './ImportDialog'
 import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
+import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { useTheme } from '../hooks'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
@@ -47,6 +48,8 @@ export function AppShell({ children }: AppShellProps) {
     const [isLoading, setIsLoading] = useState(true)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [isShortcutsOpen, setIsShortcutsOpen] = useState(false)
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+    const [workspaceName, setWorkspaceName] = useState('Potion')
     const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
         isOpen: false,
         pageId: null,
@@ -102,6 +105,7 @@ export function AppShell({ children }: AppShellProps) {
             try {
                 const workspace = await getOrCreateDefaultWorkspace()
                 setWorkspaceId(workspace.id)
+                setWorkspaceName(workspace.name)
                 await refreshPages(workspace.id)
             } catch (error) {
                 console.error('Failed to initialize workspace:', error)
@@ -365,6 +369,17 @@ export function AppShell({ children }: AppShellProps) {
         setImportState({ isOpen: false, file: null })
     }, [])
 
+    const handleWorkspaceNameChange = useCallback(async (newName: string) => {
+        if (!workspaceId) return
+        
+        try {
+            await updateWorkspace(workspaceId, { name: newName })
+            setWorkspaceName(newName)
+        } catch (error) {
+            console.error('Failed to update workspace name:', error)
+        }
+    }, [workspaceId])
+
     const toggleSidebar = useCallback(() => {
         setSidebarCollapsed(prev => !prev)
     }, [])
@@ -400,6 +415,7 @@ export function AppShell({ children }: AppShellProps) {
                 onExportWorkspace={handleExportWorkspace}
                 onImportWorkspace={handleImportWorkspace}
                 onShowHelp={() => setIsShortcutsOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
                 theme={theme}
                 onToggleTheme={toggleTheme}
             />
@@ -458,6 +474,14 @@ export function AppShell({ children }: AppShellProps) {
             <KeyboardShortcutsDialog
                 isOpen={isShortcutsOpen}
                 onClose={() => setIsShortcutsOpen(false)}
+            />
+
+            {/* Settings Dialog */}
+            <SettingsDialog
+                isOpen={isSettingsOpen}
+                workspaceName={workspaceName}
+                onClose={() => setIsSettingsOpen(false)}
+                onWorkspaceNameChange={handleWorkspaceNameChange}
             />
         </div>
     )

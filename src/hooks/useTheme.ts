@@ -27,7 +27,7 @@ function getSystemTheme(): 'light' | 'dark' {
  */
 function applyTheme(theme: Theme) {
     const effectiveTheme = theme === 'system' ? getSystemTheme() : theme
-    
+
     if (effectiveTheme === 'dark') {
         document.documentElement.classList.add('dark')
     } else {
@@ -63,7 +63,7 @@ export function useTheme() {
         if (theme !== 'system') return
 
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-        
+
         const handleChange = () => {
             applyTheme('system')
         }
@@ -80,7 +80,7 @@ export function useTheme() {
         try {
             const storage = await getStorage()
             const settings = await storage.getSettings(DEFAULT_SETTINGS_ID)
-            
+
             const updatedSettings: Settings = {
                 id: DEFAULT_SETTINGS_ID,
                 theme: newTheme,
@@ -88,7 +88,7 @@ export function useTheme() {
                 editorWidth: settings?.editorWidth ?? 'medium',
                 sidebarCollapsed: settings?.sidebarCollapsed ?? false
             }
-            
+
             await storage.upsertSettings(updatedSettings)
         } catch (error) {
             console.error('Failed to save theme:', error)
