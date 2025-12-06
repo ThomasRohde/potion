@@ -5,7 +5,7 @@
  * Resizable and collapsible.
  */
 
-import { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 
@@ -17,6 +17,8 @@ interface SidebarProps {
     onWidthChange: (width: number) => void
     onPageSelect: (page: PageSummary) => void
     onCreatePage: (parentPageId?: string) => void
+    onRenamePage?: (pageId: string, newTitle: string) => void
+    onDeletePage?: (pageId: string, hasChildren: boolean) => void
     onToggleCollapse: () => void
 }
 
@@ -27,6 +29,8 @@ export function Sidebar({
     width,
     onPageSelect,
     onCreatePage,
+    onRenamePage,
+    onDeletePage,
     onToggleCollapse
 }: SidebarProps) {
     const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set())
@@ -108,6 +112,8 @@ export function Sidebar({
                             onSelect={onPageSelect}
                             onToggleExpand={toggleExpanded}
                             onCreateChild={onCreatePage}
+                            onRename={onRenamePage}
+                            onDelete={onDeletePage}
                         />
                     ))}
                 </div>
@@ -144,6 +150,8 @@ export function Sidebar({
                             onSelect={onPageSelect}
                             onToggleExpand={toggleExpanded}
                             onCreateChild={onCreatePage}
+                            onRename={onRenamePage}
+                            onDelete={onDeletePage}
                         />
                     ))
                 )}
@@ -173,6 +181,8 @@ interface PageItemProps {
     onSelect: (page: PageSummary) => void
     onToggleExpand: (pageId: string) => void
     onCreateChild: (parentPageId: string) => void
+    onRename?: (pageId: string, newTitle: string) => void
+    onDelete?: (pageId: string, hasChildren: boolean) => void
 }
 
 function PageItem({
@@ -182,13 +192,56 @@ function PageItem({
     isExpanded,
     onSelect,
     onToggleExpand,
-    onCreateChild
+    onCreateChild,
+    onRename,
+    onDelete
 }: PageItemProps) {
     const hasChildren = page.children && page.children.length > 0
     const [showActions, setShowActions] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+    const [editTitle, setEditTitle] = useState(page.title)
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    // Focus input when editing starts
+    useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus()
+            inputRef.current.select()
+        }
+    }, [isEditing])
+
+    const handleRenameSubmit = () => {
+        if (onRename && editTitle.trim() !== page.title) {
+            onRename(page.id, editTitle.trim() || 'Untitled')
+        }
+        setIsEditing(false)
+    }
+
+    const handleRenameKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleRenameSubmit()
+        } else if (e.key === 'Escape') {
+            setEditTitle(page.title)
+            setIsEditing(false)
+        }
+    }
+
+    const handleDelete = () => {
+        if (onDelete) {
+            onDelete(page.id, hasChildren)
+        }
+        setShowMenu(false)
+    }
+
+    const startRename = () => {
+        setEditTitle(page.title)
+        setIsEditing(true)
+        setShowMenu(false)
+    }
 
     return (
-        <div>
+        <div className="relative">
             <div
                 className={`
                     group flex items-center gap-1 px-2 py-1.5 rounded-lg cursor-pointer
@@ -198,9 +251,9 @@ function PageItem({
                     }
                 `}
                 style={{ paddingLeft: `${8 + depth * 16}px` }}
-                onClick={() => onSelect(page)}
+                onClick={() => !isEditing && onSelect(page)}
                 onMouseEnter={() => setShowActions(true)}
-                onMouseLeave={() => setShowActions(false)}
+                onMouseLeave={() => { setShowActions(false); setShowMenu(false) }}
             >
                 {/* Expand/collapse toggle */}
                 <button
@@ -225,27 +278,81 @@ function PageItem({
                     {page.icon ?? (page.type === 'database' ? '📊' : '📄')}
                 </span>
 
-                {/* Title */}
-                <span className="text-sm truncate flex-1">
-                    {page.title || 'Untitled'}
-                </span>
+                {/* Title - editable or static */}
+                {isEditing ? (
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        onBlur={handleRenameSubmit}
+                        onKeyDown={handleRenameKeyDown}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-sm flex-1 bg-white dark:bg-gray-700 border border-potion-500 rounded px-1 py-0.5 outline-none"
+                    />
+                ) : (
+                    <span className="text-sm truncate flex-1">
+                        {page.title || 'Untitled'}
+                    </span>
+                )}
 
                 {/* Actions */}
-                {showActions && (
+                {showActions && !isEditing && (
+                    <div className="flex items-center gap-0.5">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onCreateChild(page.id)
+                            }}
+                            className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+                            title="Add child page"
+                        >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                setShowMenu(!showMenu)
+                            }}
+                            className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+                            title="More options"
+                        >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Dropdown menu */}
+            {showMenu && (
+                <div 
+                    className="absolute right-2 top-full z-50 mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
+                    onMouseLeave={() => setShowMenu(false)}
+                >
                     <button
                         onClick={(e) => {
                             e.stopPropagation()
-                            onCreateChild(page.id)
+                            startRename()
                         }}
-                        className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
-                        title="Add child page"
+                        className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+                        Rename
                     </button>
-                )}
-            </div>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleDelete()
+                        }}
+                        className="w-full text-left px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                        Delete
+                    </button>
+                </div>
+            )}
 
             {/* Children */}
             {hasChildren && isExpanded && (
@@ -260,6 +367,8 @@ function PageItem({
                             onSelect={onSelect}
                             onToggleExpand={onToggleExpand}
                             onCreateChild={onCreateChild}
+                            onRename={onRename}
+                            onDelete={onDelete}
                         />
                     ))}
                 </div>

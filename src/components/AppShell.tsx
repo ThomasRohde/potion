@@ -9,12 +9,20 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
+import { ConfirmDialog } from './ConfirmDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
+}
+
+interface DeleteConfirmState {
+    isOpen: boolean
+    pageId: string | null
+    pageTitle: string
+    hasChildren: boolean
 }
 
 export function AppShell({ children }: AppShellProps) {
@@ -27,6 +35,12 @@ export function AppShell({ children }: AppShellProps) {
     const [currentPage, setCurrentPage] = useState<PageSummary | null>(null)
     const [workspaceId, setWorkspaceId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
+        isOpen: false,
+        pageId: null,
+        pageTitle: '',
+        hasChildren: false
+    })
 
     // Extract page ID from URL
     const currentPageId = location.pathname.startsWith('/page/') 
@@ -97,6 +111,89 @@ export function AppShell({ children }: AppShellProps) {
         navigate(`/page/${newPage.id}`)
     }, [workspaceId, refreshPages, navigate])
 
+    const handleRenamePage = useCallback(async (pageId: string, newTitle: string) => {
+        if (!workspaceId) return
+
+        try {
+            await updatePageTitle(pageId, newTitle)
+            await refreshPages(workspaceId)
+            
+            // If current page was renamed, update the current page state
+            if (currentPageId === pageId) {
+                const updatedPage = await getPage(pageId)
+                if (updatedPage) {
+                    setCurrentPage({
+                        id: updatedPage.id,
+                        workspaceId: updatedPage.workspaceId,
+                        parentPageId: updatedPage.parentPageId,
+                        title: updatedPage.title,
+                        type: updatedPage.type,
+                        isFavorite: updatedPage.isFavorite,
+                        icon: updatedPage.icon,
+                        createdAt: updatedPage.createdAt,
+                        updatedAt: updatedPage.updatedAt
+                    })
+                }
+            }
+        } catch (error) {
+            console.error('Failed to rename page:', error)
+        }
+    }, [workspaceId, refreshPages, currentPageId])
+
+    const handleDeletePage = useCallback(async (pageId: string, hasChildren: boolean) => {
+        // Find the page to get its title
+        const findPage = (nodes: PageTreeNode[]): PageTreeNode | null => {
+            for (const node of nodes) {
+                if (node.id === pageId) return node
+                if (node.children) {
+                    const found = findPage(node.children)
+                    if (found) return found
+                }
+            }
+            return null
+        }
+        
+        const pageToDelete = findPage(pages)
+        const pageTitle = pageToDelete?.title || 'Untitled'
+        
+        setDeleteConfirm({
+            isOpen: true,
+            pageId,
+            pageTitle,
+            hasChildren
+        })
+    }, [pages])
+
+    const confirmDelete = useCallback(async () => {
+        if (!workspaceId || !deleteConfirm.pageId) return
+
+        try {
+            // If page has children, first orphan them (move to root)
+            if (deleteConfirm.hasChildren) {
+                const children = await getChildPages(deleteConfirm.pageId)
+                for (const child of children) {
+                    await updatePage(child.id, { parentPageId: null })
+                }
+            }
+
+            await deletePage(deleteConfirm.pageId)
+            await refreshPages(workspaceId)
+
+            // If we deleted the current page, navigate to home
+            if (currentPageId === deleteConfirm.pageId) {
+                navigate('/')
+            }
+        } catch (error) {
+            console.error('Failed to delete page:', error)
+        } finally {
+            setDeleteConfirm({ isOpen: false, pageId: null, pageTitle: '', hasChildren: false })
+        }
+    }, [workspaceId, deleteConfirm, refreshPages, currentPageId, navigate])
+
+    const cancelDelete = useCallback(() => {
+        setDeleteConfirm({ isOpen: false, pageId: null, pageTitle: '', hasChildren: false })
+    }, [])
+
     const toggleSidebar = useCallback(() => {
         setSidebarCollapsed(prev => !prev)
     }, [])
@@ -123,6 +220,8 @@ export function AppShell({ children }: AppShellProps) {
                 onWidthChange={setSidebarWidth}
                 onPageSelect={handlePageSelect}
                 onCreatePage={handleCreatePage}
+                onRenamePage={handleRenamePage}
+                onDeletePage={handleDeletePage}
                 onToggleCollapse={toggleSidebar}
             />
 
@@ -140,6 +239,22 @@ export function AppShell({ children }: AppShellProps) {
                     {children}
                 </main>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <ConfirmDialog
+                isOpen={deleteConfirm.isOpen}
+                title="Delete Page"
+                message={
+                    deleteConfirm.hasChildren
+                        ? `Are you sure you want to delete "${deleteConfirm.pageTitle}"? Child pages will be moved to the root level.`
+                        : `Are you sure you want to delete "${deleteConfirm.pageTitle}"? This action cannot be undone.`
+                }
+                confirmLabel="Delete"
+                cancelLabel="Cancel"
+                variant="danger"
+                onConfirm={confirmDelete}
+                onCancel={cancelDelete}
+            />
         </div>
     )
 }
