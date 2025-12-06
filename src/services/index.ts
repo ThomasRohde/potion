@@ -5,4 +5,23 @@
  */
 
 export * from './workspaceService'
-export * from './pageService'
+export {
+    createPage,
+    createEmptyContent,
+    getPage,
+    listPages,
+    getChildPages,
+    getRootPages,
+    getFavoritePages,
+    updatePageTitle,
+    updatePageContent,
+    updatePage,
+    togglePageFavorite,
+    movePage,
+    deletePage,
+    orphanChildren,
+    searchPages,
+    duplicatePage,
+    buildPageTree
+} from './pageService'
+export type { PageTreeNode } from './pageService'
