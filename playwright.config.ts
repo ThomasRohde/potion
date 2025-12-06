@@ -20,7 +20,8 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
 
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: process.env.CI ? 'github' : 'html',
+    /* Use 'never' for open to prevent blocking on report server */
+    reporter: process.env.CI ? 'github' : [['html', { open: 'never' }]],
 
     /* Shared settings for all the projects below */
     use: {
