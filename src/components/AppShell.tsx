@@ -151,14 +151,16 @@ export function AppShell({ children }: AppShellProps) {
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
             // Ctrl/Cmd+K to open search
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
                 e.preventDefault()
                 setIsSearchOpen(true)
+                return
             }
             // Ctrl/Cmd+N to create new page
-            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
                 e.preventDefault()
                 handleCreatePage()
+                return
             }
             // ? to open keyboard shortcuts help
             if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey) {
@@ -171,8 +173,8 @@ export function AppShell({ children }: AppShellProps) {
             }
         }
 
-        window.addEventListener('keydown', handleKeyDown)
-        return () => window.removeEventListener('keydown', handleKeyDown)
+        window.addEventListener('keydown', handleKeyDown, true)
+        return () => window.removeEventListener('keydown', handleKeyDown, true)
     }, [handleCreatePage])
 
     const handleRenamePage = useCallback(async (pageId: string, newTitle: string) => {
