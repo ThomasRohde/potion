@@ -8,6 +8,27 @@
 
 ## Session Log
 
+### Session 10 (continued) - 2025-12-06
+**Focus**: Bug fixes for storage race condition and BlockNote content format
+
+#### Bug Fixes
+- **Storage race condition**: Multiple components calling `getStorage()` simultaneously caused "Database not initialized" errors
+  - Solution: Added `initPromise` singleton to ensure only one initialization happens
+  - All concurrent calls now wait for the same promise
+  
+- **BlockNote content format**: Welcome page content caused "Cannot convert undefined or null to object" errors
+  - Root cause: BlockNote expects blocks with `children: []` and default props like `textColor`, `backgroundColor`, `textAlignment`
+  - Solution: Transform blocks in `toBlockNoteBlocks()` to add required properties
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ |
+| bun run test | 0 | ✅ 73 tests passed |
+| bun run lint | 0 | ✅ |
+
+---
+
 ### Session 10 - 2025-12-06
 **Duration**: ~60 minutes
 **Focus**: Database page type implementation (F015, F016, F017)
