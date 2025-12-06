@@ -261,3 +261,149 @@ export async function getWorkspaceStats(): Promise<{
     const storage = await getStorage()
     return storage.getStats()
 }
+
+/**
+ * Export workspace to a JSON file and trigger download.
+ * @param workspaceId - The workspace ID to export (defaults to default workspace)
+ */
+export async function exportWorkspaceToFile(workspaceId: string = DEFAULT_WORKSPACE_ID): Promise<void> {
+    const storage = await getStorage()
+    const exportData = await storage.exportWorkspace(workspaceId)
+
+    // Format the filename with date
+    const date = new Date().toISOString().split('T')[0]
+    const filename = `potion-workspace-${date}.json`
+
+    // Create blob and trigger download
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+}
+
+/**
+ * Export a single page (and optionally children) to a JSON file.
+ * @param pageId - The page ID to export
+ * @param includeChildren - Whether to include child pages
+ */
+export async function exportPageToFile(pageId: string, includeChildren: boolean = true): Promise<void> {
+    const storage = await getStorage()
+    const exportData = await storage.exportPage(pageId, includeChildren)
+
+    // Get page title for filename
+    const page = await storage.getPage(pageId)
+    const title = page?.title?.replace(/[^a-z0-9]/gi, '-').toLowerCase() ?? 'page'
+    const date = new Date().toISOString().split('T')[0]
+    const filename = `potion-${title}-${date}.json`
+
+    // Create blob and trigger download
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+}
+
+/**
+ * Import workspace from a JSON file.
+ * @param file - The file to import
+ * @param mode - 'replace' clears existing data, 'merge' combines with existing
+ * @returns Import result with statistics
+ */
+export async function importWorkspaceFromFile(
+    file: File,
+    mode: 'replace' | 'merge' = 'replace'
+): Promise<{
+    success: boolean
+    pagesAdded: number
+    pagesUpdated: number
+    errors: string[]
+}> {
+    const storage = await getStorage()
+
+    try {
+        const text = await file.text()
+        const data = JSON.parse(text)
+
+        // Basic validation
+        if (!data.version || !data.workspace || !Array.isArray(data.pages)) {
+            throw new Error('Invalid export file format')
+        }
+
+        const result = await storage.importWorkspace(DEFAULT_WORKSPACE_ID, data, mode)
+
+        return {
+            success: result.success,
+            pagesAdded: result.pagesAdded,
+            pagesUpdated: result.pagesUpdated,
+            errors: result.errors
+        }
+    } catch (error) {
+        return {
+            success: false,
+            pagesAdded: 0,
+            pagesUpdated: 0,
+            errors: [error instanceof Error ? error.message : String(error)]
+        }
+    }
+}
+
+/**
+ * Validate an export file without importing it.
+ * @param file - The file to validate
+ * @returns Validation result with summary
+ */
+export async function validateExportFile(file: File): Promise<{
+    valid: boolean
+    version: number | null
+    pageCount: number
+    workspaceName: string | null
+    exportedAt: string | null
+    errors: string[]
+}> {
+    try {
+        const text = await file.text()
+        const data = JSON.parse(text)
+
+        const errors: string[] = []
+
+        if (typeof data.version !== 'number') {
+            errors.push('Missing or invalid version field')
+        }
+        if (!data.workspace || typeof data.workspace.name !== 'string') {
+            errors.push('Missing or invalid workspace field')
+        }
+        if (!Array.isArray(data.pages)) {
+            errors.push('Missing or invalid pages array')
+        }
+
+        return {
+            valid: errors.length === 0,
+            version: data.version ?? null,
+            pageCount: Array.isArray(data.pages) ? data.pages.length : 0,
+            workspaceName: data.workspace?.name ?? null,
+            exportedAt: data.exportedAt ?? null,
+            errors
+        }
+    } catch (error) {
+        return {
+            valid: false,
+            version: null,
+            pageCount: 0,
+            workspaceName: null,
+            exportedAt: null,
+            errors: [error instanceof Error ? error.message : 'Failed to parse file']
+        }
+    }
+}

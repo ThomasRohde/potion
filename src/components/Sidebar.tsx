@@ -22,6 +22,8 @@ interface SidebarProps {
     onToggleFavorite?: (pageId: string, isFavorite: boolean) => void
     onMovePage?: (pageId: string, newParentId: string | null) => void
     onToggleCollapse: () => void
+    onExportWorkspace?: () => void
+    onImportWorkspace?: () => void
 }
 
 export function Sidebar({
@@ -35,7 +37,9 @@ export function Sidebar({
     onDeletePage,
     onToggleFavorite,
     onMovePage,
-    onToggleCollapse
+    onToggleCollapse,
+    onExportWorkspace,
+    onImportWorkspace
 }: SidebarProps) {
     const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set())
     const [dragOverPageId, setDragOverPageId] = useState<string | null>(null)
@@ -194,7 +198,7 @@ export function Sidebar({
             </div>
 
             {/* Footer */}
-            <div className="p-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
                 <button
                     onClick={() => onCreatePage()}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
@@ -204,6 +208,28 @@ export function Sidebar({
                     </svg>
                     New page
                 </button>
+                <div className="flex gap-1">
+                    <button
+                        onClick={onExportWorkspace}
+                        className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        title="Export workspace to JSON"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export
+                    </button>
+                    <button
+                        onClick={onImportWorkspace}
+                        className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        title="Import workspace from JSON"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        Import
+                    </button>
+                </div>
             </div>
         </div>
     )

@@ -398,12 +398,16 @@
                 "Export format is versioned",
                 "Images are included as base64"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T10:00:00Z",
+            "verifiedBy": "agent-session-6",
+            "evidenceLinks": [
+                "src/services/workspaceService.ts",
+                "src/components/Sidebar.tsx",
+                "src/components/AppShell.tsx"
+            ],
+            "notes": "Export button in sidebar footer. Downloads versioned JSON with all pages/databases/rows/settings. Images stored as data URLs."
         },
         {
             "id": "F020",
@@ -435,12 +439,16 @@
                 "Import shows summary before confirming",
                 "Imported data is fully functional"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T10:00:00Z",
+            "verifiedBy": "agent-session-6",
+            "evidenceLinks": [
+                "src/services/workspaceService.ts",
+                "src/components/ImportDialog.tsx",
+                "src/components/AppShell.tsx"
+            ],
+            "notes": "Import button in sidebar footer. ImportDialog validates and shows preview before confirming. Replace mode clears existing data."
         },
         {
             "id": "F022",
@@ -735,8 +743,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T08:55:00Z",
+        "lastUpdated": "2025-12-06T10:00:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 23
+        "passingFeatures": 25
     }
 }

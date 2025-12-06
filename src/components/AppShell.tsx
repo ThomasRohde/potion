@@ -11,9 +11,10 @@ import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { ConfirmDialog } from './ConfirmDialog'
 import { SearchDialog } from './SearchDialog'
+import { ImportDialog } from './ImportDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, importWorkspaceFromFile } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
@@ -24,6 +25,11 @@ interface DeleteConfirmState {
     pageId: string | null
     pageTitle: string
     hasChildren: boolean
+}
+
+interface ImportState {
+    isOpen: boolean
+    file: File | null
 }
 
 export function AppShell({ children }: AppShellProps) {
@@ -42,6 +48,10 @@ export function AppShell({ children }: AppShellProps) {
         pageId: null,
         pageTitle: '',
         hasChildren: false
+    })
+    const [importState, setImportState] = useState<ImportState>({
+        isOpen: false,
+        file: null
     })
 
     // Extract page ID from URL
@@ -276,6 +286,58 @@ export function AppShell({ children }: AppShellProps) {
         setDeleteConfirm({ isOpen: false, pageId: null, pageTitle: '', hasChildren: false })
     }, [])
 
+    const handleExportWorkspace = useCallback(async () => {
+        try {
+            await exportWorkspaceToFile()
+        } catch (error) {
+            console.error('Failed to export workspace:', error)
+            // Could show a toast/notification here
+        }
+    }, [])
+
+    const handleImportWorkspace = useCallback(async () => {
+        // Create a hidden file input and trigger it
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = '.json'
+
+        input.onchange = async (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0]
+            if (!file) return
+
+            // Open the import dialog with the file
+            setImportState({ isOpen: true, file })
+        }
+
+        input.click()
+    }, [])
+
+    const confirmImport = useCallback(async () => {
+        if (!importState.file) return
+
+        try {
+            const result = await importWorkspaceFromFile(importState.file, 'replace')
+            if (result.success) {
+                // Refresh the pages after import
+                if (workspaceId) {
+                    await refreshPages(workspaceId)
+                }
+                // Navigate to home after import
+                navigate('/')
+            } else {
+                console.error('Import failed:', result.errors)
+            }
+        } catch (error) {
+            console.error('Failed to import workspace:', error)
+        } finally {
+            setImportState({ isOpen: false, file: null })
+        }
+    }, [importState.file, workspaceId, refreshPages, navigate])
+
+    const cancelImport = useCallback(() => {
+        setImportState({ isOpen: false, file: null })
+    }, [])
+
     const toggleSidebar = useCallback(() => {
         setSidebarCollapsed(prev => !prev)
     }, [])
@@ -307,6 +369,8 @@ export function AppShell({ children }: AppShellProps) {
                 onToggleFavorite={handleToggleFavorite}
                 onMovePage={handleMovePage}
                 onToggleCollapse={toggleSidebar}
+                onExportWorkspace={handleExportWorkspace}
+                onImportWorkspace={handleImportWorkspace}
             />
 
             {/* Main content area */}
@@ -350,6 +414,14 @@ export function AppShell({ children }: AppShellProps) {
                     onSelectPage={(pageId) => navigate(`/page/${pageId}`)}
                 />
             )}
+
+            {/* Import Dialog */}
+            <ImportDialog
+                isOpen={importState.isOpen}
+                file={importState.file}
+                onConfirm={confirmImport}
+                onCancel={cancelImport}
+            />
         </div>
     )
 }

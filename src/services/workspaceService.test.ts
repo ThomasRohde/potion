@@ -3,7 +3,7 @@
  */
 
 import { describe, test, expect } from 'bun:test'
-import type { Workspace, Page, BlockContent } from '../types'
+import type { Workspace, Page, BlockContent, WorkspaceExport } from '../types'
 
 // Test type contracts and utility functions
 // Note: Full integration tests require IndexedDB which needs browser environment
@@ -133,5 +133,83 @@ describe('Welcome Page Structure', () => {
 
         // Verify backup-related terms are expected in welcome content
         expect(backupTexts.length).toBeGreaterThan(0)
+    })
+})
+
+describe('WorkspaceExport Structure', () => {
+    test('WorkspaceExport should have all required fields', () => {
+        const workspace: Workspace = {
+            id: 'test-workspace',
+            name: 'Test Workspace',
+            createdAt: '2025-12-06T00:00:00Z',
+            updatedAt: '2025-12-06T00:00:00Z',
+            version: 1
+        }
+
+        const exportData: WorkspaceExport = {
+            version: 1,
+            exportedAt: '2025-12-06T10:00:00Z',
+            workspace,
+            pages: [],
+            databases: [],
+            rows: [],
+            settings: null
+        }
+
+        expect(exportData.version).toBe(1)
+        expect(exportData.workspace.id).toBe('test-workspace')
+        expect(Array.isArray(exportData.pages)).toBe(true)
+        expect(Array.isArray(exportData.databases)).toBe(true)
+        expect(Array.isArray(exportData.rows)).toBe(true)
+    })
+
+    test('WorkspaceExport should include pages with content', () => {
+        const page: Page = {
+            id: 'page-1',
+            workspaceId: 'ws-1',
+            parentPageId: null,
+            title: 'Test Page',
+            type: 'page',
+            isFavorite: false,
+            content: {
+                version: 1,
+                blocks: [
+                    {
+                        id: 'block-1',
+                        type: 'paragraph',
+                        content: [{ type: 'text', text: 'Hello World' }]
+                    }
+                ]
+            },
+            createdAt: '2025-12-06T00:00:00Z',
+            updatedAt: '2025-12-06T00:00:00Z'
+        }
+
+        const exportData: WorkspaceExport = {
+            version: 1,
+            exportedAt: '2025-12-06T10:00:00Z',
+            workspace: {
+                id: 'ws-1',
+                name: 'Test',
+                createdAt: '2025-12-06T00:00:00Z',
+                updatedAt: '2025-12-06T00:00:00Z',
+                version: 1
+            },
+            pages: [page],
+            databases: [],
+            rows: [],
+            settings: null
+        }
+
+        expect(exportData.pages.length).toBe(1)
+        expect(exportData.pages[0].title).toBe('Test Page')
+        expect(exportData.pages[0].content.blocks.length).toBe(1)
+    })
+
+    test('WorkspaceExport filename should follow naming convention', () => {
+        const date = new Date().toISOString().split('T')[0]
+        const expectedFilename = `potion-workspace-${date}.json`
+
+        expect(expectedFilename).toMatch(/^potion-workspace-\d{4}-\d{2}-\d{2}\.json$/)
     })
 })

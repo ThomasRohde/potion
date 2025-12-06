@@ -2,11 +2,60 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor Features Complete (66%)
+## Current Status: Core Editor + Export/Import Complete (71%)
 
 ---
 
 ## Session Log
+
+### Session 6 - 2025-12-06
+**Duration**: ~30 minutes
+**Focus**: Export/Import workspace functionality
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F019**: Implemented full workspace export to JSON
+  - Export button in sidebar footer
+  - exportWorkspaceToFile function in workspaceService
+  - Downloads as `potion-workspace-YYYY-MM-DD.json`
+  - Versioned format (version 1)
+  - Includes all pages, databases, rows, settings
+  - Images included as data URLs in block content
+- **F021**: Implemented workspace import (replace mode)
+  - Import button in sidebar footer
+  - ImportDialog component with validation preview
+  - Shows workspace name, page count, export date
+  - Warning about replacing existing data
+  - validateExportFile function for pre-import validation
+  - importWorkspaceFromFile function in workspaceService
+
+#### Technical Additions
+- Created `src/components/ImportDialog.tsx`
+- Added exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, validateExportFile to workspaceService
+- Updated Sidebar with Export/Import buttons
+- Updated AppShell with import dialog state and handlers
+- Added 3 new tests for WorkspaceExport structure
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 33 PWA entries precached |
+| bun run test | 0 | ✅ 34 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### In Progress
+- None
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F020: Export subset (single page, subtree)
+2. Implement F022: Import merge mode with conflict resolution
+3. Implement F025: Keyboard shortcuts documentation
+4. Implement F026: Light/dark theme support
+
+---
 
 ### Session 5 - 2025-12-06
 **Duration**: ~60 minutes
@@ -298,6 +347,8 @@ bun run dev
 | F013 | Page tree navigation with nesting support | ✅ verified |
 | F014 | Page favorites functionality | ✅ verified |
 | F018 | Search across pages by title and content | ✅ verified |
+| F019 | Export workspace to JSON file | ✅ verified |
+| F021 | Import workspace (replace mode) | ✅ verified |
 | F023 | PWA manifest and service worker for offline support | ✅ verified |
 | F024 | Auto-save with 1 second idle debounce | ✅ verified |
 | F027 | Welcome page and onboarding experience | ✅ verified |
@@ -317,8 +368,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 23 (66%)
-- **Remaining**: 12
+- **Passing**: 25 (71%)
+- **Remaining**: 10
 
 ### Tech Stack
 - **Runtime**: Bun
