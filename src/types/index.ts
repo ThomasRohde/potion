@@ -57,11 +57,14 @@ export type BlockType =
     | 'bulletListItem'
     | 'numberedListItem'
     | 'checkListItem'
+    | 'toggleListItem'
     | 'quote'
     | 'callout'
     | 'codeBlock'
-    | 'divider'
     | 'image'
+    | 'video'
+    | 'audio'
+    | 'file'
     | 'table'
 
 export interface InlineStyle {

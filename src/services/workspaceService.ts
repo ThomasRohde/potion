@@ -160,11 +160,7 @@ function createWelcomePage(workspaceId: string, timestamp: string): Page {
                     text: 'Star pages to add them to your favorites'
                 }]
             },
-            {
-                id: uuidv4(),
-                type: 'divider',
-                content: []
-            },
+
             {
                 id: uuidv4(),
                 type: 'paragraph',

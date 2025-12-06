@@ -18,6 +18,25 @@ import '@blocknote/mantine/style.css'
 
 import type { BlockContent } from '../types'
 
+/**
+ * BlockNote's default supported block types.
+ * Blocks with types not in this list will be skipped to prevent "node type not found" errors.
+ */
+const SUPPORTED_BLOCK_TYPES = new Set([
+    'paragraph',
+    'heading',
+    'bulletListItem',
+    'numberedListItem',
+    'checkListItem',
+    'toggleListItem',
+    'table',
+    'image',
+    'video',
+    'audio',
+    'file',
+    'codeBlock'
+])
+
 export interface RichTextEditorProps {
     /**
      * Initial content to load into the editor.
@@ -43,6 +62,68 @@ export interface RichTextEditorProps {
 }
 
 /**
+ * Transform inline content item to ensure it has all required BlockNote properties.
+ * BlockNote's StyledText requires: { type: 'text', text: string, styles: {} }
+ * BlockNote's Link requires: { type: 'link', content: StyledText[], href: string }
+ */
+function transformInlineContent(item: unknown): unknown | null {
+    if (!item || typeof item !== 'object') {
+        return null
+    }
+
+    const i = item as Record<string, unknown>
+    
+    if (!i.type || typeof i.type !== 'string') {
+        return null
+    }
+
+    if (i.type === 'text') {
+        // StyledText: ensure styles is an object
+        return {
+            type: 'text',
+            text: typeof i.text === 'string' ? i.text : '',
+            styles: (i.styles && typeof i.styles === 'object' && !Array.isArray(i.styles)) 
+                ? i.styles 
+                : {}
+        }
+    } else if (i.type === 'link') {
+        // Link: ensure content is array of StyledText and href is string
+        const linkContent: unknown[] = []
+        if (Array.isArray(i.content)) {
+            for (const c of i.content) {
+                const transformed = transformInlineContent(c)
+                if (transformed) {
+                    linkContent.push(transformed)
+                }
+            }
+        }
+        return {
+            type: 'link',
+            content: linkContent,
+            href: typeof i.href === 'string' ? i.href : ''
+        }
+    } else {
+        // CustomInlineContent: ensure props is an object
+        const content: unknown[] = []
+        if (Array.isArray(i.content)) {
+            for (const c of i.content) {
+                const transformed = transformInlineContent(c)
+                if (transformed) {
+                    content.push(transformed)
+                }
+            }
+        }
+        return {
+            type: i.type,
+            content: content.length > 0 ? content : undefined,
+            props: (i.props && typeof i.props === 'object' && !Array.isArray(i.props))
+                ? i.props
+                : {}
+        }
+    }
+}
+
+/**
  * Safely transform a single block to BlockNote format.
  * Handles all edge cases for props, content, and children.
  */
@@ -55,21 +136,32 @@ function transformBlock(block: unknown): Block | null {
     const b = block as Record<string, unknown>
 
     // Ensure block has required properties
-    if (!b.id || typeof b.id !== 'string' || !b.type || typeof b.type !== 'string') {
+    if (!b.id || typeof b.id !== 'string') {
+        return null
+    }
+    
+    if (!b.type || typeof b.type !== 'string') {
         return null
     }
 
-    // Safely extract and sanitize props - MUST be a valid object
-    let safeProps: Record<string, unknown> = {
+    // Skip unsupported block types to prevent "node type not found" errors
+    if (!SUPPORTED_BLOCK_TYPES.has(b.type)) {
+        // Convert unsupported types to paragraph to preserve content
+        b.type = 'paragraph'
+    }
+
+    // Safely extract and sanitize props - MUST be a valid object, never null/undefined
+    const safeProps: Record<string, unknown> = {
         textColor: 'default',
         backgroundColor: 'default',
         textAlignment: 'left'
     }
 
     // Only merge props if it's a valid non-null object
-    if (b.props && typeof b.props === 'object' && !Array.isArray(b.props)) {
+    if (b.props !== null && b.props !== undefined && typeof b.props === 'object' && !Array.isArray(b.props)) {
         const existingProps = b.props as Record<string, unknown>
-        for (const [key, value] of Object.entries(existingProps)) {
+        for (const key of Object.keys(existingProps)) {
+            const value = existingProps[key]
             // Only copy defined, non-null values
             if (value !== undefined && value !== null) {
                 safeProps[key] = value
@@ -77,16 +169,19 @@ function transformBlock(block: unknown): Block | null {
         }
     }
 
-    // Safely extract content - must be an array
-    let safeContent: unknown[] = []
+    // Safely extract content - must be an array of valid inline content objects
+    const safeContent: unknown[] = []
     if (Array.isArray(b.content)) {
-        safeContent = b.content.filter((item): item is object =>
-            item !== null && item !== undefined && typeof item === 'object'
-        )
+        for (const item of b.content) {
+            const transformedItem = transformInlineContent(item)
+            if (transformedItem) {
+                safeContent.push(transformedItem)
+            }
+        }
     }
 
-    // Recursively transform children
-    let safeChildren: Block[] = []
+    // Recursively transform children - MUST be an array, never undefined
+    const safeChildren: Block[] = []
     if (Array.isArray(b.children)) {
         for (const child of b.children) {
             const transformedChild = transformBlock(child)
@@ -96,13 +191,16 @@ function transformBlock(block: unknown): Block | null {
         }
     }
 
-    return {
-        id: b.id as string,
-        type: b.type as string,
+    // Create the block with all required properties explicitly set
+    const result: Record<string, unknown> = {
+        id: b.id,
+        type: b.type,
         props: safeProps,
         content: safeContent,
         children: safeChildren
-    } as Block
+    }
+
+    return result as Block
 }
 
 /**
