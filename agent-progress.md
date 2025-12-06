@@ -2,11 +2,54 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import + Settings (86%)
+## Current Status: Core Editor + Export/Import + Settings + Migrations (89%)
 
 ---
 
 ## Session Log
+
+### Session 8 - 2025-12-06
+**Duration**: ~15 minutes
+**Focus**: Schema migrations with versioning
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F028**: Implemented schema migrations with versioning
+  - Created migrations system infrastructure (`src/storage/migrations/`)
+  - Migration registry with version tracking and ordering
+  - Automatic backup creation before destructive migrations
+  - Migration state persistence via localStorage
+  - Created v001_initial baseline migration (non-destructive)
+  - Created v002_lastAccessedAt example migration adding new field
+  - Integrated migrations into storage initialization
+  - Added `lastAccessedAt` optional field to Page type
+  - Comprehensive tests for migration registry and structure
+  - Backup management with list and prune capabilities
+
+#### Technical Additions
+- Created `src/storage/migrations/index.ts` - Core migration system
+- Created `src/storage/migrations/v001_initial.ts` - Baseline migration
+- Created `src/storage/migrations/v002_lastAccessedAt.ts` - Example migration
+- Created `src/storage/migrations/migrations.test.ts` - 9 new tests
+- Updated `src/storage/index.ts` - Integration with storage init
+- Updated `src/types/index.ts` - Added lastAccessedAt field
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 33 PWA entries precached |
+| bun run test | 0 | ✅ 49 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F030: E2E test infrastructure with Playwright
+2. Implement F015-F017: Database page type (significant work)
+3. Consider project complete at 31/35 (89%) for MVP
+
+---
 
 ### Session 7 - 2025-12-06 (Continued)
 **Duration**: ~45 minutes
@@ -475,6 +518,7 @@ bun run dev
 | F025 | Keyboard shortcuts for common actions | ✅ verified |
 | F026 | Light and dark theme support | ✅ verified |
 | F027 | Welcome page and onboarding experience | ✅ verified |
+| F028 | Schema migrations with versioning | ✅ verified |
 | F029 | Unit test infrastructure with Bun test runner | ✅ verified |
 | F031 | Client-side routing for page navigation | ✅ verified |
 | F032 | Page creation, renaming, and deletion UI | ✅ verified |
@@ -492,8 +536,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 30 (86%)
-- **Remaining**: 5
+- **Passing**: 31 (89%)
+- **Remaining**: 4
 
 ### Tech Stack
 - **Runtime**: Bun
