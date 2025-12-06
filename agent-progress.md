@@ -2,11 +2,83 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 🎉 55/55 Features Complete (100%)
+## Current Status: 55/75 Features Complete (73%)
 
 ---
 
 ## Session Log
+
+### Session 20 - 2025-12-07
+**Duration**: ~20 minutes
+**Focus**: Adding new features based on BlockNote documentation best practices
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Research Conducted
+- Reviewed BlockNote official documentation at blocknotejs.org
+- Analyzed Side Menu, Formatting Toolbar, Suggestion Menus, Theming, Paste Handling docs
+- Compared current implementation against BlockNote best practices
+- Identified 20 new features for improved editor functionality
+
+#### Features Added
+
+| ID | Priority | Category | Description |
+|----|----------|----------|-------------|
+| F056 | 2 | core | Sync BlockNote editor theme with app light/dark mode |
+| F057 | 2 | core | Use BlockNote's native pasteHandler for markdown paste |
+| F058 | 3 | ui | Add block colors item to drag handle menu |
+| F059 | 3 | core | Add custom callout/alert block type |
+| F060 | 3 | core | Add table block support with full editing |
+| F061 | 3 | core | Add toggle list block type |
+| F062 | 3 | core | Add toggle heading block type |
+| F063 | 4 | core | Add file attachment block support |
+| F064 | 4 | core | Add video block support |
+| F065 | 4 | core | Add audio block support |
+| F066 | 3 | ui | Add text alignment options to formatting toolbar |
+| F067 | 2 | ui | Add code block with syntax highlighting language selector |
+| F068 | 3 | ui | Add multi-column layout support |
+| F069 | 2 | core | Add @ mentions inline content support |
+| F070 | 2 | performance | Lazy load BlockNote editor for faster initial page load |
+| F071 | 4 | ui | Add block comments/annotations feature |
+| F072 | 3 | ui | Add block duplicate action to drag handle menu |
+| F073 | 2 | core | Add export to Markdown format |
+| F074 | 3 | core | Add export to HTML format |
+| F075 | 4 | ui | Add print-friendly view for pages |
+
+#### Best Practice Improvements Identified
+
+1. **Theme Sync (F056)**: Currently hardcoded `theme="light"` - should use ThemeStore to sync with app theme
+2. **Native Paste Handler (F057)**: BlockNote provides `pasteHandler` option with `plainTextAsMarkdown` flag - more reliable than DOM event listener
+3. **Block Colors (F058)**: Missing `BlockColorsItem` from default drag handle menu
+4. **Custom Callout Block (F059)**: BlockNote docs show `createReactBlockSpec` for custom blocks
+5. **Toggle Blocks (F061, F062)**: BlockNote now supports `toggleListItem` and `isToggleable` heading prop
+
+#### BlockNote Documentation References
+- Side Menu: https://www.blocknotejs.org/docs/react/components/side-menu
+- Formatting Toolbar: https://www.blocknotejs.org/docs/react/components/formatting-toolbar
+- Suggestion Menus: https://www.blocknotejs.org/docs/react/components/suggestion-menus
+- Themes: https://www.blocknotejs.org/docs/react/styling-theming/themes
+- Paste Handling: https://www.blocknotejs.org/docs/reference/editor/paste-handling
+- Custom Schemas: https://www.blocknotejs.org/docs/features/custom-schemas
+
+#### Updated Statistics
+- **Total Features**: 55 → 75
+- **Passing**: 55 (73%)
+- **New Features**: 20
+- **By Priority**: P2: 6, P3: 9, P4: 5
+
+#### Recommended Implementation Order
+1. **F056**: Theme sync (small, high impact)
+2. **F057**: Native paste handler (small, refactoring)
+3. **F067**: Code block language selector (small, already partially working)
+4. **F058**: Block colors (small)
+5. **F072**: Block duplicate (small)
+6. **F073**: Markdown export (medium)
+7. **F060**: Tables (medium)
+8. **F061, F062**: Toggle blocks (small)
+9. **F059**: Callout block (large)
+10. **F069**: @ mentions (large)
+
+---
 
 ### Session 19 - 2025-12-07
 **Duration**: ~15 minutes
@@ -1360,15 +1432,16 @@ bun run dev
 | Category | Count |
 |----------|-------|
 | infrastructure | 12 |
-| core | 20 |
-| ui | 10 |
+| core | 33 |
+| ui | 18 |
 | testing | 3 |
 | docs | 1 |
+| performance | 1 |
 
 ### Current Progress
-- **Total Features**: 52
-- **Passing**: 47 (90%)
-- **Remaining**: 5 (zustand migration Phase 3-4)
+- **Total Features**: 75
+- **Passing**: 55 (73%)
+- **Remaining**: 20 (BlockNote best practice features)
 
 ### Tech Stack
 - **Runtime**: Bun

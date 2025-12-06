@@ -1336,12 +1336,524 @@
             "blockedBy": null,
             "lastWorkedOn": "2025-12-07T00:00:00Z",
             "notes": "Implemented custom SideMenuController with drag handle menu. TurnIntoSubmenu provides block type conversion for paragraph, headings, and list types. Uses editor.updateBlock() to preserve content while changing type."
+        },
+        {
+            "id": "F056",
+            "category": "core",
+            "priority": 2,
+            "description": "Sync BlockNote editor theme with app light/dark mode",
+            "dependencies": [
+                "F006",
+                "F026"
+            ],
+            "acceptanceCriteria": [
+                "Editor theme automatically updates when app theme changes",
+                "Dark mode uses BlockNote's dark theme colors",
+                "Light mode uses BlockNote's light theme colors",
+                "System theme preference is respected in the editor",
+                "Theme transitions are smooth without flicker"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Currently hardcoded to theme='light'. Should use useThemeStore to get current theme and pass to BlockNoteView."
+        },
+        {
+            "id": "F057",
+            "category": "core",
+            "priority": 2,
+            "description": "Use BlockNote's native pasteHandler for markdown paste",
+            "dependencies": [
+                "F053"
+            ],
+            "acceptanceCriteria": [
+                "Markdown paste uses BlockNote's pasteHandler option instead of DOM event listener",
+                "plainTextAsMarkdown option enables automatic markdown detection",
+                "Paste behavior is consistent with BlockNote's default priority order",
+                "Custom fallback parsing is still available for edge cases",
+                "No duplicate paste handling from both DOM and BlockNote"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote docs show pasteHandler option with plainTextAsMarkdown flag. This is more reliable than current DOM paste event approach."
+        },
+        {
+            "id": "F058",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add block colors item to drag handle menu",
+            "dependencies": [
+                "F055"
+            ],
+            "acceptanceCriteria": [
+                "Drag handle menu includes 'Colors' option",
+                "Colors submenu shows text color options (default, gray, brown, red, orange, yellow, green, blue, purple, pink)",
+                "Colors submenu shows background color options",
+                "Selected color is applied to the block's textColor and backgroundColor props",
+                "Color changes persist after save and reload"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote provides BlockColorsItem component that should be added to CustomDragHandleMenu."
+        },
+        {
+            "id": "F059",
+            "category": "core",
+            "priority": 3,
+            "description": "Add custom callout/alert block type",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can insert callout block via slash menu",
+                "Callout supports 4 types: info, warning, error, success",
+                "Each type has distinct icon and color scheme",
+                "User can change callout type via icon dropdown",
+                "Callout content supports inline text formatting",
+                "Callout serializes and deserializes correctly"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote docs show how to create custom blocks with createReactBlockSpec. Alert/callout example is in the documentation."
+        },
+        {
+            "id": "F060",
+            "category": "core",
+            "priority": 3,
+            "description": "Add table block support with full editing",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can insert table via slash menu",
+                "User can add and remove rows and columns",
+                "Table cells support inline text formatting",
+                "User can navigate table with Tab and arrow keys",
+                "Table content persists across save and reload",
+                "Table renders correctly in page view"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Tables are in BlockNote default schema. Need to verify they work correctly with our content serialization."
+        },
+        {
+            "id": "F061",
+            "category": "core",
+            "priority": 3,
+            "description": "Add toggle list block type",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can insert toggle list item via slash menu",
+                "Toggle expands/collapses to show/hide nested content",
+                "Toggle state persists across save and reload",
+                "Nested blocks can be added under toggle items",
+                "Toggle indicator (▶/▼) shows current state"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote now includes toggleListItem in default schema. Added to SUPPORTED_BLOCK_TYPES in RichTextEditor."
+        },
+        {
+            "id": "F062",
+            "category": "core",
+            "priority": 3,
+            "description": "Add toggle heading block type",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can convert heading to toggle heading",
+                "Toggle heading expands/collapses to show/hide content below",
+                "Toggle state persists across save and reload",
+                "Works with H1, H2, and H3 heading levels",
+                "Toggle indicator shows current state"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote supports isToggleable prop on heading blocks. Can be enabled via Turn Into menu."
+        },
+        {
+            "id": "F063",
+            "category": "core",
+            "priority": 4,
+            "description": "Add file attachment block support",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can insert file block via slash menu",
+                "User can upload any file type",
+                "File is stored as base64 in IndexedDB",
+                "File can be downloaded by clicking",
+                "File name and size are displayed",
+                "File icon indicates file type"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote supports file block type in default schema. Need custom upload handler for base64 storage."
+        },
+        {
+            "id": "F064",
+            "category": "core",
+            "priority": 4,
+            "description": "Add video block support",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can insert video block via slash menu",
+                "User can upload video file or paste video URL",
+                "Video player shows with play/pause controls",
+                "Video is stored as base64 or URL reference",
+                "Caption can be added below video",
+                "Video plays inline without leaving page"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote supports video block type in default schema. Already in SUPPORTED_BLOCK_TYPES."
+        },
+        {
+            "id": "F065",
+            "category": "core",
+            "priority": 4,
+            "description": "Add audio block support",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can insert audio block via slash menu",
+                "User can upload audio file or paste audio URL",
+                "Audio player shows with play/pause/seek controls",
+                "Audio is stored as base64 or URL reference",
+                "Caption can be added below audio player",
+                "Audio plays inline without leaving page"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote supports audio block type in default schema. Already in SUPPORTED_BLOCK_TYPES."
+        },
+        {
+            "id": "F066",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add text alignment options to formatting toolbar",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "Formatting toolbar includes alignment buttons (left, center, right, justify)",
+                "Clicking alignment button applies to current block",
+                "Current alignment is highlighted in toolbar",
+                "Alignment persists after save and reload",
+                "Works with paragraph, heading, and list blocks"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote provides TextAlignButton component. Default schema includes textAlignment prop on all text blocks."
+        },
+        {
+            "id": "F067",
+            "category": "ui",
+            "priority": 2,
+            "description": "Add code block with syntax highlighting language selector",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "Code block shows language selector dropdown",
+                "Selector includes common languages: JavaScript, TypeScript, Python, JSON, Bash, HTML, CSS, SQL",
+                "Selected language is applied for syntax highlighting",
+                "Language selection persists after save and reload",
+                "Language selector is accessible via keyboard"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote codeBlock already supports language prop. Need to verify language selector UI is working."
+        },
+        {
+            "id": "F068",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add multi-column layout support",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can create multi-column layout via slash menu",
+                "Supports 2, 3, and 4 column layouts",
+                "Blocks can be dragged between columns",
+                "Column widths are adjustable",
+                "Column layout persists after save and reload",
+                "Columns stack vertically on mobile"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote xl-multi-column package provides column and columnList blocks. Requires adding @blocknote/xl-multi-column dependency."
+        },
+        {
+            "id": "F069",
+            "category": "core",
+            "priority": 2,
+            "description": "Add @ mentions inline content support",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "Typing @ opens mentions suggestion menu",
+                "Menu shows list of page titles for linking",
+                "Selecting a mention inserts inline link to page",
+                "Mention displays with @ icon and page title",
+                "Clicking mention navigates to referenced page",
+                "Mentions update if page title changes"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote docs show how to create custom inline content with SuggestionMenuController for @ trigger."
+        },
+        {
+            "id": "F070",
+            "category": "performance",
+            "priority": 2,
+            "description": "Lazy load BlockNote editor for faster initial page load",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "BlockNote editor is loaded only when page content is displayed",
+                "Initial app bundle size is reduced",
+                "Loading indicator shown while editor loads",
+                "Editor loads within 500ms on average connection",
+                "No flash of unstyled content during load"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote is a large dependency. Using React.lazy() and Suspense can improve initial load time."
+        },
+        {
+            "id": "F071",
+            "category": "ui",
+            "priority": 4,
+            "description": "Add block comments/annotations feature",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can add comment to any block via context menu",
+                "Comment indicator appears on block with comments",
+                "Clicking indicator shows comment thread",
+                "Comments can be replied to and resolved",
+                "Comments persist across save and reload",
+                "Resolved comments can be hidden/shown"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Not a BlockNote feature - would require custom implementation with block metadata storage."
+        },
+        {
+            "id": "F072",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add block duplicate action to drag handle menu",
+            "dependencies": [
+                "F055"
+            ],
+            "acceptanceCriteria": [
+                "Drag handle menu includes 'Duplicate' option",
+                "Duplicating block creates copy immediately below",
+                "Duplicate preserves all block content and properties",
+                "Duplicate has new unique block ID",
+                "Nested blocks are also duplicated"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Can be implemented using editor.insertBlocks() with a deep copy of the block."
+        },
+        {
+            "id": "F073",
+            "category": "core",
+            "priority": 2,
+            "description": "Add export to Markdown format",
+            "dependencies": [
+                "F019"
+            ],
+            "acceptanceCriteria": [
+                "User can export page content as Markdown file",
+                "Export option available in page context menu",
+                "All block types are converted to appropriate Markdown syntax",
+                "Images are exported as markdown image links or embedded base64",
+                "Tables are exported as markdown tables",
+                "Downloaded file has .md extension"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote provides editor.blocksToMarkdownLossy() for markdown export."
+        },
+        {
+            "id": "F074",
+            "category": "core",
+            "priority": 3,
+            "description": "Add export to HTML format",
+            "dependencies": [
+                "F019"
+            ],
+            "acceptanceCriteria": [
+                "User can export page content as HTML file",
+                "Export option available in page context menu",
+                "HTML includes basic styling for readability",
+                "Images are embedded as base64 data URLs",
+                "Tables and code blocks render correctly",
+                "Downloaded file has .html extension"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote provides editor.blocksToHTMLLossy() for HTML export."
+        },
+        {
+            "id": "F075",
+            "category": "ui",
+            "priority": 4,
+            "description": "Add print-friendly view for pages",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can access print view via keyboard shortcut (Ctrl+P) or menu",
+                "Print view removes sidebar and navigation elements",
+                "Content is formatted for paper output",
+                "Images scale appropriately for print",
+                "Code blocks use printer-friendly colors",
+                "Page breaks are handled intelligently"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Requires CSS @media print rules and possibly a print-specific layout component."
         }
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
         "lastUpdated": "2025-12-07T00:00:00Z",
-        "totalFeatures": 55,
+        "totalFeatures": 75,
         "passingFeatures": 55
     }
 }
