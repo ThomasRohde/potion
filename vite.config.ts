@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 export default defineConfig({
+    base: '/potion/',
     plugins: [
         react(),
         VitePWA({
@@ -20,7 +21,8 @@ export default defineConfig({
                 theme_color: '#7c3aed',
                 background_color: '#ffffff',
                 display: 'standalone',
-                start_url: '/',
+                scope: '/potion/',
+                start_url: '/potion/',
                 icons: [
                     {
                         src: 'favicon.svg',
