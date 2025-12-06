@@ -242,23 +242,33 @@ function fromBlockNoteBlocks(blocks: Block[]): BlockContent {
 /**
  * Detect if text content looks like markdown.
  * Returns true if the text contains common markdown patterns.
+ * Uses patterns that are likely to produce valid BlockNote blocks.
  */
 function looksLikeMarkdown(text: string): boolean {
-    // Common markdown patterns to detect
+    // Patterns that are likely to produce meaningful BlockNote blocks
     const markdownPatterns = [
-        /^#{1,6}\s+/m,           // Headings: # ## ### etc.
-        /\*\*[^*]+\*\*/,         // Bold: **text**
-        /\*[^*]+\*/,             // Italic: *text*
-        /__[^_]+__/,             // Bold: __text__
-        /_[^_]+_/,               // Italic: _text_
-        /\[.+\]\(.+\)/,          // Links: [text](url)
-        /^[-*+]\s+/m,            // Unordered lists: - item or * item
-        /^\d+\.\s+/m,            // Ordered lists: 1. item
-        /^>\s+/m,                // Blockquotes: > text
-        /`[^`]+`/,               // Inline code: `code`
-        /^```/m,                 // Code blocks: ```
-        /^\|.+\|$/m,             // Tables: |col1|col2|
-        /!\[.+\]\(.+\)/,         // Images: ![alt](url)
+        // Headings: # Heading followed by newline
+        /^#{1,6}\s+\S+/m,
+        // Bold: **text**
+        /\*\*[^*]+\*\*/,
+        // Italic: *text* (but not lists)
+        /(?<!\n)\*[^*\n]+\*(?!\*)/,
+        // Bold: __text__
+        /__[^_]+__/,
+        // Links: [text](url)
+        /\[.+?\]\(.+?\)/,
+        // Unordered lists: - item or * item (at start of line with space)
+        /^[-*+]\s+\S+/m,
+        // Ordered lists: 1. item
+        /^\d+\.\s+\S+/m,
+        // Blockquotes: > text
+        /^>\s+\S+/m,
+        // Inline code: `code`
+        /`[^`\n]+`/,
+        // Code blocks: ```
+        /^```/m,
+        // Strikethrough: ~~text~~
+        /~~[^~]+~~/,
     ]
 
     return markdownPatterns.some(pattern => pattern.test(text))
