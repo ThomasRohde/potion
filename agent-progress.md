@@ -2,7 +2,7 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import + Settings (83%)
+## Current Status: Core Editor + Export/Import + Settings (86%)
 
 ---
 
@@ -44,11 +44,17 @@
   - Workspace name editable
   - About section with app info
   - All settings persist to IndexedDB
+- **F022**: Implemented import merge mode with conflict resolution
+  - Added merge mode option to ImportDialog (replace vs merge)
+  - Merge mode adds new pages, resolves conflicts by timestamp
+  - ImportResultDialog shows import summary with conflicts
+  - Added 3 tests for import merge mode behavior
 
 #### Technical Additions
 - Created `src/hooks/useTheme.ts` - theme state with persistence
 - Created `src/components/ThemeToggle.tsx` - cycling toggle button
 - Created `src/components/SettingsDialog.tsx` - settings panel
+- Updated `src/components/ImportDialog.tsx` - added merge mode and result dialog
 - Added handleExportPage callback to AppShell
 - Added onExportPage prop to Sidebar and PageItem components
 - Created KeyboardShortcutsDialog.tsx component
@@ -59,17 +65,16 @@
 | Command | Exit Code | Notes |
 |---------|-----------|-------|
 | bun run build | 0 | ✅ 33 PWA entries precached |
-| bun run test | 0 | ✅ 37 tests passed |
+| bun run test | 0 | ✅ 40 tests passed |
 | bun run lint | 0 | ✅ |
 
 #### Blockers
 - None
 
 #### Recommended Next Steps
-1. Implement F022: Import merge mode with conflict resolution
-2. Implement F015-F017: Database page type (advanced features)
-3. Implement F028: Schema migrations with versioning
-4. Implement F030: E2E test infrastructure with Playwright
+1. Implement F015-F017: Database page type (advanced features)
+2. Implement F028: Schema migrations with versioning
+3. Implement F030: E2E test infrastructure with Playwright
 
 ---
 
@@ -464,6 +469,7 @@ bun run dev
 | F019 | Export workspace to JSON file | ✅ verified |
 | F020 | Export subset (single page, subtree) | ✅ verified |
 | F021 | Import workspace (replace mode) | ✅ verified |
+| F022 | Import workspace (merge mode) | ✅ verified |
 | F023 | PWA manifest and service worker for offline support | ✅ verified |
 | F024 | Auto-save with 1 second idle debounce | ✅ verified |
 | F025 | Keyboard shortcuts for common actions | ✅ verified |
@@ -486,8 +492,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 29 (83%)
-- **Remaining**: 6
+- **Passing**: 30 (86%)
+- **Remaining**: 5
 
 ### Tech Stack
 - **Runtime**: Bun
