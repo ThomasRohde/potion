@@ -43,50 +43,84 @@ export interface RichTextEditorProps {
 }
 
 /**
+ * Safely transform a single block to BlockNote format.
+ * Handles all edge cases for props, content, and children.
+ */
+function transformBlock(block: unknown): Block | null {
+    // Skip invalid blocks
+    if (!block || typeof block !== 'object') {
+        return null
+    }
+    
+    const b = block as Record<string, unknown>
+    
+    // Ensure block has required properties
+    if (!b.id || typeof b.id !== 'string' || !b.type || typeof b.type !== 'string') {
+        return null
+    }
+
+    // Safely extract and sanitize props - MUST be a valid object
+    let safeProps: Record<string, unknown> = {
+        textColor: 'default',
+        backgroundColor: 'default',
+        textAlignment: 'left'
+    }
+    
+    // Only merge props if it's a valid non-null object
+    if (b.props && typeof b.props === 'object' && !Array.isArray(b.props)) {
+        const existingProps = b.props as Record<string, unknown>
+        for (const [key, value] of Object.entries(existingProps)) {
+            // Only copy defined, non-null values
+            if (value !== undefined && value !== null) {
+                safeProps[key] = value
+            }
+        }
+    }
+
+    // Safely extract content - must be an array
+    let safeContent: unknown[] = []
+    if (Array.isArray(b.content)) {
+        safeContent = b.content.filter((item): item is object => 
+            item !== null && item !== undefined && typeof item === 'object'
+        )
+    }
+
+    // Recursively transform children
+    let safeChildren: Block[] = []
+    if (Array.isArray(b.children)) {
+        for (const child of b.children) {
+            const transformedChild = transformBlock(child)
+            if (transformedChild) {
+                safeChildren.push(transformedChild)
+            }
+        }
+    }
+
+    return {
+        id: b.id as string,
+        type: b.type as string,
+        props: safeProps,
+        content: safeContent,
+        children: safeChildren
+    } as Block
+}
+
+/**
  * Convert our internal block content format to BlockNote blocks.
  * Returns undefined for empty/invalid content to let BlockNote use its default.
  */
 function toBlockNoteBlocks(content: BlockContent | undefined): Block[] | undefined {
-    if (!content || !content.blocks || content.blocks.length === 0) {
+    if (!content || !content.blocks || !Array.isArray(content.blocks) || content.blocks.length === 0) {
         return undefined
     }
 
     // Validate and transform blocks to BlockNote format
     const validBlocks: Block[] = []
     for (const block of content.blocks) {
-        // Skip invalid blocks
-        if (!block || typeof block !== 'object') {
-            continue
+        const transformed = transformBlock(block)
+        if (transformed) {
+            validBlocks.push(transformed)
         }
-        
-        // Ensure block has required properties
-        if (!block.id || !block.type) {
-            continue
-        }
-
-        // Transform to BlockNote format
-        // We use unknown cast because BlockNote's type is very strict
-        // but we're doing runtime validation
-        const blockNoteBlock = {
-            id: block.id,
-            type: block.type,
-            // BlockNote requires these default props
-            props: {
-                textColor: 'default',
-                backgroundColor: 'default',
-                textAlignment: 'left',
-                // Merge any custom props (like level for headings)
-                ...(block.props || {})
-            },
-            // Ensure content is an array (BlockNote requires this)
-            content: Array.isArray(block.content) ? block.content : [],
-            // Ensure children is an array
-            children: Array.isArray(block.children) 
-                ? toBlockNoteBlocks({ version: 1, blocks: block.children }) || []
-                : []
-        } as unknown as Block
-
-        validBlocks.push(blockNoteBlock)
     }
 
     // Return undefined if no valid blocks (let BlockNote use default empty state)
