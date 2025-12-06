@@ -469,12 +469,16 @@
                 "No data loss on browser close after save",
                 "Save operations are batched efficiently"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T07:45:00Z",
+            "verifiedBy": "agent-session-3",
+            "evidenceLinks": [
+                "src/hooks/useAutoSave.ts",
+                "src/components/SaveStatusIndicator.tsx",
+                "src/pages/PageView.tsx"
+            ],
+            "notes": "useAutoSave hook with 1s debounce, SaveStatusIndicator shows pending/saving/saved/error states. beforeunload handler for page close."
         },
         {
             "id": "F025",
@@ -693,8 +697,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T07:35:00Z",
+        "lastUpdated": "2025-12-06T07:45:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 8
+        "passingFeatures": 9
     }
 }

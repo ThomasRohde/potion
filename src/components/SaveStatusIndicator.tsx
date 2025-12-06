@@ -62,7 +62,7 @@ export function SaveStatusIndicator({ status, className = '' }: SaveStatusIndica
     const config = statusConfig[status]
 
     return (
-        <div 
+        <div
             className={`inline-flex items-center gap-1.5 text-xs ${config.color} ${className}`}
             title={config.label}
         >

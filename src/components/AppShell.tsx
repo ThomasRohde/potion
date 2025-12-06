@@ -28,7 +28,7 @@ interface DeleteConfirmState {
 export function AppShell({ children }: AppShellProps) {
     const navigate = useNavigate()
     const location = useLocation()
-    
+
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
     const [sidebarWidth, setSidebarWidth] = useState(280)
     const [pages, setPages] = useState<PageTreeNode[]>([])
@@ -43,7 +43,7 @@ export function AppShell({ children }: AppShellProps) {
     })
 
     // Extract page ID from URL
-    const currentPageId = location.pathname.startsWith('/page/') 
+    const currentPageId = location.pathname.startsWith('/page/')
         ? location.pathname.split('/page/')[1]?.split('/')[0] || null
         : null
 
@@ -117,7 +117,7 @@ export function AppShell({ children }: AppShellProps) {
         try {
             await updatePageTitle(pageId, newTitle)
             await refreshPages(workspaceId)
-            
+
             // If current page was renamed, update the current page state
             if (currentPageId === pageId) {
                 const updatedPage = await getPage(pageId)
@@ -152,10 +152,10 @@ export function AppShell({ children }: AppShellProps) {
             }
             return null
         }
-        
+
         const pageToDelete = findPage(pages)
         const pageTitle = pageToDelete?.title || 'Untitled'
-        
+
         setDeleteConfirm({
             isOpen: true,
             pageId,

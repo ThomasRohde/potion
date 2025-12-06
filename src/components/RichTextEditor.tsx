@@ -49,7 +49,7 @@ function toBlockNoteBlocks(content: BlockContent | undefined): Block[] | undefin
     if (!content || !content.blocks || content.blocks.length === 0) {
         return undefined
     }
-    
+
     // Our internal format is designed to be compatible with BlockNote's format
     // For now, we pass through directly. In the future, we may need to transform.
     return content.blocks as Block[]

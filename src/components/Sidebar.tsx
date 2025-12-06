@@ -329,7 +329,7 @@ function PageItem({
 
             {/* Dropdown menu */}
             {showMenu && (
-                <div 
+                <div
                     className="absolute right-2 top-full z-50 mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
                     onMouseLeave={() => setShowMenu(false)}
                 >

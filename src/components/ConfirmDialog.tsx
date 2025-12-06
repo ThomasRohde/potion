@@ -55,17 +55,17 @@ export function ConfirmDialog({
     const confirmButtonClass = variant === 'danger'
         ? 'bg-red-600 hover:bg-red-700 text-white'
         : variant === 'warning'
-        ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
-        : 'bg-potion-600 hover:bg-potion-700 text-white'
+            ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
+            : 'bg-potion-600 hover:bg-potion-700 text-white'
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Backdrop */}
-            <div 
+            <div
                 className="absolute inset-0 bg-black/50"
                 onClick={onCancel}
             />
-            
+
             {/* Dialog */}
             <div
                 ref={dialogRef}
@@ -75,7 +75,7 @@ export function ConfirmDialog({
                 tabIndex={-1}
                 className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6 outline-none"
             >
-                <h2 
+                <h2
                     id="dialog-title"
                     className="text-lg font-semibold text-gray-900 dark:text-white mb-2"
                 >

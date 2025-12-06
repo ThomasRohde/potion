@@ -71,7 +71,7 @@ export function useAutoSave<T>({
     const [status, setStatus] = useState<SaveStatus>('idle')
     const [isDirty, setIsDirty] = useState(false)
     const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
-    
+
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const lastDataRef = useRef<T>(data)
     const isSavingRef = useRef(false)

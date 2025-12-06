@@ -2,11 +2,64 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Infrastructure Complete
+## Current Status: Editor & Core UX Complete
 
 ---
 
 ## Session Log
+
+### Session 3 - 2025-12-06
+**Duration**: ~60 minutes
+**Focus**: Editor integration, routing, page CRUD, and auto-save
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F031**: Implemented client-side routing
+  - BrowserRouter with routes for /, /page/:id, and * (404)
+  - HomePage, PageView, NotFound page components
+  - Browser back/forward navigation works
+  - Deep links work
+- **F006**: Integrated BlockNote editor
+  - RichTextEditor wrapper component
+  - Content serialization/deserialization with BlockContent format
+  - Editor renders in page content area
+- **F032**: Implemented page creation/rename/delete UI
+  - Create page from sidebar (already existed)
+  - Inline rename via hover menu
+  - Delete page with confirmation dialog
+  - Child pages moved to root on parent delete
+  - ConfirmDialog component
+- **F024**: Implemented auto-save with debounce
+  - useAutoSave hook with 1 second debounce
+  - SaveStatusIndicator component (pending/saving/saved/error)
+  - beforeunload handler for page close
+
+#### Technical Additions
+- Created `src/pages/` module with PageView, HomePage, NotFound
+- Created `src/hooks/` module with useAutoSave
+- Created ConfirmDialog and SaveStatusIndicator components
+- Updated AppShell to use routing for navigation
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ ~1MB bundle (BlockNote is large) |
+| bun run test | 0 | ✅ 20 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### In Progress
+- None
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F029: Unit test infrastructure (expand tests)
+2. Implement F014: Page favorites functionality
+3. Implement F018: Search across pages
+4. Implement F027: Welcome page and onboarding
+
+---
 
 ### Session 2 - 2025-12-06
 **Duration**: ~45 minutes
@@ -117,7 +170,10 @@ bun run dev
 | F003 | Workspace data model and CRUD operations | ✅ verified |
 | F004 | Page data model and CRUD operations | ✅ verified |
 | F005 | App shell with sidebar, topbar, and content area layout | ✅ verified |
-| F006 | BlockNote editor integration with RichTextEditor wrapper | ⏳ not-started |
+| F006 | BlockNote editor integration with RichTextEditor wrapper | ✅ verified |
+| F024 | Auto-save with 1 second idle debounce | ✅ verified |
+| F031 | Client-side routing for page navigation | ✅ verified |
+| F032 | Page creation, renaming, and deletion UI | ✅ verified |
 | F023 | PWA manifest and service worker for offline support | ⏳ not-started |
 | F034 | CSP and security headers for privacy | ⏳ not-started |
 

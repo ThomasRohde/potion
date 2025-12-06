@@ -20,9 +20,9 @@ export function HomePage() {
             try {
                 const workspace = await getOrCreateDefaultWorkspace()
                 setWorkspaceId(workspace.id)
-                
+
                 const pages: PageSummary[] = await listPages(workspace.id)
-                
+
                 // If there are pages, navigate to the first one
                 if (pages.length > 0) {
                     // Find the first root page (no parent)
