@@ -6,36 +6,65 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
 }
 
 export function AppShell({ children }: AppShellProps) {
+    const navigate = useNavigate()
+    const location = useLocation()
+    
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
     const [sidebarWidth, setSidebarWidth] = useState(280)
     const [pages, setPages] = useState<PageTreeNode[]>([])
-    const [selectedPageId, setSelectedPageId] = useState<string | null>(null)
-    const [selectedPage, setSelectedPage] = useState<PageSummary | null>(null)
+    const [currentPage, setCurrentPage] = useState<PageSummary | null>(null)
     const [workspaceId, setWorkspaceId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+
+    // Extract page ID from URL
+    const currentPageId = location.pathname.startsWith('/page/') 
+        ? location.pathname.split('/page/')[1]?.split('/')[0] || null
+        : null
 
     const refreshPages = useCallback(async (wsId: string) => {
         const pageSummaries = await listPages(wsId)
         const tree = buildPageTree(pageSummaries)
         setPages(tree)
+    }, [])
 
-        // If no page selected and we have pages, select the first one
-        if (!selectedPageId && tree.length > 0) {
-            setSelectedPageId(tree[0].id)
-            setSelectedPage(tree[0])
+    // Load current page info when URL changes
+    useEffect(() => {
+        async function loadCurrentPage() {
+            if (currentPageId) {
+                const page = await getPage(currentPageId)
+                if (page) {
+                    setCurrentPage({
+                        id: page.id,
+                        workspaceId: page.workspaceId,
+                        parentPageId: page.parentPageId,
+                        title: page.title,
+                        type: page.type,
+                        isFavorite: page.isFavorite,
+                        icon: page.icon,
+                        createdAt: page.createdAt,
+                        updatedAt: page.updatedAt
+                    })
+                } else {
+                    setCurrentPage(null)
+                }
+            } else {
+                setCurrentPage(null)
+            }
         }
-    }, [selectedPageId])
+        loadCurrentPage()
+    }, [currentPageId])
 
     // Initialize workspace and load pages
     useEffect(() => {
@@ -54,9 +83,8 @@ export function AppShell({ children }: AppShellProps) {
     }, [refreshPages])
 
     const handlePageSelect = useCallback((page: PageSummary) => {
-        setSelectedPageId(page.id)
-        setSelectedPage(page)
-    }, [])
+        navigate(`/page/${page.id}`)
+    }, [navigate])
 
     const handleCreatePage = useCallback(async (parentPageId?: string) => {
         if (!workspaceId) return
@@ -66,19 +94,8 @@ export function AppShell({ children }: AppShellProps) {
         })
 
         await refreshPages(workspaceId)
-        setSelectedPageId(newPage.id)
-        setSelectedPage({
-            id: newPage.id,
-            workspaceId: newPage.workspaceId,
-            parentPageId: newPage.parentPageId,
-            title: newPage.title,
-            type: newPage.type,
-            isFavorite: newPage.isFavorite,
-            icon: newPage.icon,
-            createdAt: newPage.createdAt,
-            updatedAt: newPage.updatedAt
-        })
-    }, [workspaceId, refreshPages])
+        navigate(`/page/${newPage.id}`)
+    }, [workspaceId, refreshPages, navigate])
 
     const toggleSidebar = useCallback(() => {
         setSidebarCollapsed(prev => !prev)
@@ -100,7 +117,7 @@ export function AppShell({ children }: AppShellProps) {
             {/* Sidebar */}
             <Sidebar
                 pages={pages}
-                selectedPageId={selectedPageId}
+                selectedPageId={currentPageId}
                 collapsed={sidebarCollapsed}
                 width={sidebarWidth}
                 onWidthChange={setSidebarWidth}
@@ -113,40 +130,14 @@ export function AppShell({ children }: AppShellProps) {
             <div className="flex-1 flex flex-col min-w-0">
                 {/* Topbar */}
                 <Topbar
-                    currentPage={selectedPage}
+                    currentPage={currentPage}
                     sidebarCollapsed={sidebarCollapsed}
                     onToggleSidebar={toggleSidebar}
                 />
 
                 {/* Content */}
                 <main className="flex-1 overflow-auto">
-                    {children ?? (
-                        <div className="max-w-4xl mx-auto px-8 py-12">
-                            {selectedPage ? (
-                                <div>
-                                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                                        {selectedPage.icon && <span className="mr-2">{selectedPage.icon}</span>}
-                                        {selectedPage.title}
-                                    </h1>
-                                    <p className="text-gray-500 dark:text-gray-400">
-                                        Start typing or press <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">/</kbd> for commands
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="text-center py-20">
-                                    <p className="text-gray-500 dark:text-gray-400 mb-4">
-                                        No pages yet. Create your first page!
-                                    </p>
-                                    <button
-                                        onClick={() => handleCreatePage()}
-                                        className="px-4 py-2 bg-potion-600 text-white rounded-lg hover:bg-potion-700 transition-colors"
-                                    >
-                                        Create a page
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    {children}
                 </main>
             </div>
         </div>
