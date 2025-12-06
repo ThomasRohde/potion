@@ -19,6 +19,7 @@ interface SidebarProps {
     onWidthChange: (width: number) => void
     onPageSelect: (page: PageSummary) => void
     onCreatePage: (parentPageId?: string) => void
+    onCreateDatabase?: (parentPageId?: string) => void
     onRenamePage?: (pageId: string, newTitle: string) => void
     onDeletePage?: (pageId: string, hasChildren: boolean) => void
     onToggleFavorite?: (pageId: string, isFavorite: boolean) => void
@@ -40,6 +41,7 @@ export function Sidebar({
     width,
     onPageSelect,
     onCreatePage,
+    onCreateDatabase,
     onRenamePage,
     onDeletePage,
     onToggleFavorite,
@@ -56,6 +58,7 @@ export function Sidebar({
     const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set())
     const [dragOverPageId, setDragOverPageId] = useState<string | null>(null)
     const [dragOverRoot, setDragOverRoot] = useState(false)
+    const [showNewMenu, setShowNewMenu] = useState(false)
 
     const toggleExpanded = useCallback((pageId: string) => {
         setExpandedPages(prev => {
@@ -214,16 +217,51 @@ export function Sidebar({
 
             {/* Footer */}
             <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
-                <button
-                    onClick={() => onCreatePage()}
-                    data-testid="new-page-button"
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    New page
-                </button>
+                {/* New page/database dropdown */}
+                <div className="relative">
+                    <button
+                        onClick={() => setShowNewMenu(!showNewMenu)}
+                        data-testid="new-page-button"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        New
+                        <svg className="w-3 h-3 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    {showNewMenu && (
+                        <div
+                            className="absolute bottom-full left-0 right-0 z-50 mb-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
+                            onMouseLeave={() => setShowNewMenu(false)}
+                        >
+                            <button
+                                onClick={() => {
+                                    onCreatePage()
+                                    setShowNewMenu(false)
+                                }}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                            >
+                                <span>📄</span>
+                                New page
+                            </button>
+                            {onCreateDatabase && (
+                                <button
+                                    onClick={() => {
+                                        onCreateDatabase()
+                                        setShowNewMenu(false)
+                                    }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                >
+                                    <span>📊</span>
+                                    New database
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
                 <div className="flex gap-1">
                     <button
                         onClick={onExportWorkspace}

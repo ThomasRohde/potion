@@ -18,7 +18,7 @@ import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { useTheme } from '../hooks'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
@@ -134,6 +134,17 @@ export function AppShell({ children }: AppShellProps) {
 
         await refreshPages(workspaceId)
         navigate(`/page/${newPage.id}`)
+    }, [workspaceId, refreshPages, navigate])
+
+    const handleCreateDatabase = useCallback(async (parentPageId?: string) => {
+        if (!workspaceId) return
+
+        const { page } = await createDatabase(workspaceId, 'Untitled Database', {
+            parentPageId: parentPageId ?? null
+        })
+
+        await refreshPages(workspaceId)
+        navigate(`/page/${page.id}`)
     }, [workspaceId, refreshPages, navigate])
 
     // Global keyboard shortcuts - must be after handleCreatePage
@@ -434,6 +445,7 @@ export function AppShell({ children }: AppShellProps) {
                 onWidthChange={setSidebarWidth}
                 onPageSelect={handlePageSelect}
                 onCreatePage={handleCreatePage}
+                onCreateDatabase={handleCreateDatabase}
                 onRenamePage={handleRenamePage}
                 onDeletePage={handleDeletePage}
                 onToggleFavorite={handleToggleFavorite}

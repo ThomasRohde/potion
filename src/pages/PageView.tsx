@@ -4,12 +4,13 @@
  * Displays a page based on the URL parameter :id
  * Handles loading states and not-found scenarios.
  * Implements auto-save with debounce and status indicator.
+ * For database pages, renders the DatabasePage component instead of the editor.
  */
 
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getPage, getOrCreateDefaultWorkspace, updatePageContent } from '../services'
-import { RichTextEditor, SaveStatusIndicator } from '../components'
+import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle } from '../services'
+import { RichTextEditor, SaveStatusIndicator, DatabasePage } from '../components'
 import { useAutoSave } from '../hooks'
 import type { Page, BlockContent } from '../types'
 
@@ -68,7 +69,7 @@ export function PageView() {
         data: editorContent || { version: 1, blocks: [] },
         onSave: saveContent,
         debounceMs: 1000,
-        enabled: !!page && !!editorContent,
+        enabled: !!page && !!editorContent && page.type !== 'database',
         onError: (err) => console.error('Auto-save failed:', err)
     })
 
@@ -76,6 +77,13 @@ export function PageView() {
     const handleContentChange = useCallback((content: BlockContent) => {
         setEditorContent(content)
     }, [])
+
+    // Handle title change for database pages
+    const handleTitleChange = useCallback(async (title: string) => {
+        if (!page) return
+        await updatePageTitle(page.id, title)
+        setPage(prev => prev ? { ...prev, title } : null)
+    }, [page])
 
     if (isLoading) {
         return (
@@ -114,6 +122,11 @@ export function PageView() {
 
     if (!page) {
         return null
+    }
+
+    // Render database page differently
+    if (page.type === 'database') {
+        return <DatabasePage page={page} onTitleChange={handleTitleChange} />
     }
 
     return (

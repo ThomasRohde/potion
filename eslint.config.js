@@ -49,7 +49,8 @@ export default [
                 Event: 'readonly',
                 KeyboardEvent: 'readonly',
                 MouseEvent: 'readonly',
-                CustomEvent: 'readonly'
+                CustomEvent: 'readonly',
+                crypto: 'readonly'
             }
         },
         plugins: {
