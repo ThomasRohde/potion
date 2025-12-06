@@ -32,12 +32,12 @@
                 "All UI code uses interface, not IndexedDB directly",
                 "Adapter can be swapped without changing UI code"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T00:00:00Z",
+            "verifiedBy": "agent-session-2",
+            "evidenceLinks": ["src/storage/StorageAdapter.ts", "src/storage/IndexedDbStorageAdapter.ts", "src/storage/index.ts"],
+            "notes": "Interface defined with full CRUD, export/import. IndexedDB implementation complete. Tests pass."
         },
         {
             "id": "F003",
@@ -665,6 +665,6 @@
         "createdAt": "2025-12-06T00:00:00Z",
         "lastUpdated": "2025-12-06T00:00:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 1
+        "passingFeatures": 2
     }
 }
