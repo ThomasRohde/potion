@@ -2,11 +2,97 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: ✅ 40/40 Features Complete (100%)
+## Current Status: ✅ 40/52 Features Complete (77%)
 
 ---
 
 ## Session Log
+
+### Session 13 - 2025-12-06
+**Duration**: ~15 minutes
+**Focus**: Adding zustand/immer migration features
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Added Features (Phased Migration to Zustand/Immer)
+Added 12 new features for a phased migration from React Context/useState to Zustand with Immer middleware.
+
+| ID | Priority | Category | Description | Phase |
+|----|----------|----------|-------------|-------|
+| F041 | 2 | infrastructure | Install and configure Zustand with Immer middleware | 1 |
+| F042 | 2 | infrastructure | Create workspace store with zustand/immer | 2 |
+| F043 | 2 | infrastructure | Create UI store for dialogs and sidebar state | 2 |
+| F044 | 2 | infrastructure | Create theme store with persistence | 2 |
+| F045 | 2 | core | Migrate AppShell state to zustand stores | 3 |
+| F046 | 2 | core | Migrate PageContext to zustand store | 3 |
+| F047 | 2 | core | Migrate useTheme hook to zustand store | 3 |
+| F048 | 3 | core | Add Redux DevTools integration for zustand stores | 4 |
+| F049 | 3 | infrastructure | Clean up deprecated context and hooks | 4 |
+| F050 | 3 | testing | Add unit tests for zustand stores | 4 |
+| F051 | 3 | infrastructure | Add zustand persist middleware for settings | 4 |
+| F052 | 4 | docs | Document zustand store architecture | 4 |
+
+#### Migration Strategy
+
+**Phase 1: Infrastructure** (F041)
+- Install zustand and immer packages
+- Verify TypeScript configuration works
+- Create sample store to validate setup
+
+**Phase 2: Foundation** (F042-F044)
+- Create three core stores:
+  - `WorkspaceStore`: workspace data, pages, current page
+  - `UIStore`: sidebar, dialogs, modals
+  - `ThemeStore`: light/dark/system theme with persistence
+
+**Phase 3: Migration** (F045-F047)
+- Migrate AppShell's 15+ useState calls to stores
+- Replace PageContext with WorkspaceStore actions
+- Replace useTheme hook with ThemeStore
+
+**Phase 4: Cleanup & Polish** (F048-F052)
+- Add Redux DevTools for debugging
+- Remove deprecated contexts and hooks
+- Add unit tests for stores
+- Add persist middleware for UI preferences
+- Document the architecture
+
+#### Why Zustand/Immer?
+
+Based on research from zustand.docs.pmnd.rs:
+1. **Simpler than Context**: No providers, no boilerplate
+2. **Immer integration**: Immutable updates with mutable syntax
+3. **TypeScript-first**: Full type inference
+4. **Middleware**: Built-in devtools, persist, combine
+5. **Small bundle**: ~2KB gzipped
+6. **Selector-based**: Fine-grained re-renders
+
+#### Current State Analysis
+
+AppShell.tsx currently has:
+- 15+ useState calls managing workspace, UI, and dialog state
+- Complex callbacks for CRUD operations
+- State prop drilling to Sidebar, Topbar components
+- PageContext for cross-component refresh
+
+This will be refactored to:
+- 3 focused stores with clear responsibilities
+- Direct store access from any component
+- No prop drilling for state
+- No context providers needed
+
+#### Updated Statistics
+- **Total Features**: 40 → 52
+- **Passing**: 40 (77%)
+- **New Features by Category**: 5 infrastructure, 4 core, 1 testing, 1 docs
+
+#### Recommended Implementation Order
+1. F041: Install zustand/immer (prerequisite for all)
+2. F042, F043, F044: Create stores (can be parallel)
+3. F045: Migrate AppShell (biggest refactor)
+4. F046, F047: Migrate context and theme hook
+5. F048-F052: Polish, cleanup, testing, docs
+
+---
 
 ### Session 12 - 2025-12-06
 **Duration**: ~30 minutes
@@ -878,15 +964,16 @@ bun run dev
 ### Feature Categories
 | Category | Count |
 |----------|-------|
-| infrastructure | 7 |
-| core | 16 |
+| infrastructure | 12 |
+| core | 20 |
 | ui | 10 |
-| testing | 2 |
+| testing | 3 |
+| docs | 1 |
 
 ### Current Progress
-- **Total Features**: 35
-- **Passing**: 31 (89%)
-- **Remaining**: 4
+- **Total Features**: 52
+- **Passing**: 40 (77%)
+- **Remaining**: 12 (zustand/immer migration)
 
 ### Tech Stack
 - **Runtime**: Bun
@@ -896,6 +983,7 @@ bun run dev
 - **Storage**: IndexedDB via StorageAdapter abstraction
 - **Routing**: react-router-dom v6
 - **PWA**: Workbox service worker
+- **State Management**: zustand with immer (planned)
 
 ---
 
