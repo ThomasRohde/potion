@@ -2,11 +2,61 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Search & Onboarding Complete
+## Current Status: PWA, Security & Navigation Complete
 
 ---
 
 ## Session Log
+
+### Session 5 - 2025-12-06
+**Duration**: ~45 minutes
+**Focus**: PWA, security headers, and page tree drag-and-drop
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F023**: Implemented PWA manifest and service worker
+  - Updated vite.config.ts to use SVG icons
+  - Created PWAUpdatePrompt component for update notifications
+  - Service worker precaches 33 entries for offline support
+  - App is installable on desktop and mobile
+- **F034**: Verified CSP and security headers
+  - CSP meta tag already configured in index.html
+  - Blocks remote scripts, allows only self for connect/script
+  - Font loading from Google Fonts for typography
+  - No analytics or tracking code
+- **F013**: Implemented page tree drag-and-drop navigation
+  - Added drag-and-drop to reorder/reparent pages in sidebar
+  - Visual feedback with ring highlight on drag over
+  - Descendant check prevents invalid moves
+  - Drop on root to make page top-level
+  - Updated ESLint config with Element and Node globals
+
+#### Technical Additions
+- Created `src/components/PWAUpdatePrompt.tsx`
+- Added useRegisterSW hook integration from vite-plugin-pwa
+- Added drag-and-drop handlers to Sidebar and PageItem
+- Added handleMovePage to AppShell with descendant validation
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 33 PWA entries precached |
+| bun run test | 0 | ✅ 31 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### In Progress
+- None
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F007-F009: Block types (text formatting, headings, lists)
+2. Implement F011: Slash command palette
+3. Implement F019-F021: Export/import functionality
+4. Implement F025: Keyboard shortcuts documentation
+
+---
 
 ### Session 4 - 2025-12-06
 **Duration**: ~45 minutes
@@ -234,8 +284,9 @@ bun run dev
 | F018 | Search across pages by title and content | ✅ verified |
 | F027 | Welcome page and onboarding experience | ✅ verified |
 | F029 | Unit test infrastructure with Bun test runner | ✅ verified |
-| F023 | PWA manifest and service worker for offline support | ⏳ not-started |
-| F034 | CSP and security headers for privacy | ⏳ not-started |
+| F013 | Page tree navigation with nesting support | ✅ verified |
+| F023 | PWA manifest and service worker for offline support | ✅ verified |
+| F034 | CSP and security headers for privacy | ✅ verified |
 
 ### Feature Categories
 | Category | Count |
@@ -247,8 +298,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 13 (37%)
-- **Remaining**: 22
+- **Passing**: 16 (46%)
+- **Remaining**: 19
 
 ### Tech Stack
 - **Runtime**: Bun
