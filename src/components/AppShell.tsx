@@ -164,6 +164,35 @@ export function AppShell({ children }: AppShellProps) {
         })
     }, [pages])
 
+    const handleToggleFavorite = useCallback(async (pageId: string, isFavorite: boolean) => {
+        if (!workspaceId) return
+
+        try {
+            await updatePage(pageId, { isFavorite })
+            await refreshPages(workspaceId)
+
+            // If current page was toggled, update the current page state
+            if (currentPageId === pageId) {
+                const updatedPage = await getPage(pageId)
+                if (updatedPage) {
+                    setCurrentPage({
+                        id: updatedPage.id,
+                        workspaceId: updatedPage.workspaceId,
+                        parentPageId: updatedPage.parentPageId,
+                        title: updatedPage.title,
+                        type: updatedPage.type,
+                        isFavorite: updatedPage.isFavorite,
+                        icon: updatedPage.icon,
+                        createdAt: updatedPage.createdAt,
+                        updatedAt: updatedPage.updatedAt
+                    })
+                }
+            }
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error)
+        }
+    }, [workspaceId, refreshPages, currentPageId])
+
     const confirmDelete = useCallback(async () => {
         if (!workspaceId || !deleteConfirm.pageId) return
 
@@ -222,6 +251,7 @@ export function AppShell({ children }: AppShellProps) {
                 onCreatePage={handleCreatePage}
                 onRenamePage={handleRenamePage}
                 onDeletePage={handleDeletePage}
+                onToggleFavorite={handleToggleFavorite}
                 onToggleCollapse={toggleSidebar}
             />
 
