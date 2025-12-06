@@ -467,8 +467,6 @@ export function AppShell({ children }: AppShellProps) {
                 {/* Topbar */}
                 <Topbar
                     currentPage={currentPage}
-                    sidebarCollapsed={sidebarCollapsed}
-                    onToggleSidebar={toggleSidebar}
                     onOpenSearch={() => setIsSearchOpen(true)}
                     onRenameTitle={currentPage ? (newTitle) => handleRenamePage(currentPage.id, newTitle) : undefined}
                     onToggleFavorite={currentPage ? () => handleToggleFavorite(currentPage.id, !currentPage.isFavorite) : undefined}

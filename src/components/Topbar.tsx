@@ -9,12 +9,9 @@ import type { PageSummary } from '../types'
 
 interface TopbarProps {
     currentPage: PageSummary | null
-    sidebarCollapsed: boolean
-    onToggleSidebar: () => void
     onOpenSearch?: () => void
     onRenameTitle?: (newTitle: string) => void
     onToggleFavorite?: () => void
-    onOpenPageMenu?: () => void
     onDuplicatePage?: () => void
     onExportPage?: () => void
     onDeletePage?: () => void
@@ -22,8 +19,6 @@ interface TopbarProps {
 
 export function Topbar({
     currentPage,
-    sidebarCollapsed,
-    onToggleSidebar,
     onOpenSearch,
     onRenameTitle,
     onToggleFavorite,
@@ -113,19 +108,6 @@ export function Topbar({
     }
     return (
         <header className="h-12 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center px-4 gap-2">
-            {/* Sidebar toggle (visible when collapsed) */}
-            {sidebarCollapsed && (
-                <button
-                    onClick={onToggleSidebar}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
-                    title="Open sidebar"
-                >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            )}
-
             {/* Breadcrumb / Page title */}
             <div className="flex items-center gap-2 flex-1 min-w-0">
                 {currentPage ? (
