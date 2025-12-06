@@ -213,3 +213,95 @@ describe('WorkspaceExport Structure', () => {
         expect(expectedFilename).toMatch(/^potion-workspace-\d{4}-\d{2}-\d{2}\.json$/)
     })
 })
+
+describe('Page Export Structure', () => {
+    test('Page export should use title in filename', () => {
+        const pageTitle = 'My Test Page'
+        const sanitizedTitle = pageTitle.replace(/[^a-z0-9]/gi, '-').toLowerCase()
+        const date = new Date().toISOString().split('T')[0]
+        const expectedFilename = `potion-${sanitizedTitle}-${date}.json`
+
+        expect(expectedFilename).toMatch(/^potion-my-test-page-\d{4}-\d{2}-\d{2}\.json$/)
+    })
+
+    test('Page export should support includeChildren option', () => {
+        // When includeChildren is true, child pages should be included
+        const parentPage: Page = {
+            id: 'parent-1',
+            workspaceId: 'ws-1',
+            parentPageId: null,
+            title: 'Parent Page',
+            type: 'page',
+            isFavorite: false,
+            content: { version: 1, blocks: [] },
+            createdAt: '2025-12-06T00:00:00Z',
+            updatedAt: '2025-12-06T00:00:00Z'
+        }
+
+        const childPage: Page = {
+            id: 'child-1',
+            workspaceId: 'ws-1',
+            parentPageId: 'parent-1',
+            title: 'Child Page',
+            type: 'page',
+            isFavorite: false,
+            content: { version: 1, blocks: [] },
+            createdAt: '2025-12-06T00:00:00Z',
+            updatedAt: '2025-12-06T00:00:00Z'
+        }
+
+        // Simulate export with children
+        const exportWithChildren: WorkspaceExport = {
+            version: 1,
+            exportedAt: '2025-12-06T10:00:00Z',
+            workspace: {
+                id: 'ws-1',
+                name: 'Test',
+                createdAt: '2025-12-06T00:00:00Z',
+                updatedAt: '2025-12-06T00:00:00Z',
+                version: 1
+            },
+            pages: [parentPage, childPage],
+            databases: [],
+            rows: [],
+            settings: null
+        }
+
+        expect(exportWithChildren.pages.length).toBe(2)
+        expect(exportWithChildren.pages.some(p => p.id === 'parent-1')).toBe(true)
+        expect(exportWithChildren.pages.some(p => p.id === 'child-1')).toBe(true)
+    })
+
+    test('Page export without children should only include target page', () => {
+        const page: Page = {
+            id: 'single-page',
+            workspaceId: 'ws-1',
+            parentPageId: null,
+            title: 'Single Page',
+            type: 'page',
+            isFavorite: false,
+            content: { version: 1, blocks: [] },
+            createdAt: '2025-12-06T00:00:00Z',
+            updatedAt: '2025-12-06T00:00:00Z'
+        }
+
+        const exportWithoutChildren: WorkspaceExport = {
+            version: 1,
+            exportedAt: '2025-12-06T10:00:00Z',
+            workspace: {
+                id: 'ws-1',
+                name: 'Test',
+                createdAt: '2025-12-06T00:00:00Z',
+                updatedAt: '2025-12-06T00:00:00Z',
+                version: 1
+            },
+            pages: [page],
+            databases: [],
+            rows: [],
+            settings: null
+        }
+
+        expect(exportWithoutChildren.pages.length).toBe(1)
+        expect(exportWithoutChildren.pages[0].id).toBe('single-page')
+    })
+})

@@ -14,7 +14,7 @@ import { SearchDialog } from './SearchDialog'
 import { ImportDialog } from './ImportDialog'
 import type { PageSummary } from '../types'
 import type { PageTreeNode } from '../services/pageService'
-import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, importWorkspaceFromFile } from '../services'
+import { getOrCreateDefaultWorkspace, listPages, buildPageTree, createPage, getPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, importWorkspaceFromFile } from '../services'
 
 interface AppShellProps {
     children?: React.ReactNode
@@ -295,6 +295,15 @@ export function AppShell({ children }: AppShellProps) {
         }
     }, [])
 
+    const handleExportPage = useCallback(async (pageId: string, includeChildren: boolean) => {
+        try {
+            await exportPageToFile(pageId, includeChildren)
+        } catch (error) {
+            console.error('Failed to export page:', error)
+            // Could show a toast/notification here
+        }
+    }, [])
+
     const handleImportWorkspace = useCallback(async () => {
         // Create a hidden file input and trigger it
         const input = document.createElement('input')
@@ -368,6 +377,7 @@ export function AppShell({ children }: AppShellProps) {
                 onDeletePage={handleDeletePage}
                 onToggleFavorite={handleToggleFavorite}
                 onMovePage={handleMovePage}
+                onExportPage={handleExportPage}
                 onToggleCollapse={toggleSidebar}
                 onExportWorkspace={handleExportWorkspace}
                 onImportWorkspace={handleImportWorkspace}

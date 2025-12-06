@@ -21,6 +21,7 @@ interface SidebarProps {
     onDeletePage?: (pageId: string, hasChildren: boolean) => void
     onToggleFavorite?: (pageId: string, isFavorite: boolean) => void
     onMovePage?: (pageId: string, newParentId: string | null) => void
+    onExportPage?: (pageId: string, includeChildren: boolean) => void
     onToggleCollapse: () => void
     onExportWorkspace?: () => void
     onImportWorkspace?: () => void
@@ -37,6 +38,7 @@ export function Sidebar({
     onDeletePage,
     onToggleFavorite,
     onMovePage,
+    onExportPage,
     onToggleCollapse,
     onExportWorkspace,
     onImportWorkspace
@@ -127,6 +129,7 @@ export function Sidebar({
                             onDelete={onDeletePage}
                             onToggleFavorite={onToggleFavorite}
                             onMovePage={onMovePage}
+                            onExportPage={onExportPage}
                             onDragOverChange={setDragOverPageId}
                         />
                     ))}
@@ -191,6 +194,7 @@ export function Sidebar({
                             onDelete={onDeletePage}
                             onToggleFavorite={onToggleFavorite}
                             onMovePage={onMovePage}
+                            onExportPage={onExportPage}
                             onDragOverChange={setDragOverPageId}
                         />
                     ))
@@ -248,6 +252,7 @@ interface PageItemProps {
     onDelete?: (pageId: string, hasChildren: boolean) => void
     onToggleFavorite?: (pageId: string, isFavorite: boolean) => void
     onMovePage?: (pageId: string, newParentId: string | null) => void
+    onExportPage?: (pageId: string, includeChildren: boolean) => void
     onDragOverChange: (pageId: string | null) => void
 }
 
@@ -264,6 +269,7 @@ function PageItem({
     onDelete,
     onToggleFavorite,
     onMovePage,
+    onExportPage,
     onDragOverChange
 }: PageItemProps) {
     const hasChildren = page.children && page.children.length > 0
@@ -482,6 +488,21 @@ function PageItem({
                     <button
                         onClick={(e) => {
                             e.stopPropagation()
+                            if (onExportPage) {
+                                onExportPage(page.id, true)
+                            }
+                            setShowMenu(false)
+                        }}
+                        className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Export
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation()
                             handleDelete()
                         }}
                         className="w-full text-left px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -509,6 +530,7 @@ function PageItem({
                             onDelete={onDelete}
                             onToggleFavorite={onToggleFavorite}
                             onMovePage={onMovePage}
+                            onExportPage={onExportPage}
                             onDragOverChange={onDragOverChange}
                         />
                     ))}
