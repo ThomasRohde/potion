@@ -3,12 +3,14 @@
  * 
  * Displays a page based on the URL parameter :id
  * Handles loading states and not-found scenarios.
+ * Implements auto-save with debounce and status indicator.
  */
 
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPage, getOrCreateDefaultWorkspace, updatePageContent } from '../services'
-import { RichTextEditor } from '../components'
+import { RichTextEditor, SaveStatusIndicator } from '../components'
+import { useAutoSave } from '../hooks'
 import type { Page, BlockContent } from '../types'
 
 export function PageView() {
@@ -17,6 +19,7 @@ export function PageView() {
     const [page, setPage] = useState<Page | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [editorContent, setEditorContent] = useState<BlockContent | null>(null)
 
     useEffect(() => {
         async function loadPage() {
@@ -36,6 +39,7 @@ export function PageView() {
                 const loadedPage = await getPage(id)
                 if (loadedPage) {
                     setPage(loadedPage)
+                    setEditorContent(loadedPage.content)
                 } else {
                     setError('Page not found')
                 }
@@ -50,19 +54,28 @@ export function PageView() {
         loadPage()
     }, [id])
 
-    // Handle content changes from the editor
-    const handleContentChange = useCallback(async (content: BlockContent) => {
+    // Save function for auto-save hook
+    const saveContent = useCallback(async (content: BlockContent) => {
         if (!page) return
 
-        try {
-            // Update the page content in storage
-            await updatePageContent(page.id, content)
-            // Update local state to keep in sync
-            setPage(prev => prev ? { ...prev, content } : null)
-        } catch (err) {
-            console.error('Failed to save content:', err)
-        }
+        await updatePageContent(page.id, content)
+        // Update local page state after successful save
+        setPage(prev => prev ? { ...prev, content } : null)
     }, [page])
+
+    // Auto-save hook with 1 second debounce
+    const { status } = useAutoSave({
+        data: editorContent || { version: 1, blocks: [] },
+        onSave: saveContent,
+        debounceMs: 1000,
+        enabled: !!page && !!editorContent,
+        onError: (err) => console.error('Auto-save failed:', err)
+    })
+
+    // Handle content changes from the editor
+    const handleContentChange = useCallback((content: BlockContent) => {
+        setEditorContent(content)
+    }, [])
 
     if (isLoading) {
         return (
@@ -105,10 +118,13 @@ export function PageView() {
 
     return (
         <div className="max-w-4xl mx-auto px-8 py-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-                {page.icon && <span className="mr-2">{page.icon}</span>}
-                {page.title || 'Untitled'}
-            </h1>
+            <div className="flex items-center justify-between mb-6">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {page.icon && <span className="mr-2">{page.icon}</span>}
+                    {page.title || 'Untitled'}
+                </h1>
+                <SaveStatusIndicator status={status} />
+            </div>
             <RichTextEditor
                 key={page.id} // Re-mount editor when page changes
                 initialContent={page.content}
