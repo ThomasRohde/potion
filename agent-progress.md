@@ -2,11 +2,90 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: ✅ 40/52 Features Complete (77%)
+## Current Status: ✅ 47/52 Features Complete (90%)
 
 ---
 
 ## Session Log
+
+### Session 14 - 2025-12-06
+**Duration**: ~30 minutes
+**Focus**: Implementing zustand/immer stores (Phase 1-2 + Phase 4 testing)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed Features
+- **F041**: Install and configure Zustand with Immer middleware
+  - Installed zustand@5.0.9 and immer@11.0.1
+  - Build passes with TypeScript types working correctly
+  
+- **F042**: Create workspace store with zustand/immer
+  - Created `src/stores/workspaceStore.ts`
+  - State: workspaceId, workspaceName, pages, pageTree, currentPageId, isLoading, error
+  - Actions: setWorkspace, setPages, refreshPages, addPage, updatePage, removePage, etc.
+  - Uses immer middleware for immutable updates
+  - Uses devtools middleware for Redux DevTools integration
+  - Exports selectors: selectCurrentPage, selectFavoritePages, selectRootPages
+  
+- **F043**: Create UI store for dialogs and sidebar state
+  - Created `src/stores/uiStore.ts`
+  - State: sidebarCollapsed, sidebarWidth, isSearchOpen, isShortcutsOpen, isSettingsOpen, deleteConfirm, importState
+  - Actions: toggleSidebar, openSearch, closeSearch, openSettings, openDeleteConfirm, openImport, etc.
+  - Uses persist middleware to save sidebar preferences to localStorage
+  
+- **F044**: Create theme store with persistence
+  - Created `src/stores/themeStore.ts`
+  - State: preference (light/dark/system), applied (resolved theme)
+  - Actions: setTheme, toggleTheme, syncSystemTheme
+  - Persists to localStorage via persist middleware
+  - System theme listener for matchMedia changes
+  - Applies theme to document.documentElement on change
+  
+- **F048**: Add Redux DevTools integration
+  - All stores use devtools middleware with namespaced action names
+  - Only enabled in development mode (import.meta.env.DEV)
+  
+- **F050**: Add unit tests for zustand stores
+  - Created `src/stores/stores.test.ts` with 26 new tests
+  - WorkspaceStore: 12 tests (state, actions, selectors)
+  - UIStore: 10 tests (sidebar, dialogs, delete confirm, import)
+  - ThemeStore: 4 tests (preference, toggle cycle, selectors)
+  
+- **F051**: Add zustand persist middleware for settings
+  - UIStore persists sidebarCollapsed and sidebarWidth to 'potion-ui-state'
+  - ThemeStore persists preference to 'potion-theme'
+  - Uses partialize to select only relevant state
+
+#### Files Created
+- `src/stores/index.ts` - Store exports
+- `src/stores/workspaceStore.ts` - Workspace and page state
+- `src/stores/uiStore.ts` - UI and dialog state
+- `src/stores/themeStore.ts` - Theme state with persistence
+- `src/stores/stores.test.ts` - 26 unit tests
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 1460 modules |
+| bun run test | 0 | ✅ 99 tests passed (26 new) |
+| bun run lint | 0 | ✅ |
+
+#### Remaining Migration Tasks
+| ID | Description | Status |
+|----|-------------|--------|
+| F045 | Migrate AppShell state to zustand stores | not-started |
+| F046 | Migrate PageContext to zustand store | not-started |
+| F047 | Migrate useTheme hook to zustand store | not-started |
+| F049 | Clean up deprecated context and hooks | not-started |
+| F052 | Document zustand store architecture | not-started |
+
+#### Recommended Next Steps
+1. Implement F045: Migrate AppShell state to zustand stores (largest refactor)
+2. Implement F046: Replace PageContext with WorkspaceStore
+3. Implement F047: Replace useTheme hook with ThemeStore
+4. F049: Clean up deprecated code
+5. F052: Document the architecture
+
+---
 
 ### Session 13 - 2025-12-06
 **Duration**: ~15 minutes
@@ -972,8 +1051,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 52
-- **Passing**: 40 (77%)
-- **Remaining**: 12 (zustand/immer migration)
+- **Passing**: 47 (90%)
+- **Remaining**: 5 (zustand migration Phase 3-4)
 
 ### Tech Stack
 - **Runtime**: Bun
@@ -983,7 +1062,7 @@ bun run dev
 - **Storage**: IndexedDB via StorageAdapter abstraction
 - **Routing**: react-router-dom v6
 - **PWA**: Workbox service worker
-- **State Management**: zustand with immer (planned)
+- **State Management**: zustand with immer (stores created, migration in progress)
 
 ---
 
