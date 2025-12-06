@@ -1,670 +1,670 @@
 {
-  "projectName": "Potion",
-  "version": "0.1.0",
-  "description": "Local-only Notion-style workspace - privacy-first, offline-first PWA",
-  "features": [
-    {
-      "id": "F001",
-      "category": "infrastructure",
-      "priority": 1,
-      "description": "Project scaffolding with Bun, React, TypeScript, and TailwindCSS",
-      "acceptanceCriteria": [
-        "Bun dev server starts without errors",
-        "React app renders in browser",
-        "TypeScript compilation succeeds",
-        "TailwindCSS styles are applied"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F002",
-      "category": "infrastructure",
-      "priority": 1,
-      "description": "Storage abstraction layer with StorageAdapter interface",
-      "acceptanceCriteria": [
-        "StorageAdapter interface is defined with all required methods",
-        "IndexedDbStorageAdapter implements the interface",
-        "All UI code uses interface, not IndexedDB directly",
-        "Adapter can be swapped without changing UI code"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F003",
-      "category": "core",
-      "priority": 1,
-      "description": "Workspace data model and CRUD operations",
-      "acceptanceCriteria": [
-        "Workspace entity with id, name, createdAt, updatedAt, version",
-        "Can create a new workspace",
-        "Can read workspace metadata",
-        "Can update workspace name",
-        "Workspace persists across page reloads"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F004",
-      "category": "core",
-      "priority": 1,
-      "description": "Page data model and CRUD operations",
-      "acceptanceCriteria": [
-        "Page entity with all required fields (id, workspaceId, parentPageId, title, type, content, etc.)",
-        "Can create a new page",
-        "Can read page content",
-        "Can update page title and content",
-        "Can delete a page",
-        "Pages persist across page reloads"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F005",
-      "category": "ui",
-      "priority": 1,
-      "description": "App shell with sidebar, topbar, and content area layout",
-      "acceptanceCriteria": [
-        "Left sidebar displays page tree",
-        "Top bar shows current page title",
-        "Content area renders page content",
-        "Layout is responsive and usable on mobile",
-        "Sidebar can be collapsed/expanded"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F006",
-      "category": "core",
-      "priority": 1,
-      "description": "BlockNote editor integration with RichTextEditor wrapper",
-      "acceptanceCriteria": [
-        "BlockNote editor renders in page content area",
-        "RichTextEditor wrapper abstracts BlockNote implementation",
-        "Internal block schema is stable and editor-agnostic",
-        "Editor content can be serialized and deserialized"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F007",
-      "category": "core",
-      "priority": 2,
-      "description": "Text formatting: bold, italic, underline, strikethrough, inline code, links",
-      "acceptanceCriteria": [
-        "User can apply bold formatting",
-        "User can apply italic formatting",
-        "User can apply underline formatting",
-        "User can apply strikethrough formatting",
-        "User can apply inline code formatting",
-        "User can insert and edit links"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F008",
-      "category": "core",
-      "priority": 2,
-      "description": "Block types: paragraph, headings (H1-H3), lists, to-dos",
-      "acceptanceCriteria": [
-        "User can create paragraph blocks",
-        "User can create H1, H2, H3 heading blocks",
-        "User can create bulleted list blocks",
-        "User can create numbered list blocks",
-        "User can create to-do/checkbox blocks",
-        "To-do checkboxes can be toggled"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F009",
-      "category": "core",
-      "priority": 2,
-      "description": "Block types: quote, callout, divider, code block",
-      "acceptanceCriteria": [
-        "User can create quote blocks",
-        "User can create callout blocks",
-        "User can create divider/separator blocks",
-        "User can create code blocks with language selection",
-        "Code blocks support ts, js, json, bash, python languages minimum"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F010",
-      "category": "core",
-      "priority": 2,
-      "description": "Image block support with upload and URL paste",
-      "acceptanceCriteria": [
-        "User can insert image block",
-        "User can upload an image file",
-        "User can paste image URL",
-        "Images are stored locally in IndexedDB",
-        "Images display correctly in editor"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F011",
-      "category": "core",
-      "priority": 2,
-      "description": "Slash command palette for block insertion",
-      "acceptanceCriteria": [
-        "Typing / opens command palette",
-        "Palette shows available block types",
-        "User can filter by typing block name",
-        "Selecting a command inserts the block",
-        "Palette closes on escape or click outside"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F012",
-      "category": "core",
-      "priority": 2,
-      "description": "Block reordering via drag-and-drop",
-      "acceptanceCriteria": [
-        "User can drag blocks to reorder them",
-        "Visual indicator shows drop position",
-        "Block order persists after save",
-        "Nested blocks maintain hierarchy when moved"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F013",
-      "category": "ui",
-      "priority": 2,
-      "description": "Page tree navigation with nesting support",
-      "acceptanceCriteria": [
-        "Sidebar displays hierarchical page tree",
-        "User can expand/collapse nested pages",
-        "User can create pages nested under other pages",
-        "User can drag pages to change parent",
-        "Current page is highlighted in tree"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F014",
-      "category": "ui",
-      "priority": 2,
-      "description": "Page favorites functionality",
-      "acceptanceCriteria": [
-        "User can mark a page as favorite",
-        "User can unmark a page as favorite",
-        "Favorites section appears at top of sidebar",
-        "Favorite state persists across reloads"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F015",
-      "category": "core",
-      "priority": 3,
-      "description": "Database page type with properties schema",
-      "acceptanceCriteria": [
-        "User can create a database page",
-        "User can define properties (text, number, date, checkbox, select)",
-        "Property schema is stored and editable",
-        "Database is distinguished from regular pages in UI"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F016",
-      "category": "core",
-      "priority": 3,
-      "description": "Database rows as pages with property values",
-      "acceptanceCriteria": [
-        "User can add rows to a database",
-        "Each row is a page with property values",
-        "User can edit property values inline",
-        "User can open row as full page",
-        "Rows persist across reloads"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F017",
-      "category": "core",
-      "priority": 3,
-      "description": "Database table view with filtering and sorting",
-      "acceptanceCriteria": [
-        "Database displays in table view by default",
-        "User can sort by any property column",
-        "User can filter rows by property values",
-        "Filters support basic operators (equals, contains, etc.)",
-        "Filter/sort state persists"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F018",
-      "category": "ui",
-      "priority": 2,
-      "description": "Search across pages by title and content",
-      "acceptanceCriteria": [
-        "User can open search overlay with Ctrl/Cmd+F",
-        "Search matches page titles",
-        "Search matches page content",
-        "Results show page title and snippet",
-        "Clicking result navigates to page",
-        "Search completes in < 200ms for hundreds of pages"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F019",
-      "category": "core",
-      "priority": 2,
-      "description": "Export workspace to JSON file",
-      "acceptanceCriteria": [
-        "User can trigger full workspace export",
-        "Export includes all pages, databases, rows, settings",
-        "Export file downloads as localnote-workspace-<date>.json",
-        "Export format is versioned",
-        "Images are included as base64"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F020",
-      "category": "core",
-      "priority": 2,
-      "description": "Export subset (single page, subtree, database)",
-      "acceptanceCriteria": [
-        "User can export a single page",
-        "User can export a page and its children",
-        "User can export a database with all rows",
-        "Exported subset maintains valid structure"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F021",
-      "category": "core",
-      "priority": 2,
-      "description": "Import workspace (replace mode)",
-      "acceptanceCriteria": [
-        "User can select a .json export file",
-        "Import validates file format and version",
-        "Replace mode clears existing data and imports new",
-        "Import shows summary before confirming",
-        "Imported data is fully functional"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F022",
-      "category": "core",
-      "priority": 3,
-      "description": "Import workspace (merge mode) with conflict resolution",
-      "acceptanceCriteria": [
-        "User can choose merge mode on import",
-        "New pages are added without conflict",
-        "Conflicting IDs show comparison dialog",
-        "User can choose keep local or keep imported",
-        "Merge results in consistent workspace"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F023",
-      "category": "infrastructure",
-      "priority": 1,
-      "description": "PWA manifest and service worker for offline support",
-      "acceptanceCriteria": [
-        "manifest.webmanifest is configured correctly",
-        "Service worker precaches app shell",
-        "App is installable on desktop and mobile",
-        "App works offline after first load",
-        "Update prompt appears when new version available"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F024",
-      "category": "core",
-      "priority": 2,
-      "description": "Auto-save with 1 second idle debounce",
-      "acceptanceCriteria": [
-        "Changes are saved automatically",
-        "Save triggers 1 second after last edit",
-        "Visual indicator shows save status",
-        "No data loss on browser close after save",
-        "Save operations are batched efficiently"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F025",
-      "category": "ui",
-      "priority": 3,
-      "description": "Keyboard shortcuts for common actions",
-      "acceptanceCriteria": [
-        "Ctrl/Cmd+N creates new page",
-        "Ctrl/Cmd+F opens search",
-        "Editor shortcuts work (bold, italic, etc.)",
-        "Shortcuts are documented in help",
-        "Shortcuts don't conflict with browser defaults"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F026",
-      "category": "ui",
-      "priority": 3,
-      "description": "Light and dark theme support",
-      "acceptanceCriteria": [
-        "Light theme is default and complete",
-        "Dark theme is available and complete",
-        "User can toggle between themes",
-        "Theme preference persists",
-        "Theme respects system preference option"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F027",
-      "category": "ui",
-      "priority": 2,
-      "description": "Welcome page and onboarding experience",
-      "acceptanceCriteria": [
-        "New workspace starts with Welcome page",
-        "Welcome page explains local-only nature",
-        "Welcome page shows export/import basics",
-        "Welcome page links to help/documentation"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F028",
-      "category": "infrastructure",
-      "priority": 3,
-      "description": "Schema migrations with versioning",
-      "acceptanceCriteria": [
-        "Data schema is versioned",
-        "Migrations run automatically on load",
-        "Backup is created before destructive migrations",
-        "Migration failures are handled gracefully",
-        "Version history is tracked"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F029",
-      "category": "testing",
-      "priority": 2,
-      "description": "Unit test infrastructure with Bun test runner",
-      "acceptanceCriteria": [
-        "Bun test runner is configured",
-        "Core utilities have unit tests",
-        "Storage adapter has unit tests",
-        "Tests run with bun test command",
-        "Test coverage is measurable"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F030",
-      "category": "testing",
-      "priority": 3,
-      "description": "End-to-end test infrastructure with Playwright",
-      "acceptanceCriteria": [
-        "Playwright is configured for E2E tests",
-        "Critical user flows have E2E tests",
-        "Tests run in CI-compatible mode",
-        "Tests cover page creation, editing, navigation"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F031",
-      "category": "infrastructure",
-      "priority": 2,
-      "description": "Client-side routing for page navigation",
-      "acceptanceCriteria": [
-        "URLs reflect current page (e.g., /page/:id)",
-        "Browser back/forward navigation works",
-        "Deep links to pages work",
-        "404 handling for invalid routes"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F032",
-      "category": "ui",
-      "priority": 2,
-      "description": "Page creation, renaming, and deletion UI",
-      "acceptanceCriteria": [
-        "User can create new page from sidebar",
-        "User can rename page inline",
-        "User can delete page with confirmation",
-        "Deleting parent offers to delete children or move them"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F033",
-      "category": "core",
-      "priority": 2,
-      "description": "Block keyboard navigation (enter, backspace, arrows)",
-      "acceptanceCriteria": [
-        "Enter creates new block below",
-        "Backspace at start of block merges with previous",
-        "Up/down arrows navigate between blocks",
-        "Tab indents blocks where applicable",
-        "Shift+Tab unindents blocks"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F034",
-      "category": "infrastructure",
-      "priority": 1,
-      "description": "CSP and security headers for privacy",
-      "acceptanceCriteria": [
-        "Content Security Policy prevents remote scripts",
-        "No external network requests by default",
-        "CSP allows local resources only",
-        "No analytics or tracking code"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
-    },
-    {
-      "id": "F035",
-      "category": "ui",
-      "priority": 3,
-      "description": "Settings panel for user preferences",
-      "acceptanceCriteria": [
-        "Settings accessible from sidebar or menu",
-        "Theme selection available",
-        "Editor preferences configurable",
-        "Workspace name editable",
-        "Settings persist across sessions"
-      ],
-      "status": "not-started",
-      "passes": false,
-      "verifiedAt": null,
-      "verifiedBy": null,
-      "evidenceLinks": [],
-      "notes": null
+    "projectName": "Potion",
+    "version": "0.1.0",
+    "description": "Local-only Notion-style workspace - privacy-first, offline-first PWA",
+    "features": [
+        {
+            "id": "F001",
+            "category": "infrastructure",
+            "priority": 1,
+            "description": "Project scaffolding with Bun, React, TypeScript, and TailwindCSS",
+            "acceptanceCriteria": [
+                "Bun dev server starts without errors",
+                "React app renders in browser",
+                "TypeScript compilation succeeds",
+                "TailwindCSS styles are applied"
+            ],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T00:00:00Z",
+            "verifiedBy": "agent-session-2",
+            "evidenceLinks": ["dist/index.html", "dist/assets/index-BtA4VGaR.js"],
+            "notes": "Build passes, dev server runs, TailwindCSS styles visible in browser"
+        },
+        {
+            "id": "F002",
+            "category": "infrastructure",
+            "priority": 1,
+            "description": "Storage abstraction layer with StorageAdapter interface",
+            "acceptanceCriteria": [
+                "StorageAdapter interface is defined with all required methods",
+                "IndexedDbStorageAdapter implements the interface",
+                "All UI code uses interface, not IndexedDB directly",
+                "Adapter can be swapped without changing UI code"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F003",
+            "category": "core",
+            "priority": 1,
+            "description": "Workspace data model and CRUD operations",
+            "acceptanceCriteria": [
+                "Workspace entity with id, name, createdAt, updatedAt, version",
+                "Can create a new workspace",
+                "Can read workspace metadata",
+                "Can update workspace name",
+                "Workspace persists across page reloads"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F004",
+            "category": "core",
+            "priority": 1,
+            "description": "Page data model and CRUD operations",
+            "acceptanceCriteria": [
+                "Page entity with all required fields (id, workspaceId, parentPageId, title, type, content, etc.)",
+                "Can create a new page",
+                "Can read page content",
+                "Can update page title and content",
+                "Can delete a page",
+                "Pages persist across page reloads"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F005",
+            "category": "ui",
+            "priority": 1,
+            "description": "App shell with sidebar, topbar, and content area layout",
+            "acceptanceCriteria": [
+                "Left sidebar displays page tree",
+                "Top bar shows current page title",
+                "Content area renders page content",
+                "Layout is responsive and usable on mobile",
+                "Sidebar can be collapsed/expanded"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F006",
+            "category": "core",
+            "priority": 1,
+            "description": "BlockNote editor integration with RichTextEditor wrapper",
+            "acceptanceCriteria": [
+                "BlockNote editor renders in page content area",
+                "RichTextEditor wrapper abstracts BlockNote implementation",
+                "Internal block schema is stable and editor-agnostic",
+                "Editor content can be serialized and deserialized"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F007",
+            "category": "core",
+            "priority": 2,
+            "description": "Text formatting: bold, italic, underline, strikethrough, inline code, links",
+            "acceptanceCriteria": [
+                "User can apply bold formatting",
+                "User can apply italic formatting",
+                "User can apply underline formatting",
+                "User can apply strikethrough formatting",
+                "User can apply inline code formatting",
+                "User can insert and edit links"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F008",
+            "category": "core",
+            "priority": 2,
+            "description": "Block types: paragraph, headings (H1-H3), lists, to-dos",
+            "acceptanceCriteria": [
+                "User can create paragraph blocks",
+                "User can create H1, H2, H3 heading blocks",
+                "User can create bulleted list blocks",
+                "User can create numbered list blocks",
+                "User can create to-do/checkbox blocks",
+                "To-do checkboxes can be toggled"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F009",
+            "category": "core",
+            "priority": 2,
+            "description": "Block types: quote, callout, divider, code block",
+            "acceptanceCriteria": [
+                "User can create quote blocks",
+                "User can create callout blocks",
+                "User can create divider/separator blocks",
+                "User can create code blocks with language selection",
+                "Code blocks support ts, js, json, bash, python languages minimum"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F010",
+            "category": "core",
+            "priority": 2,
+            "description": "Image block support with upload and URL paste",
+            "acceptanceCriteria": [
+                "User can insert image block",
+                "User can upload an image file",
+                "User can paste image URL",
+                "Images are stored locally in IndexedDB",
+                "Images display correctly in editor"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F011",
+            "category": "core",
+            "priority": 2,
+            "description": "Slash command palette for block insertion",
+            "acceptanceCriteria": [
+                "Typing / opens command palette",
+                "Palette shows available block types",
+                "User can filter by typing block name",
+                "Selecting a command inserts the block",
+                "Palette closes on escape or click outside"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F012",
+            "category": "core",
+            "priority": 2,
+            "description": "Block reordering via drag-and-drop",
+            "acceptanceCriteria": [
+                "User can drag blocks to reorder them",
+                "Visual indicator shows drop position",
+                "Block order persists after save",
+                "Nested blocks maintain hierarchy when moved"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F013",
+            "category": "ui",
+            "priority": 2,
+            "description": "Page tree navigation with nesting support",
+            "acceptanceCriteria": [
+                "Sidebar displays hierarchical page tree",
+                "User can expand/collapse nested pages",
+                "User can create pages nested under other pages",
+                "User can drag pages to change parent",
+                "Current page is highlighted in tree"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F014",
+            "category": "ui",
+            "priority": 2,
+            "description": "Page favorites functionality",
+            "acceptanceCriteria": [
+                "User can mark a page as favorite",
+                "User can unmark a page as favorite",
+                "Favorites section appears at top of sidebar",
+                "Favorite state persists across reloads"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F015",
+            "category": "core",
+            "priority": 3,
+            "description": "Database page type with properties schema",
+            "acceptanceCriteria": [
+                "User can create a database page",
+                "User can define properties (text, number, date, checkbox, select)",
+                "Property schema is stored and editable",
+                "Database is distinguished from regular pages in UI"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F016",
+            "category": "core",
+            "priority": 3,
+            "description": "Database rows as pages with property values",
+            "acceptanceCriteria": [
+                "User can add rows to a database",
+                "Each row is a page with property values",
+                "User can edit property values inline",
+                "User can open row as full page",
+                "Rows persist across reloads"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F017",
+            "category": "core",
+            "priority": 3,
+            "description": "Database table view with filtering and sorting",
+            "acceptanceCriteria": [
+                "Database displays in table view by default",
+                "User can sort by any property column",
+                "User can filter rows by property values",
+                "Filters support basic operators (equals, contains, etc.)",
+                "Filter/sort state persists"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F018",
+            "category": "ui",
+            "priority": 2,
+            "description": "Search across pages by title and content",
+            "acceptanceCriteria": [
+                "User can open search overlay with Ctrl/Cmd+F",
+                "Search matches page titles",
+                "Search matches page content",
+                "Results show page title and snippet",
+                "Clicking result navigates to page",
+                "Search completes in < 200ms for hundreds of pages"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F019",
+            "category": "core",
+            "priority": 2,
+            "description": "Export workspace to JSON file",
+            "acceptanceCriteria": [
+                "User can trigger full workspace export",
+                "Export includes all pages, databases, rows, settings",
+                "Export file downloads as localnote-workspace-<date>.json",
+                "Export format is versioned",
+                "Images are included as base64"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F020",
+            "category": "core",
+            "priority": 2,
+            "description": "Export subset (single page, subtree, database)",
+            "acceptanceCriteria": [
+                "User can export a single page",
+                "User can export a page and its children",
+                "User can export a database with all rows",
+                "Exported subset maintains valid structure"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F021",
+            "category": "core",
+            "priority": 2,
+            "description": "Import workspace (replace mode)",
+            "acceptanceCriteria": [
+                "User can select a .json export file",
+                "Import validates file format and version",
+                "Replace mode clears existing data and imports new",
+                "Import shows summary before confirming",
+                "Imported data is fully functional"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F022",
+            "category": "core",
+            "priority": 3,
+            "description": "Import workspace (merge mode) with conflict resolution",
+            "acceptanceCriteria": [
+                "User can choose merge mode on import",
+                "New pages are added without conflict",
+                "Conflicting IDs show comparison dialog",
+                "User can choose keep local or keep imported",
+                "Merge results in consistent workspace"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F023",
+            "category": "infrastructure",
+            "priority": 1,
+            "description": "PWA manifest and service worker for offline support",
+            "acceptanceCriteria": [
+                "manifest.webmanifest is configured correctly",
+                "Service worker precaches app shell",
+                "App is installable on desktop and mobile",
+                "App works offline after first load",
+                "Update prompt appears when new version available"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F024",
+            "category": "core",
+            "priority": 2,
+            "description": "Auto-save with 1 second idle debounce",
+            "acceptanceCriteria": [
+                "Changes are saved automatically",
+                "Save triggers 1 second after last edit",
+                "Visual indicator shows save status",
+                "No data loss on browser close after save",
+                "Save operations are batched efficiently"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F025",
+            "category": "ui",
+            "priority": 3,
+            "description": "Keyboard shortcuts for common actions",
+            "acceptanceCriteria": [
+                "Ctrl/Cmd+N creates new page",
+                "Ctrl/Cmd+F opens search",
+                "Editor shortcuts work (bold, italic, etc.)",
+                "Shortcuts are documented in help",
+                "Shortcuts don't conflict with browser defaults"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F026",
+            "category": "ui",
+            "priority": 3,
+            "description": "Light and dark theme support",
+            "acceptanceCriteria": [
+                "Light theme is default and complete",
+                "Dark theme is available and complete",
+                "User can toggle between themes",
+                "Theme preference persists",
+                "Theme respects system preference option"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F027",
+            "category": "ui",
+            "priority": 2,
+            "description": "Welcome page and onboarding experience",
+            "acceptanceCriteria": [
+                "New workspace starts with Welcome page",
+                "Welcome page explains local-only nature",
+                "Welcome page shows export/import basics",
+                "Welcome page links to help/documentation"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F028",
+            "category": "infrastructure",
+            "priority": 3,
+            "description": "Schema migrations with versioning",
+            "acceptanceCriteria": [
+                "Data schema is versioned",
+                "Migrations run automatically on load",
+                "Backup is created before destructive migrations",
+                "Migration failures are handled gracefully",
+                "Version history is tracked"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F029",
+            "category": "testing",
+            "priority": 2,
+            "description": "Unit test infrastructure with Bun test runner",
+            "acceptanceCriteria": [
+                "Bun test runner is configured",
+                "Core utilities have unit tests",
+                "Storage adapter has unit tests",
+                "Tests run with bun test command",
+                "Test coverage is measurable"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F030",
+            "category": "testing",
+            "priority": 3,
+            "description": "End-to-end test infrastructure with Playwright",
+            "acceptanceCriteria": [
+                "Playwright is configured for E2E tests",
+                "Critical user flows have E2E tests",
+                "Tests run in CI-compatible mode",
+                "Tests cover page creation, editing, navigation"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F031",
+            "category": "infrastructure",
+            "priority": 2,
+            "description": "Client-side routing for page navigation",
+            "acceptanceCriteria": [
+                "URLs reflect current page (e.g., /page/:id)",
+                "Browser back/forward navigation works",
+                "Deep links to pages work",
+                "404 handling for invalid routes"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F032",
+            "category": "ui",
+            "priority": 2,
+            "description": "Page creation, renaming, and deletion UI",
+            "acceptanceCriteria": [
+                "User can create new page from sidebar",
+                "User can rename page inline",
+                "User can delete page with confirmation",
+                "Deleting parent offers to delete children or move them"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F033",
+            "category": "core",
+            "priority": 2,
+            "description": "Block keyboard navigation (enter, backspace, arrows)",
+            "acceptanceCriteria": [
+                "Enter creates new block below",
+                "Backspace at start of block merges with previous",
+                "Up/down arrows navigate between blocks",
+                "Tab indents blocks where applicable",
+                "Shift+Tab unindents blocks"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F034",
+            "category": "infrastructure",
+            "priority": 1,
+            "description": "CSP and security headers for privacy",
+            "acceptanceCriteria": [
+                "Content Security Policy prevents remote scripts",
+                "No external network requests by default",
+                "CSP allows local resources only",
+                "No analytics or tracking code"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        },
+        {
+            "id": "F035",
+            "category": "ui",
+            "priority": 3,
+            "description": "Settings panel for user preferences",
+            "acceptanceCriteria": [
+                "Settings accessible from sidebar or menu",
+                "Theme selection available",
+                "Editor preferences configurable",
+                "Workspace name editable",
+                "Settings persist across sessions"
+            ],
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "notes": null
+        }
+    ],
+    "metadata": {
+        "createdAt": "2025-12-06T00:00:00Z",
+        "lastUpdated": "2025-12-06T00:00:00Z",
+        "totalFeatures": 35,
+        "passingFeatures": 1
     }
-  ],
-  "metadata": {
-    "createdAt": "2025-12-06T00:00:00Z",
-    "lastUpdated": "2025-12-06T00:00:00Z",
-    "totalFeatures": 35,
-    "passingFeatures": 0
-  }
 }
