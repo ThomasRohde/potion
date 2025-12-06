@@ -1,0 +1,4 @@
+[test]
+# Exclude e2e tests from bun test - they run with playwright
+coverage = false
+root = "src"

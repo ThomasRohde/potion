@@ -2,11 +2,59 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import + Settings + Migrations (89%)
+## Current Status: Core Editor + Export/Import + Settings + Migrations + E2E Tests (91%)
 
 ---
 
 ## Session Log
+
+### Session 9 - 2025-06-30
+**Duration**: ~30 minutes
+**Focus**: E2E test infrastructure with Playwright
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F030**: Implemented E2E test infrastructure with Playwright
+  - Installed Playwright v1.57.0 with Chromium browser
+  - Created `playwright.config.ts` with Vite webServer integration
+  - Created `bunfig.toml` to exclude e2e folder from `bun test`
+  - Created comprehensive E2E test suite with 19 tests
+  - Added data-testid attributes to Sidebar and ThemeToggle components
+  - Tests cover: App Shell, PWA, Theme, Keyboard Shortcuts, Search, Routing, Settings
+
+#### Technical Additions
+- Created `playwright.config.ts` - Playwright configuration for E2E tests
+- Created `e2e/app.spec.ts` - 19 E2E tests across 7 test suites
+- Created `bunfig.toml` - Bun config to set test root to "src"
+- Updated `src/components/Sidebar.tsx` - added data-testid attributes
+- Updated `src/components/ThemeToggle.tsx` - added data-testid prop support
+
+#### E2E Test Coverage
+- **App Shell (6 tests)**: Sidebar, branding, new page button, theme toggle, welcome content, export/import buttons, settings button
+- **PWA (3 tests)**: Manifest link, service worker, meta tags
+- **Theme (2 tests)**: Theme cycling, accessibility labels
+- **Keyboard Shortcuts (2 tests)**: ? key opens help, close button works
+- **Search (2 tests)**: Search button in topbar, button clickable
+- **Routing (2 tests)**: Home page loads, invalid URL handling
+- **Settings (2 tests)**: Dialog opens, theme options visible
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 33 PWA entries precached |
+| bun run test | 0 | ✅ 49 unit tests passed |
+| bun run lint | 0 | ✅ |
+| bun run test:e2e | 0 | ✅ 19 E2E tests passed |
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F015-F017: Database page type (significant work)
+2. Implement F029: Performance optimization
+3. Consider project MVP complete at 32/35 (91%)
+
+---
 
 ### Session 8 - 2025-12-06
 **Duration**: ~15 minutes

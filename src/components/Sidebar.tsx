@@ -98,6 +98,7 @@ export function Sidebar({
 
     return (
         <div
+            data-testid="sidebar"
             className="bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col"
             style={{ width: `${width}px`, minWidth: '200px', maxWidth: '400px' }}
         >
@@ -215,6 +216,7 @@ export function Sidebar({
             <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
                 <button
                     onClick={() => onCreatePage()}
+                    data-testid="new-page-button"
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,6 +269,7 @@ export function Sidebar({
                             theme={theme}
                             onToggle={onToggleTheme}
                             className="px-2 py-1.5"
+                            data-testid="theme-toggle"
                         />
                     )}
                 </div>

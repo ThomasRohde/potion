@@ -10,9 +10,10 @@ interface ThemeToggleProps {
     theme: Theme
     onToggle: () => void
     className?: string
+    'data-testid'?: string
 }
 
-export function ThemeToggle({ theme, onToggle, className = '' }: ThemeToggleProps) {
+export function ThemeToggle({ theme, onToggle, className = '', 'data-testid': testId }: ThemeToggleProps) {
     const getIcon = () => {
         switch (theme) {
             case 'light':
@@ -47,6 +48,7 @@ export function ThemeToggle({ theme, onToggle, className = '' }: ThemeToggleProp
     return (
         <button
             onClick={onToggle}
+            data-testid={testId}
             className={`flex items-center justify-center p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors ${className}`}
             title={`${getLabel()} - Click to change`}
             aria-label={`Current theme: ${getLabel()}`}
