@@ -11,12 +11,17 @@
  */
 
 import { useEffect, useMemo, useRef } from 'react'
-import { useCreateBlockNote } from '@blocknote/react'
+import {
+    useCreateBlockNote,
+    SideMenuController,
+    SideMenu
+} from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
 import type { Block, BlockNoteEditor } from '@blocknote/core'
 import '@blocknote/mantine/style.css'
 
 import type { BlockContent } from '../types'
+import { CustomDragHandleMenu } from './CustomDragHandleMenu'
 
 /**
  * BlockNote's default supported block types.
@@ -489,7 +494,18 @@ export function RichTextEditor({
                 editor={editor}
                 editable={!readOnly}
                 theme="light"
-            />
+                sideMenu={false}
+            >
+                {/* Custom side menu with Turn Into submenu */}
+                <SideMenuController
+                    sideMenu={(props) => (
+                        <SideMenu
+                            {...props}
+                            dragHandleMenu={CustomDragHandleMenu}
+                        />
+                    )}
+                />
+            </BlockNoteView>
         </div>
     )
 }
