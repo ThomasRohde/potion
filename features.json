@@ -1636,14 +1636,14 @@
                 "Language selector is accessible via keyboard"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
+            "status": "blocked",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote codeBlock already supports language prop. Need to verify language selector UI is working."
+            "blockedBy": "Requires BlockNote upgrade - current v0.17.1 doesn't export createCodeBlockSpec. Need v0.44+ or @blocknote/code-block package",
+            "lastWorkedOn": "2025-06-19T17:35:00Z",
+            "notes": "BlockNote v0.17.1 doesn't have createCodeBlockSpec API. The feature requires upgrading BlockNote to a newer version (0.44+) which provides codeBlockOptions with supportedLanguages configuration."
         },
         {
             "id": "F068",

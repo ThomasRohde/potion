@@ -7,13 +7,38 @@
  * For database pages, renders the DatabasePage component instead of the editor.
  */
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle, listPages } from '../services'
-import { RichTextEditor, SaveStatusIndicator, DatabasePage } from '../components'
+import { SaveStatusIndicator, DatabasePage } from '../components'
 import { useAutoSave } from '../hooks'
 import { useWorkspaceStore } from '../stores'
 import type { Page, BlockContent } from '../types'
+
+// Lazy load the RichTextEditor for better initial page load performance
+// BlockNote is a large dependency (~1MB) that doesn't need to be in the initial bundle
+const RichTextEditor = lazy(() => 
+    import('../components/RichTextEditor').then(module => ({ 
+        default: module.RichTextEditor 
+    }))
+)
+
+/**
+ * Loading placeholder for the RichTextEditor.
+ * Shows a skeleton that mimics the editor's appearance.
+ */
+function EditorLoadingFallback() {
+    return (
+        <div className="animate-pulse">
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6 mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+        </div>
+    )
+}
 
 export function PageView() {
     const { id } = useParams<{ id: string }>()
@@ -158,11 +183,13 @@ export function PageView() {
             <div className="flex items-center justify-end mb-6">
                 <SaveStatusIndicator status={status} />
             </div>
-            <RichTextEditor
-                key={page.id} // Re-mount editor when page changes
-                initialContent={page.content}
-                onChange={handleContentChange}
-            />
+            <Suspense fallback={<EditorLoadingFallback />}>
+                <RichTextEditor
+                    key={page.id} // Re-mount editor when page changes
+                    initialContent={page.content}
+                    onChange={handleContentChange}
+                />
+            </Suspense>
         </div>
     )
 }
