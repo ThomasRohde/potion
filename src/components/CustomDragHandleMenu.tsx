@@ -9,7 +9,7 @@
  */
 
 import { Block, DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema, PartialBlock } from '@blocknote/core'
-import { useBlockNoteEditor, useComponentsContext } from '@blocknote/react'
+import { useBlockNoteEditor, useComponentsContext, BlockColorsItem } from '@blocknote/react'
 import { TurnIntoSubmenu } from './TurnIntoSubmenu'
 
 /**
@@ -77,6 +77,11 @@ export function CustomDragHandleMenu({ block }: CustomDragHandleMenuProps) {
             >
                 Duplicate
             </Components.Generic.Menu.Item>
+
+            {/* Colors submenu - uses BlockNote's built-in color picker */}
+            <BlockColorsItem block={block}>
+                Colors
+            </BlockColorsItem>
 
             {/* Turn into submenu */}
             <TurnIntoSubmenu block={block}>
