@@ -50,7 +50,7 @@ function resolveTheme(preference: ThemePreference): AppliedTheme {
  */
 function applyThemeToDocument(theme: AppliedTheme): void {
     if (typeof document === 'undefined') return;
-    
+
     if (theme === 'dark') {
         document.documentElement.classList.add('dark');
     } else {
@@ -67,25 +67,25 @@ export const useThemeStore = create<ThemeState & ThemeActions>()(
             (set, get) => ({
                 preference: initialPreference,
                 applied: initialApplied,
-                
+
                 setTheme: (preference) => {
                     const applied = resolveTheme(preference);
                     applyThemeToDocument(applied);
                     set({ preference, applied }, false, 'theme/setTheme');
                 },
-                
+
                 toggleTheme: () => {
                     const { preference } = get();
                     // Cycle: light -> dark -> system -> light
-                    const nextPreference: ThemePreference = 
+                    const nextPreference: ThemePreference =
                         preference === 'light' ? 'dark' :
-                        preference === 'dark' ? 'system' : 'light';
-                    
+                            preference === 'dark' ? 'system' : 'light';
+
                     const applied = resolveTheme(nextPreference);
                     applyThemeToDocument(applied);
                     set({ preference: nextPreference, applied }, false, 'theme/toggleTheme');
                 },
-                
+
                 syncSystemTheme: () => {
                     const { preference } = get();
                     if (preference === 'system') {
@@ -115,12 +115,12 @@ export const useThemeStore = create<ThemeState & ThemeActions>()(
 // Initialize system theme listener
 if (typeof window !== 'undefined') {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     // Listen for system theme changes
     const handleChange = () => {
         useThemeStore.getState().syncSystemTheme();
     };
-    
+
     // Modern browsers
     if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener('change', handleChange);
@@ -128,7 +128,7 @@ if (typeof window !== 'undefined') {
         // Legacy Safari
         mediaQuery.addListener(handleChange);
     }
-    
+
     // Apply theme on initial load
     const state = useThemeStore.getState();
     applyThemeToDocument(resolveTheme(state.preference));

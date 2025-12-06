@@ -1250,12 +1250,62 @@
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T20:00:00Z",
             "notes": "Added State Management section to README with store docs, middleware info, and usage examples. Updated project structure."
+        },
+        {
+            "id": "F053",
+            "category": "core",
+            "priority": 2,
+            "description": "Paste Markdown content into BlockNote editor",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "User can paste markdown text from clipboard into the editor",
+                "Markdown syntax is automatically converted to BlockNote blocks",
+                "Headings, lists, bold, italic, links, and code blocks are properly converted",
+                "Paste works via Ctrl+V keyboard shortcut",
+                "Invalid or malformed markdown gracefully falls back to plain text"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": null
+        },
+        {
+            "id": "F054",
+            "category": "ui",
+            "priority": 2,
+            "description": "Per-page full width toggle in topbar menu",
+            "dependencies": [
+                "F038"
+            ],
+            "acceptanceCriteria": [
+                "Three-dot menu in topbar includes 'Full width' toggle option",
+                "Clicking toggle expands page content to use full available width",
+                "Toggle shows checkmark or filled state when full width is active",
+                "Full width preference is saved per-page and persists across sessions",
+                "Toggling off returns to the global editor width setting"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": null
         }
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T20:00:00Z",
-        "totalFeatures": 52,
+        "lastUpdated": "2025-12-06T21:00:00Z",
+        "totalFeatures": 54,
         "passingFeatures": 52
     }
 }

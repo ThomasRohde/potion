@@ -2,11 +2,64 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: ✅ 52/52 Features Complete (100%)
+## Current Status: ✅ 52/54 Features Complete (96%)
 
 ---
 
 ## Session Log
+
+### Session 15 - 2025-12-06
+**Duration**: ~5 minutes
+**Focus**: Adding new features per user request
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Features Added
+
+| ID | Priority | Category | Description |
+|----|----------|----------|-------------|
+| F053 | 2 | core | Paste Markdown content into BlockNote editor |
+| F054 | 2 | ui | Per-page full width toggle in topbar menu |
+
+#### Feature Details
+
+##### F053: Paste Markdown content into BlockNote editor
+**Priority**: 2 (High)
+**Category**: core
+**Dependencies**: F006
+**Estimated Effort**: Medium
+
+**Acceptance Criteria**:
+1. User can paste markdown text from clipboard into the editor
+2. Markdown syntax is automatically converted to BlockNote blocks
+3. Headings, lists, bold, italic, links, and code blocks are properly converted
+4. Paste works via Ctrl+V keyboard shortcut
+5. Invalid or malformed markdown gracefully falls back to plain text
+
+**BlockNote API**: `editor.pasteMarkdown(markdown)` or `editor.tryParseMarkdownToBlocks(markdown)`
+
+##### F054: Per-page full width toggle in topbar menu
+**Priority**: 2 (High)
+**Category**: ui
+**Dependencies**: F038
+**Estimated Effort**: Medium
+
+**Acceptance Criteria**:
+1. Three-dot menu in topbar includes 'Full width' toggle option
+2. Clicking toggle expands page content to use full available width
+3. Toggle shows checkmark or filled state when full width is active
+4. Full width preference is saved per-page and persists across sessions
+5. Toggling off returns to the global editor width setting
+
+#### Integration Notes
+- F053 leverages BlockNote's built-in markdown parsing capabilities
+- F054 requires adding `isFullWidth` property to Page type and persisting via storage
+
+#### Updated Statistics
+- **Total Features**: 52 → 54
+- **Passing**: 52 (96%)
+- **New Features by Category**: 1 core, 1 ui
+
+---
 
 ### Session 14 Part 2 - 2025-12-06
 **Duration**: ~20 minutes
