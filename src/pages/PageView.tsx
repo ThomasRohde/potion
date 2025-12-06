@@ -5,10 +5,11 @@
  * Handles loading states and not-found scenarios.
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getPage, getOrCreateDefaultWorkspace } from '../services'
-import type { Page } from '../types'
+import { getPage, getOrCreateDefaultWorkspace, updatePageContent } from '../services'
+import { RichTextEditor } from '../components'
+import type { Page, BlockContent } from '../types'
 
 export function PageView() {
     const { id } = useParams<{ id: string }>()
@@ -48,6 +49,20 @@ export function PageView() {
 
         loadPage()
     }, [id])
+
+    // Handle content changes from the editor
+    const handleContentChange = useCallback(async (content: BlockContent) => {
+        if (!page) return
+
+        try {
+            // Update the page content in storage
+            await updatePageContent(page.id, content)
+            // Update local state to keep in sync
+            setPage(prev => prev ? { ...prev, content } : null)
+        } catch (err) {
+            console.error('Failed to save content:', err)
+        }
+    }, [page])
 
     if (isLoading) {
         return (
@@ -89,15 +104,16 @@ export function PageView() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-8 py-12">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="max-w-4xl mx-auto px-8 py-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
                 {page.icon && <span className="mr-2">{page.icon}</span>}
                 {page.title || 'Untitled'}
             </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-                Start typing or press <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">/</kbd> for commands
-            </p>
-            {/* BlockNote editor will be integrated here in F006 */}
+            <RichTextEditor
+                key={page.id} // Re-mount editor when page changes
+                initialContent={page.content}
+                onChange={handleContentChange}
+            />
         </div>
     )
 }

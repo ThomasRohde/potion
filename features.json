@@ -596,12 +596,18 @@
                 "Deep links to pages work",
                 "404 handling for invalid routes"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T07:25:00Z",
+            "verifiedBy": "agent-session-3",
+            "evidenceLinks": [
+                "src/main.tsx",
+                "src/App.tsx",
+                "src/pages/PageView.tsx",
+                "src/pages/NotFound.tsx",
+                "src/pages/HomePage.tsx"
+            ],
+            "notes": "BrowserRouter with routes for /, /page/:id, and * (404). Browser back/forward and deep links tested."
         },
         {
             "id": "F032",
@@ -680,8 +686,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T00:00:00Z",
+        "lastUpdated": "2025-12-06T07:25:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 5
+        "passingFeatures": 6
     }
 }
