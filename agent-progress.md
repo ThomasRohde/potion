@@ -2,11 +2,78 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 55/75 Features Complete (73%)
+## Current Status: 63/75 Features Complete (84%)
 
 ---
 
 ## Session Log
+
+### Session 21 - 2025-06-19
+**Duration**: ~45 minutes
+**Focus**: BlockNote editor enhancements - text alignment, table support, feature cleanup
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| F056 | Sync BlockNote editor theme with app light/dark mode | ✅ (prior) |
+| F072 | Add block duplicate action to drag handle menu | ✅ (prior) |
+| F073 | Add export to Markdown format | ✅ (prior) |
+| F074 | Add export to HTML format | ✅ (prior) |
+| F058 | Add block colors item to drag handle menu | ✅ (prior) |
+| F070 | Lazy load BlockNote for faster initial page load | ✅ (prior) |
+| F066 | Add text alignment options to formatting toolbar | ✅ NEW |
+| F060 | Add table block support with full editing | ✅ NEW (native) |
+
+#### Implementation Details
+
+**F066 - Text Alignment Toolbar:**
+- Added custom `FormattingToolbar` with `TextAlignButton` components
+- Supports left, center, right, and justify alignment
+- Includes all standard formatting buttons (bold, italic, underline, strike, code)
+- Uses `FormattingToolbarController` to replace default toolbar
+
+**F060 - Table Support:**
+- BlockNote v0.17.1 includes native table block support
+- Already in SUPPORTED_BLOCK_TYPES set
+- Slash menu includes "Table" option natively
+- Supports row/column add/remove, Tab navigation, inline formatting
+
+#### Blocked Features (Require BlockNote Upgrade)
+
+| Feature | Blocked By |
+|---------|------------|
+| F057 | Requires BlockNote v0.27.0+ for pasteHandler option |
+| F067 | Requires BlockNote v0.44+ for createCodeBlockSpec |
+| F061 | Requires BlockNote v0.20.0+ for toggleListItem |
+| F062 | Requires BlockNote v0.20.0+ for isToggleable heading prop |
+
+#### Code Changes
+- `RichTextEditor.tsx`: Added custom FormattingToolbar with TextAlignButton
+- `RichTextEditor.tsx`: Removed unsupported `toggleListItem` from SUPPORTED_BLOCK_TYPES
+- `features.json`: Updated F060, F066 to verified; F061, F062 to blocked
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| npm run build | 0 | ✅ 1474 modules, RichTextEditor chunk ~817KB |
+| npm test | 0 | ✅ 99 tests passed |
+| npm run lint | 0 | ✅ No errors |
+
+#### Recommended Next Steps
+1. **Upgrade BlockNote** - Many features blocked by outdated v0.17.1
+2. **F063/F064/F065** - File/video/audio blocks need custom upload handlers
+3. **F059** - Custom callout block requires createReactBlockSpec
+4. **F075** - Print-friendly view could be quick win
+
+#### Technical Notes
+- BlockNote v0.17.1 is significantly behind latest (v0.44+)
+- `TextAlignButton` uses `textAlignment` prop: "left", "center", "right", "justify"
+- Toggle blocks (list/heading) not available in v0.17.1
+- Custom blocks require `createReactBlockSpec` API
+
+---
 
 ### Session 20 - 2025-12-07
 **Duration**: ~20 minutes
@@ -1440,8 +1507,9 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 75
-- **Passing**: 55 (73%)
-- **Remaining**: 20 (BlockNote best practice features)
+- **Passing**: 63 (84%)
+- **Blocked**: 4 (F057, F061, F062, F067 - require BlockNote upgrade)
+- **Remaining**: 8
 
 ### Tech Stack
 - **Runtime**: Bun
