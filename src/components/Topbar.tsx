@@ -77,8 +77,8 @@ export function Topbar({
                 {currentPage && (
                     <button
                         className={`p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${currentPage.isFavorite
-                                ? 'text-yellow-500'
-                                : 'text-gray-400 dark:text-gray-500'
+                            ? 'text-yellow-500'
+                            : 'text-gray-400 dark:text-gray-500'
                             }`}
                         title={currentPage.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                     >
