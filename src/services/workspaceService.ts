@@ -462,6 +462,208 @@ export async function exportPageAsMarkdown(pageId: string): Promise<void> {
 }
 
 /**
+ * Convert BlockContent to HTML string.
+ * This creates a standalone HTML document with basic styling.
+ */
+export function blockContentToHtml(content: BlockContent | undefined): string {
+    if (!content || !content.blocks || content.blocks.length === 0) {
+        return ''
+    }
+
+    const htmlParts: string[] = []
+
+    for (const block of content.blocks) {
+        const textContent = extractHtmlFromBlock(block)
+        
+        switch (block.type) {
+            case 'heading': {
+                const level = Math.min((block.props?.level as number) || 1, 6)
+                htmlParts.push(`<h${level}>${textContent}</h${level}>`)
+                break
+            }
+            case 'bulletListItem':
+                htmlParts.push(`<ul><li>${textContent}</li></ul>`)
+                break
+            case 'numberedListItem':
+                htmlParts.push(`<ol><li>${textContent}</li></ol>`)
+                break
+            case 'checkListItem': {
+                const checked = block.props?.checked ? 'checked' : ''
+                htmlParts.push(`<div class="checklist-item"><input type="checkbox" ${checked} disabled /><span>${textContent}</span></div>`)
+                break
+            }
+            case 'codeBlock': {
+                const language = (block.props?.language as string) || ''
+                htmlParts.push(`<pre><code class="language-${language}">${escapeHtml(extractTextFromBlock(block))}</code></pre>`)
+                break
+            }
+            case 'image': {
+                const url = (block.props?.url as string) || ''
+                const caption = (block.props?.caption as string) || ''
+                htmlParts.push(`<figure><img src="${escapeHtml(url)}" alt="${escapeHtml(caption)}" />${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}</figure>`)
+                break
+            }
+            case 'paragraph':
+            default:
+                if (textContent) {
+                    htmlParts.push(`<p>${textContent}</p>`)
+                }
+                break
+        }
+
+        // Recursively handle children
+        if (block.children && block.children.length > 0) {
+            for (const child of block.children) {
+                const childHtml = blockContentToHtml({ version: 1, blocks: [child] })
+                if (childHtml.trim()) {
+                    htmlParts.push(`<div class="block-children">${childHtml}</div>`)
+                }
+            }
+        }
+    }
+
+    return htmlParts.join('\n')
+}
+
+/**
+ * Extract HTML content from a block's inline content.
+ */
+function extractHtmlFromBlock(block: BlockContent['blocks'][0]): string {
+    if (!block.content || !Array.isArray(block.content)) {
+        return ''
+    }
+
+    const parts: string[] = []
+    for (const item of block.content) {
+        if (item.type === 'text') {
+            let text = escapeHtml(item.text || '')
+            // Apply inline styles
+            if (item.styles?.code) text = `<code>${text}</code>`
+            if (item.styles?.bold) text = `<strong>${text}</strong>`
+            if (item.styles?.italic) text = `<em>${text}</em>`
+            if (item.styles?.strikethrough) text = `<s>${text}</s>`
+            if (item.styles?.underline) text = `<u>${text}</u>`
+            parts.push(text)
+        } else if (item.type === 'link') {
+            const linkText = escapeHtml(item.text || '')
+            const href = escapeHtml(item.href || '')
+            parts.push(`<a href="${href}">${linkText}</a>`)
+        }
+    }
+    return parts.join('')
+}
+
+/**
+ * Escape HTML special characters.
+ */
+function escapeHtml(text: string): string {
+    return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+}
+
+/**
+ * Export a page as an HTML file.
+ * Creates a standalone HTML document with embedded styles.
+ * @param pageId - The page ID to export
+ */
+export async function exportPageAsHtml(pageId: string): Promise<void> {
+    const storage = await getStorage()
+    const page = await storage.getPage(pageId)
+
+    if (!page) {
+        throw new Error(`Page not found: ${pageId}`)
+    }
+
+    const title = page.title || 'Untitled'
+
+    // Convert block content to HTML
+    let bodyContent = ''
+    if (page.content) {
+        bodyContent = blockContentToHtml(page.content)
+    }
+
+    // Build full HTML document with basic styling
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(title)}</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            line-height: 1.3;
+        }
+        h1 { font-size: 2em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; }
+        h3 { font-size: 1.25em; }
+        p { margin: 1em 0; }
+        ul, ol { margin: 1em 0; padding-left: 2em; }
+        li { margin: 0.25em 0; }
+        pre {
+            background: #f6f8fa;
+            padding: 1em;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9em;
+        }
+        :not(pre) > code {
+            background: #f0f0f0;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+        }
+        a { color: #0366d6; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        figure { margin: 1em 0; }
+        figure img { max-width: 100%; height: auto; }
+        figcaption { font-size: 0.9em; color: #666; margin-top: 0.5em; }
+        .checklist-item { display: flex; align-items: center; gap: 0.5em; margin: 0.25em 0; }
+        .checklist-item input { margin: 0; }
+        .block-children { margin-left: 1.5em; }
+    </style>
+</head>
+<body>
+    <h1>${escapeHtml(title)}</h1>
+    ${bodyContent}
+</body>
+</html>`
+
+    // Get page title for filename
+    const filename = `${title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.html`
+
+    // Create blob and trigger download
+    const blob = new Blob([html], { type: 'text/html' })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+}
+
+/**
  * Import workspace from a JSON file.
  * @param file - The file to import
  * @param mode - 'replace' clears existing data, 'merge' combines with existing
