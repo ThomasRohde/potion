@@ -555,12 +555,17 @@
                 "Theme preference persists",
                 "Theme respects system preference option"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T12:00:00Z",
+            "verifiedBy": "agent-session-7",
+            "evidenceLinks": [
+                "src/hooks/useTheme.ts",
+                "src/components/ThemeToggle.tsx",
+                "src/components/Sidebar.tsx",
+                "src/components/AppShell.tsx"
+            ],
+            "notes": "useTheme hook with light/dark/system support. ThemeToggle button in sidebar footer cycles through modes. Theme persists to IndexedDB settings. System preference detected via prefers-color-scheme."
         },
         {
             "id": "F027",
@@ -751,8 +756,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T11:30:00Z",
+        "lastUpdated": "2025-12-06T12:00:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 27
+        "passingFeatures": 28
     }
 }

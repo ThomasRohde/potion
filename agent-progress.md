@@ -2,11 +2,66 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: Core Editor + Export/Import Complete (77%)
+## Current Status: Core Editor + Export/Import + Theme Support (80%)
 
 ---
 
 ## Session Log
+
+### Session 7 - 2025-12-06 (Continued)
+**Duration**: ~45 minutes
+**Focus**: Export subset, keyboard shortcuts, and light/dark theme
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+- **F020**: Implemented export subset functionality
+  - Export option added to page context menu (via "..." dropdown)
+  - exportPageToFile function wired up in AppShell
+  - Page export includes children by default
+  - Filename uses sanitized page title: `potion-{title}-{date}.json`
+  - Database export already supported via exportDatabase in storage adapter
+  - Added 3 unit tests for page export structure
+- **F025**: Implemented keyboard shortcuts documentation
+  - Ctrl/Cmd+N to create new page
+  - Ctrl/Cmd+K to open search (was already implemented)
+  - ? to show keyboard shortcuts help dialog
+  - Created KeyboardShortcutsDialog component
+  - Help button (?) added to sidebar footer
+  - Shortcuts grouped by: Navigation, Pages, Text Formatting, Blocks
+  - BlockNote provides editor shortcuts (bold, italic, etc.)
+- **F026**: Implemented light/dark/system theme toggle
+  - Created useTheme hook with system preference detection
+  - Created ThemeToggle component (cycles light→dark→system)
+  - ThemeToggle button in sidebar footer
+  - Theme persists to IndexedDB settings
+  - TailwindCSS darkMode 'class' strategy
+
+#### Technical Additions
+- Created `src/hooks/useTheme.ts` - theme state with persistence
+- Created `src/components/ThemeToggle.tsx` - cycling toggle button
+- Added handleExportPage callback to AppShell
+- Added onExportPage prop to Sidebar and PageItem components
+- Created KeyboardShortcutsDialog.tsx component
+- Added global keyboard handler for Ctrl+N and ?
+- Added onShowHelp, theme, onToggleTheme props to Sidebar
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 33 PWA entries precached |
+| bun run test | 0 | ✅ 37 tests passed |
+| bun run lint | 0 | ✅ |
+
+#### Blockers
+- None
+
+#### Recommended Next Steps
+1. Implement F035: Settings panel for user preferences
+2. Implement F022: Import merge mode with conflict resolution
+3. Implement F015-F017: Database page type (advanced features)
+4. Implement F030: E2E test infrastructure with Playwright
+
+---
 
 ### Session 7 - 2025-12-06
 **Duration**: ~30 minutes
@@ -402,6 +457,7 @@ bun run dev
 | F023 | PWA manifest and service worker for offline support | ✅ verified |
 | F024 | Auto-save with 1 second idle debounce | ✅ verified |
 | F025 | Keyboard shortcuts for common actions | ✅ verified |
+| F026 | Light and dark theme support | ✅ verified |
 | F027 | Welcome page and onboarding experience | ✅ verified |
 | F029 | Unit test infrastructure with Bun test runner | ✅ verified |
 | F031 | Client-side routing for page navigation | ✅ verified |
@@ -419,8 +475,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 27 (77%)
-- **Remaining**: 8
+- **Passing**: 28 (80%)
+- **Remaining**: 7
 
 ### Tech Stack
 - **Runtime**: Bun
