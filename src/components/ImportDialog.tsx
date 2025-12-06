@@ -143,11 +143,10 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                                     </label>
                                     <div className="space-y-2">
                                         <label
-                                            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
-                                                importMode === 'replace'
+                                            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${importMode === 'replace'
                                                     ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/20'
                                                     : 'border-gray-300 dark:border-gray-600'
-                                            }`}
+                                                }`}
                                         >
                                             <input
                                                 type="radio"
@@ -168,11 +167,10 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                                         </label>
 
                                         <label
-                                            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
-                                                importMode === 'merge'
+                                            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${importMode === 'merge'
                                                     ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/20'
                                                     : 'border-gray-300 dark:border-gray-600'
-                                            }`}
+                                                }`}
                                         >
                                             <input
                                                 type="radio"
@@ -238,8 +236,8 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                         onClick={() => onConfirm(importMode)}
                         disabled={!validation?.valid || isValidating}
                         className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${validation?.valid && !isValidating
-                                ? 'bg-potion-600 text-white hover:bg-potion-700'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            ? 'bg-potion-600 text-white hover:bg-potion-700'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                             }`}
                     >
                         {importMode === 'replace' ? 'Import & Replace' : 'Import & Merge'}
@@ -345,7 +343,7 @@ export function ImportResultDialog({ isOpen, result, onClose }: ImportResultDial
                                                     {conflict.importedTitle || conflict.localTitle}
                                                 </p>
                                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                    Local: {formatDate(conflict.localUpdatedAt)} • 
+                                                    Local: {formatDate(conflict.localUpdatedAt)} •
                                                     Imported: {formatDate(conflict.importedUpdatedAt)}
                                                 </p>
                                                 <p className="text-xs text-potion-600 dark:text-potion-400 mt-1">

@@ -30,6 +30,7 @@ export interface Page {
     content: BlockContent // Editor document JSON
     createdAt: string
     updatedAt: string
+    lastAccessedAt?: string // Added in migration v2
     icon?: string // Emoji or icon identifier
     coverImage?: string // Base64 or URL
 }

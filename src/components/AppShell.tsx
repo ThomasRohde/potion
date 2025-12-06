@@ -353,10 +353,10 @@ export function AppShell({ children }: AppShellProps) {
 
         try {
             const result = await importWorkspaceFromFile(importState.file, mode)
-            
+
             // Close the import dialog
             setImportState({ isOpen: false, file: null })
-            
+
             // Show the result dialog
             setImportResult({
                 isOpen: true,
@@ -368,7 +368,7 @@ export function AppShell({ children }: AppShellProps) {
                     errors: result.errors
                 }
             })
-            
+
             if (result.success) {
                 // Refresh the pages after import
                 if (workspaceId) {
@@ -399,7 +399,7 @@ export function AppShell({ children }: AppShellProps) {
 
     const handleWorkspaceNameChange = useCallback(async (newName: string) => {
         if (!workspaceId) return
-        
+
         try {
             await updateWorkspace(workspaceId, { name: newName })
             setWorkspaceName(newName)

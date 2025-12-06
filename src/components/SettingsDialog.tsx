@@ -38,7 +38,7 @@ export function SettingsDialog({
     useEffect(() => {
         async function loadSettings() {
             if (!isOpen) return
-            
+
             setIsLoading(true)
             try {
                 const storage = await getStorage()
@@ -190,11 +190,10 @@ export function SettingsDialog({
                                                     key={themeOption}
                                                     onClick={() => saveSettings({ theme: themeOption })}
                                                     disabled={isSaving}
-                                                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
-                                                        settings.theme === themeOption
+                                                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${settings.theme === themeOption
                                                             ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
                                                             : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {themeOption === 'light' && '☀️ '}
                                                     {themeOption === 'dark' && '🌙 '}
@@ -244,11 +243,10 @@ export function SettingsDialog({
                                                     key={width}
                                                     onClick={() => saveSettings({ editorWidth: width })}
                                                     disabled={isSaving}
-                                                    className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${
-                                                        settings.editorWidth === width
+                                                    className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors ${settings.editorWidth === width
                                                             ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
                                                             : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {width.charAt(0).toUpperCase() + width.slice(1)}
                                                 </button>
