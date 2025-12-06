@@ -14,15 +14,15 @@ registerMigration({
     name: 'add-lastAccessedAt',
     description: 'Adds lastAccessedAt timestamp to all pages for recent pages feature',
     destructive: false, // Non-destructive - just adds a field
-    
+
     async up(storage: StorageAdapter) {
         // Get all workspaces
         const workspaces = await storage.listWorkspaces()
-        
+
         for (const workspace of workspaces) {
             // Get all pages in workspace
             const pageSummaries = await storage.listPages(workspace.id)
-            
+
             for (const summary of pageSummaries) {
                 const page = await storage.getPage(summary.id)
                 if (page) {
@@ -36,17 +36,17 @@ registerMigration({
                 }
             }
         }
-        
+
         console.log('[Migration v2] Added lastAccessedAt to all pages')
     },
-    
+
     async down(storage: StorageAdapter) {
         // Remove lastAccessedAt from all pages
         const workspaces = await storage.listWorkspaces()
-        
+
         for (const workspace of workspaces) {
             const pageSummaries = await storage.listPages(workspace.id)
-            
+
             for (const summary of pageSummaries) {
                 const page = await storage.getPage(summary.id)
                 if (page) {
@@ -57,7 +57,7 @@ registerMigration({
                 }
             }
         }
-        
+
         console.log('[Migration v2] Removed lastAccessedAt from all pages')
     }
 })

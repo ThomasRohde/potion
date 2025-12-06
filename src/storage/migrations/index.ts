@@ -73,11 +73,11 @@ function generateBackupKey(version: number): string {
  * (For IndexedDB we can't easily clone, so we export to JSON)
  */
 async function createBackup(
-    storage: StorageAdapter, 
+    storage: StorageAdapter,
     version: number
 ): Promise<string> {
     const backupKey = generateBackupKey(version)
-    
+
     // Export all workspace data
     const workspaces = await storage.listWorkspaces()
     const backupData: Record<string, unknown> = {
@@ -85,12 +85,12 @@ async function createBackup(
         createdAt: new Date().toISOString(),
         workspaces: []
     }
-    
+
     for (const workspace of workspaces) {
         const exportData = await storage.exportWorkspace(workspace.id)
-        ;(backupData.workspaces as unknown[]).push(exportData)
+            ; (backupData.workspaces as unknown[]).push(exportData)
     }
-    
+
     // Store in localStorage (limited but good for small backups)
     try {
         localStorage.setItem(backupKey, JSON.stringify(backupData))
@@ -98,7 +98,7 @@ async function createBackup(
         // If localStorage is full, just log warning
         console.warn('Could not create backup in localStorage:', e)
     }
-    
+
     return backupKey
 }
 
@@ -107,7 +107,7 @@ async function createBackup(
  */
 export function listBackups(): { key: string; version: number; createdAt: string }[] {
     const backups: { key: string; version: number; createdAt: string }[] = []
-    
+
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i)
         if (key?.startsWith('potion-backup-v')) {
@@ -123,7 +123,7 @@ export function listBackups(): { key: string; version: number; createdAt: string
             }
         }
     }
-    
+
     return backups.sort((a, b) => b.version - a.version)
 }
 
@@ -133,7 +133,7 @@ export function listBackups(): { key: string; version: number; createdAt: string
 export function pruneBackups(keepCount: number = 3): void {
     const backups = listBackups()
     const toDelete = backups.slice(keepCount)
-    
+
     for (const backup of toDelete) {
         localStorage.removeItem(backup.key)
     }
@@ -154,7 +154,7 @@ export function getMigrationState(): MigrationState {
             lastMigrationAt: null
         }
     }
-    
+
     try {
         return JSON.parse(stored)
     } catch {
@@ -185,20 +185,20 @@ export async function runMigrations(storage: StorageAdapter): Promise<{
 }> {
     const state = getMigrationState()
     const pending = getPendingMigrations(state.currentVersion)
-    
+
     const result = {
         success: true,
         migrationsRun: 0,
         finalVersion: state.currentVersion,
         errors: [] as string[]
     }
-    
+
     if (pending.length === 0) {
         return result
     }
-    
+
     console.log(`[Migrations] Running ${pending.length} pending migrations...`)
-    
+
     for (const migration of pending) {
         const record: MigrationRecord = {
             version: migration.version,
@@ -206,48 +206,48 @@ export async function runMigrations(storage: StorageAdapter): Promise<{
             appliedAt: new Date().toISOString(),
             success: false
         }
-        
+
         try {
             // Create backup before destructive migrations
             if (migration.destructive) {
                 console.log(`[Migrations] Creating backup before v${migration.version}...`)
                 record.backupKey = await createBackup(storage, state.currentVersion)
             }
-            
+
             console.log(`[Migrations] Running migration v${migration.version}: ${migration.name}`)
             await migration.up(storage)
-            
+
             record.success = true
             state.currentVersion = migration.version
             state.history.push(record)
             state.lastMigrationAt = new Date().toISOString()
             saveMigrationState(state)
-            
+
             result.migrationsRun++
             result.finalVersion = migration.version
-            
+
             console.log(`[Migrations] Completed v${migration.version}`)
         } catch (error) {
             const errorMsg = error instanceof Error ? error.message : String(error)
             record.error = errorMsg
             state.history.push(record)
             saveMigrationState(state)
-            
+
             result.success = false
             result.errors.push(`Migration v${migration.version} failed: ${errorMsg}`)
-            
+
             console.error(`[Migrations] Failed v${migration.version}:`, error)
-            
+
             // Stop on first error
             break
         }
     }
-    
+
     // Prune old backups after successful migrations
     if (result.success) {
         pruneBackups(3)
     }
-    
+
     return result
 }
 

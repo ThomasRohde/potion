@@ -42,16 +42,16 @@ export async function getStorage(): Promise<IndexedDbStorageAdapter> {
     if (!defaultStorage) {
         defaultStorage = new IndexedDbStorageAdapter()
         await defaultStorage.init()
-        
+
         // Run migrations on first initialization
         if (!migrationsRun) {
             const state = getMigrationState()
             const targetVersion = getTargetVersion()
-            
+
             if (state.currentVersion < targetVersion) {
                 console.log(`[Storage] Migrating from v${state.currentVersion} to v${targetVersion}...`)
                 const result = await runMigrations(defaultStorage)
-                
+
                 if (!result.success) {
                     console.error('[Storage] Migration failed:', result.errors)
                     // Still continue - app may work with partial migrations
@@ -59,7 +59,7 @@ export async function getStorage(): Promise<IndexedDbStorageAdapter> {
                     console.log(`[Storage] Successfully ran ${result.migrationsRun} migrations`)
                 }
             }
-            
+
             migrationsRun = true
         }
     }
