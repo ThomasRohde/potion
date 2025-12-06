@@ -2,15 +2,18 @@
  * Import Dialog Component
  * 
  * Shows import confirmation with preview of what will be imported.
+ * Supports both replace and merge modes with conflict resolution.
  */
 
 import { useState, useEffect, useCallback } from 'react'
 import { validateExportFile } from '../services'
 
+export type ImportMode = 'replace' | 'merge'
+
 interface ImportDialogProps {
     isOpen: boolean
     file: File | null
-    onConfirm: () => void
+    onConfirm: (mode: ImportMode) => void
     onCancel: () => void
 }
 
@@ -26,12 +29,14 @@ interface ValidationResult {
 export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialogProps) {
     const [validation, setValidation] = useState<ValidationResult | null>(null)
     const [isValidating, setIsValidating] = useState(false)
+    const [importMode, setImportMode] = useState<ImportMode>('replace')
 
     // Validate the file when dialog opens
     useEffect(() => {
         async function validate() {
             if (!isOpen || !file) {
                 setValidation(null)
+                setImportMode('replace') // Reset to default
                 return
             }
 
@@ -60,9 +65,9 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
         if (e.key === 'Escape') {
             onCancel()
         } else if (e.key === 'Enter' && validation?.valid) {
-            onConfirm()
+            onConfirm(importMode)
         }
-    }, [isOpen, validation, onConfirm, onCancel])
+    }, [isOpen, validation, onConfirm, onCancel, importMode])
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
@@ -102,7 +107,8 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                 ) : validation ? (
                     <>
                         {validation.valid ? (
-                            <div className="space-y-3 mb-6">
+                            <div className="space-y-4 mb-6">
+                                {/* File Info */}
                                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-500 dark:text-gray-400">Workspace:</span>
@@ -130,11 +136,78 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                                     </div>
                                 </div>
 
-                                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-                                    <p className="text-sm text-amber-800 dark:text-amber-200">
-                                        <strong>Warning:</strong> This will replace all existing data in your workspace. This action cannot be undone.
-                                    </p>
+                                {/* Import Mode Selection */}
+                                <div className="space-y-2">
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Import mode
+                                    </label>
+                                    <div className="space-y-2">
+                                        <label
+                                            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
+                                                importMode === 'replace'
+                                                    ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/20'
+                                                    : 'border-gray-300 dark:border-gray-600'
+                                            }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="importMode"
+                                                value="replace"
+                                                checked={importMode === 'replace'}
+                                                onChange={() => setImportMode('replace')}
+                                                className="mt-0.5 text-potion-600 focus:ring-potion-500"
+                                            />
+                                            <div>
+                                                <span className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                    Replace
+                                                </span>
+                                                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                    Delete all existing data and import fresh. Best for restoring from backup.
+                                                </span>
+                                            </div>
+                                        </label>
+
+                                        <label
+                                            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
+                                                importMode === 'merge'
+                                                    ? 'border-potion-500 bg-potion-50 dark:bg-potion-900/20'
+                                                    : 'border-gray-300 dark:border-gray-600'
+                                            }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="importMode"
+                                                value="merge"
+                                                checked={importMode === 'merge'}
+                                                onChange={() => setImportMode('merge')}
+                                                className="mt-0.5 text-potion-600 focus:ring-potion-500"
+                                            />
+                                            <div>
+                                                <span className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                    Merge
+                                                </span>
+                                                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                    Add new pages, keep existing ones. Conflicts resolved by keeping the newer version.
+                                                </span>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
+
+                                {/* Warning based on mode */}
+                                {importMode === 'replace' ? (
+                                    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                            <strong>Warning:</strong> This will replace all existing data in your workspace. This action cannot be undone.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                                        <p className="text-sm text-blue-800 dark:text-blue-200">
+                                            <strong>Note:</strong> New pages will be added. If a page exists in both, the more recently updated version will be kept.
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="mb-6">
@@ -162,14 +235,149 @@ export function ImportDialog({ isOpen, file, onConfirm, onCancel }: ImportDialog
                         Cancel
                     </button>
                     <button
-                        onClick={onConfirm}
+                        onClick={() => onConfirm(importMode)}
                         disabled={!validation?.valid || isValidating}
                         className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${validation?.valid && !isValidating
                                 ? 'bg-potion-600 text-white hover:bg-potion-700'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                             }`}
                     >
-                        Import & Replace
+                        {importMode === 'replace' ? 'Import & Replace' : 'Import & Merge'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+/**
+ * Import Result Dialog Component
+ * 
+ * Shows the results of an import operation, including any conflicts.
+ */
+export interface ImportResultData {
+    success: boolean
+    pagesAdded: number
+    pagesUpdated: number
+    conflicts: Array<{
+        type: 'page' | 'row'
+        id: string
+        localTitle: string
+        importedTitle: string
+        localUpdatedAt: string
+        importedUpdatedAt: string
+    }>
+    errors: string[]
+}
+
+interface ImportResultDialogProps {
+    isOpen: boolean
+    result: ImportResultData | null
+    onClose: () => void
+}
+
+export function ImportResultDialog({ isOpen, result, onClose }: ImportResultDialogProps) {
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (!isOpen) return
+        if (e.key === 'Escape' || e.key === 'Enter') {
+            onClose()
+        }
+    }, [isOpen, onClose])
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [handleKeyDown])
+
+    if (!isOpen || !result) return null
+
+    const formatDate = (isoString: string) => {
+        try {
+            return new Date(isoString).toLocaleString()
+        } catch {
+            return isoString
+        }
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
+            <div
+                className="absolute inset-0 bg-black/50"
+                onClick={onClose}
+            />
+
+            {/* Dialog */}
+            <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] flex flex-col">
+                <div className="p-6">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                        Import {result.success ? 'Complete' : 'Failed'}
+                    </h2>
+
+                    {result.success ? (
+                        <div className="space-y-4">
+                            {/* Success summary */}
+                            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span className="font-medium text-green-800 dark:text-green-200">
+                                        Import successful!
+                                    </span>
+                                </div>
+                                <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                                    <p>Pages added: {result.pagesAdded}</p>
+                                    <p>Pages updated: {result.pagesUpdated}</p>
+                                </div>
+                            </div>
+
+                            {/* Conflicts resolved */}
+                            {result.conflicts.length > 0 && (
+                                <div className="space-y-2">
+                                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Conflicts resolved ({result.conflicts.length})
+                                    </h3>
+                                    <div className="max-h-40 overflow-y-auto space-y-2">
+                                        {result.conflicts.map((conflict, i) => (
+                                            <div key={i} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-sm">
+                                                <p className="font-medium text-gray-900 dark:text-gray-100">
+                                                    {conflict.importedTitle || conflict.localTitle}
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    Local: {formatDate(conflict.localUpdatedAt)} • 
+                                                    Imported: {formatDate(conflict.importedUpdatedAt)}
+                                                </p>
+                                                <p className="text-xs text-potion-600 dark:text-potion-400 mt-1">
+                                                    → Kept {new Date(conflict.importedUpdatedAt) > new Date(conflict.localUpdatedAt) ? 'imported' : 'local'} version
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                            <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
+                                Import failed
+                            </p>
+                            <ul className="text-sm text-red-700 dark:text-red-300 list-disc list-inside">
+                                {result.errors.map((error, i) => (
+                                    <li key={i}>{error}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions */}
+                <div className="px-6 pb-6">
+                    <button
+                        onClick={onClose}
+                        className="w-full px-4 py-2 text-sm font-medium bg-potion-600 text-white hover:bg-potion-700 rounded-lg transition-colors"
+                    >
+                        Done
                     </button>
                 </div>
             </div>

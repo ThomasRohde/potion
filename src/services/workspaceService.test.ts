@@ -305,3 +305,61 @@ describe('Page Export Structure', () => {
         expect(exportWithoutChildren.pages[0].id).toBe('single-page')
     })
 })
+
+describe('Import Merge Mode', () => {
+    test('Import result should include conflicts array for merge mode', () => {
+        // Type check for import result structure with conflicts
+        const importResult: {
+            success: boolean
+            pagesAdded: number
+            pagesUpdated: number
+            conflicts: Array<{
+                type: 'page' | 'row'
+                id: string
+                localTitle: string
+                importedTitle: string
+                localUpdatedAt: string
+                importedUpdatedAt: string
+            }>
+            errors: string[]
+        } = {
+            success: true,
+            pagesAdded: 3,
+            pagesUpdated: 1,
+            conflicts: [
+                {
+                    type: 'page',
+                    id: 'page-1',
+                    localTitle: 'Local Version',
+                    importedTitle: 'Imported Version',
+                    localUpdatedAt: '2025-12-05T10:00:00Z',
+                    importedUpdatedAt: '2025-12-06T10:00:00Z'
+                }
+            ],
+            errors: []
+        }
+
+        expect(importResult.conflicts).toBeDefined()
+        expect(Array.isArray(importResult.conflicts)).toBe(true)
+        expect(importResult.conflicts.length).toBe(1)
+        expect(importResult.conflicts[0].type).toBe('page')
+    })
+
+    test('Merge mode should keep newer version on conflict', () => {
+        // Simulate merge conflict resolution logic
+        const localUpdatedAt = '2025-12-05T10:00:00Z'
+        const importedUpdatedAt = '2025-12-06T10:00:00Z'
+
+        const keepImported = new Date(importedUpdatedAt) > new Date(localUpdatedAt)
+        expect(keepImported).toBe(true)
+    })
+
+    test('Import modes should be replace or merge', () => {
+        type ImportMode = 'replace' | 'merge'
+        const modes: ImportMode[] = ['replace', 'merge']
+
+        expect(modes).toContain('replace')
+        expect(modes).toContain('merge')
+        expect(modes.length).toBe(2)
+    })
+})

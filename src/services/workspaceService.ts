@@ -319,7 +319,7 @@ export async function exportPageToFile(pageId: string, includeChildren: boolean 
  * Import workspace from a JSON file.
  * @param file - The file to import
  * @param mode - 'replace' clears existing data, 'merge' combines with existing
- * @returns Import result with statistics
+ * @returns Import result with statistics and conflicts
  */
 export async function importWorkspaceFromFile(
     file: File,
@@ -328,6 +328,14 @@ export async function importWorkspaceFromFile(
     success: boolean
     pagesAdded: number
     pagesUpdated: number
+    conflicts: Array<{
+        type: 'page' | 'row'
+        id: string
+        localTitle: string
+        importedTitle: string
+        localUpdatedAt: string
+        importedUpdatedAt: string
+    }>
     errors: string[]
 }> {
     const storage = await getStorage()
@@ -347,6 +355,7 @@ export async function importWorkspaceFromFile(
             success: result.success,
             pagesAdded: result.pagesAdded,
             pagesUpdated: result.pagesUpdated,
+            conflicts: result.conflicts,
             errors: result.errors
         }
     } catch (error) {
@@ -354,6 +363,7 @@ export async function importWorkspaceFromFile(
             success: false,
             pagesAdded: 0,
             pagesUpdated: 0,
+            conflicts: [],
             errors: [error instanceof Error ? error.message : String(error)]
         }
     }

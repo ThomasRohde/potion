@@ -11,7 +11,8 @@ import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { ConfirmDialog } from './ConfirmDialog'
 import { SearchDialog } from './SearchDialog'
-import { ImportDialog } from './ImportDialog'
+import { ImportDialog, ImportResultDialog } from './ImportDialog'
+import type { ImportMode, ImportResultData } from './ImportDialog'
 import { KeyboardShortcutsDialog } from './KeyboardShortcutsDialog'
 import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
@@ -59,6 +60,10 @@ export function AppShell({ children }: AppShellProps) {
     const [importState, setImportState] = useState<ImportState>({
         isOpen: false,
         file: null
+    })
+    const [importResult, setImportResult] = useState<{ isOpen: boolean; result: ImportResultData | null }>({
+        isOpen: false,
+        result: null
     })
 
     // Extract page ID from URL
@@ -343,11 +348,27 @@ export function AppShell({ children }: AppShellProps) {
         input.click()
     }, [])
 
-    const confirmImport = useCallback(async () => {
+    const confirmImport = useCallback(async (mode: ImportMode) => {
         if (!importState.file) return
 
         try {
-            const result = await importWorkspaceFromFile(importState.file, 'replace')
+            const result = await importWorkspaceFromFile(importState.file, mode)
+            
+            // Close the import dialog
+            setImportState({ isOpen: false, file: null })
+            
+            // Show the result dialog
+            setImportResult({
+                isOpen: true,
+                result: {
+                    success: result.success,
+                    pagesAdded: result.pagesAdded,
+                    pagesUpdated: result.pagesUpdated,
+                    conflicts: result.conflicts || [],
+                    errors: result.errors
+                }
+            })
+            
             if (result.success) {
                 // Refresh the pages after import
                 if (workspaceId) {
@@ -355,13 +376,20 @@ export function AppShell({ children }: AppShellProps) {
                 }
                 // Navigate to home after import
                 navigate('/')
-            } else {
-                console.error('Import failed:', result.errors)
             }
         } catch (error) {
             console.error('Failed to import workspace:', error)
-        } finally {
             setImportState({ isOpen: false, file: null })
+            setImportResult({
+                isOpen: true,
+                result: {
+                    success: false,
+                    pagesAdded: 0,
+                    pagesUpdated: 0,
+                    conflicts: [],
+                    errors: [error instanceof Error ? error.message : 'Import failed']
+                }
+            })
         }
     }, [importState.file, workspaceId, refreshPages, navigate])
 
@@ -468,6 +496,13 @@ export function AppShell({ children }: AppShellProps) {
                 file={importState.file}
                 onConfirm={confirmImport}
                 onCancel={cancelImport}
+            />
+
+            {/* Import Result Dialog */}
+            <ImportResultDialog
+                isOpen={importResult.isOpen}
+                result={importResult.result}
+                onClose={() => setImportResult({ isOpen: false, result: null })}
             />
 
             {/* Keyboard Shortcuts Dialog */}
