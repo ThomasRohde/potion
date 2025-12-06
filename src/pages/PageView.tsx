@@ -20,6 +20,10 @@ export function PageView() {
     const navigate = useNavigate()
     const refreshPages = useWorkspaceStore(state => state.refreshPages)
     const workspaceId = useWorkspaceStore(state => state.workspaceId)
+    // Get isFullWidth from the store to react to changes without full page reload
+    const storePages = useWorkspaceStore(state => state.pages)
+    const storePageData = storePages.find(p => p.id === id)
+    
     const [page, setPage] = useState<Page | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -57,6 +61,13 @@ export function PageView() {
 
         loadPage()
     }, [id])
+
+    // Sync isFullWidth from store to local page state when it changes
+    useEffect(() => {
+        if (storePageData && page && storePageData.isFullWidth !== page.isFullWidth) {
+            setPage(prev => prev ? { ...prev, isFullWidth: storePageData.isFullWidth } : null)
+        }
+    }, [storePageData?.isFullWidth, page?.isFullWidth, storePageData, page])
 
     // Save function for auto-save hook
     const saveContent = useCallback(async (content: BlockContent) => {

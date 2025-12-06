@@ -298,13 +298,14 @@ export function RichTextEditor({
 
             // Get plain text from clipboard
             const plainText = clipboardData.getData('text/plain')
-            
+            if (!plainText) return
+
             // If we have HTML content, let BlockNote handle it natively
             const hasHtml = clipboardData.types.includes('text/html')
             if (hasHtml) return
 
             // If the text looks like markdown, parse and insert it
-            if (plainText && looksLikeMarkdown(plainText)) {
+            if (looksLikeMarkdown(plainText)) {
                 // Prevent default paste behavior
                 event.preventDefault()
                 event.stopPropagation()
@@ -313,13 +314,28 @@ export function RichTextEditor({
                     // Parse markdown to blocks
                     const blocks = await editor.tryParseMarkdownToBlocks(plainText)
                     
+                    console.log('Parsed markdown blocks:', blocks)
+
                     if (blocks.length > 0) {
                         // Get current cursor position
                         const cursorPos = editor.getTextCursorPosition()
-                        
+
                         if (cursorPos && cursorPos.block) {
-                            // Insert parsed blocks after the current block
-                            editor.insertBlocks(blocks, cursorPos.block, 'after')
+                            // Check if current block is empty - if so, replace it
+                            const currentBlock = cursorPos.block
+                            const isEmptyBlock = !currentBlock.content || 
+                                (Array.isArray(currentBlock.content) && currentBlock.content.length === 0) ||
+                                (Array.isArray(currentBlock.content) && currentBlock.content.every(
+                                    (c: { type: string; text?: string }) => c.type === 'text' && (!c.text || c.text.trim() === '')
+                                ))
+                            
+                            if (isEmptyBlock) {
+                                // Replace the empty block with the parsed blocks
+                                editor.replaceBlocks([currentBlock], blocks)
+                            } else {
+                                // Insert parsed blocks after the current block
+                                editor.insertBlocks(blocks, cursorPos.block, 'after')
+                            }
                         } else {
                             // If no cursor position, append to document
                             const lastBlock = editor.document[editor.document.length - 1]
@@ -331,8 +347,7 @@ export function RichTextEditor({
                 } catch (err) {
                     // If markdown parsing fails, let the default paste happen
                     console.warn('Markdown paste parsing failed, falling back to plain text:', err)
-                    // Re-dispatch a new paste event with just plain text
-                    // Actually, since we prevented default, we need to insert manually
+                    // Insert as plain text since we prevented default
                     const textContent = [{
                         type: 'paragraph' as const,
                         content: [{ type: 'text' as const, text: plainText, styles: {} }]
@@ -347,7 +362,7 @@ export function RichTextEditor({
 
         // Use capture phase to intercept before BlockNote handles it
         container.addEventListener('paste', handlePaste, { capture: true })
-        
+
         return () => {
             container.removeEventListener('paste', handlePaste, { capture: true })
         }
