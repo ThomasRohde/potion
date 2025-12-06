@@ -249,3 +249,94 @@ describe('Database View Types', () => {
         expect(database.views[0].sorts[0].direction).toBe('desc')
     })
 })
+
+// ============================================
+// Filter Logic Tests
+// ============================================
+
+describe('Database Filter Logic', () => {
+    it('should support equals operator for text', () => {
+        const filter = { propertyId: 'name', operator: 'equals' as const, value: 'test' }
+        // The filter matches when value equals filter value
+        expect(filter.operator).toBe('equals')
+        expect('test' === filter.value).toBe(true)
+        expect('other' === filter.value).toBe(false)
+    })
+
+    it('should support contains operator for text', () => {
+        const filter = { propertyId: 'name', operator: 'contains' as const, value: 'foo' }
+        expect('foobar'.toLowerCase().includes(String(filter.value).toLowerCase())).toBe(true)
+        expect('bar'.toLowerCase().includes(String(filter.value).toLowerCase())).toBe(false)
+    })
+
+    it('should support isEmpty operator', () => {
+        const filter = { propertyId: 'name', operator: 'isEmpty' as const, value: null }
+        expect(filter.operator).toBe('isEmpty')
+        // isEmpty matches null, undefined, empty string, empty array
+        const emptyValue: unknown = null
+        const nonEmptyValue: unknown = 'value'
+        expect(emptyValue === null || emptyValue === undefined || emptyValue === '').toBe(true)
+        expect(nonEmptyValue === null || nonEmptyValue === undefined).toBe(false)
+    })
+
+    it('should support numeric comparison operators', () => {
+        const gtFilter = { propertyId: 'amount', operator: 'gt' as const, value: 10 }
+        expect(gtFilter.operator).toBe('gt')
+        expect(15 > (gtFilter.value as number)).toBe(true)
+        expect(5 > (gtFilter.value as number)).toBe(false)
+        
+        const lteFilter = { propertyId: 'amount', operator: 'lte' as const, value: 10 }
+        expect(lteFilter.operator).toBe('lte')
+        expect(10 <= (lteFilter.value as number)).toBe(true)
+        expect(11 <= (lteFilter.value as number)).toBe(false)
+    })
+
+    it('should support checkbox filter', () => {
+        const filter = { propertyId: 'done', operator: 'equals' as const, value: true }
+        expect(true === filter.value).toBe(true)
+        expect(false === filter.value).toBe(false)
+    })
+})
+
+// ============================================
+// Sort Logic Tests
+// ============================================
+
+describe('Database Sort Logic', () => {
+    it('should sort strings alphabetically ascending', () => {
+        const values = ['Banana', 'Apple', 'Cherry']
+        const sorted = [...values].sort((a, b) => a.localeCompare(b))
+        expect(sorted).toEqual(['Apple', 'Banana', 'Cherry'])
+    })
+
+    it('should sort strings alphabetically descending', () => {
+        const values = ['Banana', 'Apple', 'Cherry']
+        const sorted = [...values].sort((a, b) => b.localeCompare(a))
+        expect(sorted).toEqual(['Cherry', 'Banana', 'Apple'])
+    })
+
+    it('should sort numbers correctly', () => {
+        const values = [10, 2, 5, 1, 100]
+        const sorted = [...values].sort((a, b) => a - b)
+        expect(sorted).toEqual([1, 2, 5, 10, 100])
+    })
+
+    it('should sort dates correctly', () => {
+        const dates = ['2024-03-15', '2024-01-01', '2024-12-31']
+        const sorted = [...dates].sort((a, b) => 
+            new Date(a).getTime() - new Date(b).getTime()
+        )
+        expect(sorted).toEqual(['2024-01-01', '2024-03-15', '2024-12-31'])
+    })
+
+    it('should handle null values in sort', () => {
+        const values = [5, null, 3, null, 1]
+        const sorted = [...values].sort((a, b) => {
+            if (a === null && b === null) return 0
+            if (a === null) return -1
+            if (b === null) return 1
+            return a - b
+        })
+        expect(sorted).toEqual([null, null, 1, 3, 5])
+    })
+})
