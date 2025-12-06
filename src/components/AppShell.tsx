@@ -470,6 +470,10 @@ export function AppShell({ children }: AppShellProps) {
                     sidebarCollapsed={sidebarCollapsed}
                     onToggleSidebar={toggleSidebar}
                     onOpenSearch={() => setIsSearchOpen(true)}
+                    onRenameTitle={currentPage ? (newTitle) => handleRenamePage(currentPage.id, newTitle) : undefined}
+                    onToggleFavorite={currentPage ? () => handleToggleFavorite(currentPage.id, !currentPage.isFavorite) : undefined}
+                    onExportPage={currentPage ? () => handleExportPage(currentPage.id, true) : undefined}
+                    onDeletePage={currentPage ? () => handleDeletePage(currentPage.id, false) : undefined}
                 />
 
                 {/* Content */}

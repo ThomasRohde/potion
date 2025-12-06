@@ -7,7 +7,7 @@
  * For database pages, renders the DatabasePage component instead of the editor.
  */
 
-import { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle } from '../services'
 import { RichTextEditor, SaveStatusIndicator, DatabasePage } from '../components'
@@ -21,6 +21,9 @@ export function PageView() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [editorContent, setEditorContent] = useState<BlockContent | null>(null)
+    const [isEditingTitle, setIsEditingTitle] = useState(false)
+    const [editTitle, setEditTitle] = useState('')
+    const titleInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         async function loadPage() {
@@ -85,6 +88,37 @@ export function PageView() {
         setPage(prev => prev ? { ...prev, title } : null)
     }, [page])
 
+    // Focus title input when editing starts
+    useEffect(() => {
+        if (isEditingTitle && titleInputRef.current) {
+            titleInputRef.current.focus()
+            titleInputRef.current.select()
+        }
+    }, [isEditingTitle])
+
+    const handleTitleClick = () => {
+        if (page) {
+            setEditTitle(page.title || 'Untitled')
+            setIsEditingTitle(true)
+        }
+    }
+
+    const handleTitleSubmit = async () => {
+        if (page && editTitle.trim()) {
+            await handleTitleChange(editTitle.trim())
+        }
+        setIsEditingTitle(false)
+    }
+
+    const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleTitleSubmit()
+        } else if (e.key === 'Escape') {
+            setEditTitle(page?.title || 'Untitled')
+            setIsEditingTitle(false)
+        }
+    }
+
     if (isLoading) {
         return (
             <div className="max-w-4xl mx-auto px-8 py-12">
@@ -132,10 +166,28 @@ export function PageView() {
     return (
         <div className="max-w-4xl mx-auto px-8 py-8">
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {page.icon && <span className="mr-2">{page.icon}</span>}
-                    {page.title || 'Untitled'}
-                </h1>
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                    {page.icon && <span className="text-3xl">{page.icon}</span>}
+                    {isEditingTitle ? (
+                        <input
+                            ref={titleInputRef}
+                            type="text"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            onBlur={handleTitleSubmit}
+                            onKeyDown={handleTitleKeyDown}
+                            className="text-3xl font-bold text-gray-900 dark:text-white bg-transparent border-b-2 border-potion-500 outline-none flex-1 min-w-0"
+                        />
+                    ) : (
+                        <h1
+                            onClick={handleTitleClick}
+                            className="text-3xl font-bold text-gray-900 dark:text-white cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 -mx-2 rounded transition-colors"
+                            title="Click to edit title"
+                        >
+                            {page.title || 'Untitled'}
+                        </h1>
+                    )}
+                </div>
                 <SaveStatusIndicator status={status} />
             </div>
             <RichTextEditor
