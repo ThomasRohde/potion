@@ -2,15 +2,15 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: PWA, Security & Navigation Complete
+## Current Status: Core Editor Features Complete (66%)
 
 ---
 
 ## Session Log
 
 ### Session 5 - 2025-12-06
-**Duration**: ~45 minutes
-**Focus**: PWA, security headers, and page tree drag-and-drop
+**Duration**: ~60 minutes
+**Focus**: PWA, security, page tree drag-and-drop, and BlockNote feature verification
 **Agent**: GitHub Copilot (Claude Opus 4.5)
 
 #### Completed
@@ -20,22 +20,34 @@
   - Service worker precaches 33 entries for offline support
   - App is installable on desktop and mobile
 - **F034**: Verified CSP and security headers
-  - CSP meta tag already configured in index.html
+  - CSP meta tag configured in index.html
   - Blocks remote scripts, allows only self for connect/script
-  - Font loading from Google Fonts for typography
   - No analytics or tracking code
 - **F013**: Implemented page tree drag-and-drop navigation
-  - Added drag-and-drop to reorder/reparent pages in sidebar
+  - Drag-and-drop to reorder/reparent pages in sidebar
   - Visual feedback with ring highlight on drag over
   - Descendant check prevents invalid moves
-  - Drop on root to make page top-level
-  - Updated ESLint config with Element and Node globals
+- **F007**: Verified text formatting (BlockNote default)
+  - Bold, italic, underline, strikethrough, inline code, links
+- **F008**: Verified block types (BlockNote default)
+  - Paragraph, headings H1-H3, bullet/numbered lists, todos
+- **F009**: Verified block types (BlockNote default)
+  - Quote, divider, code block with language selection
+  - Note: Callout (alert) requires custom block - deferred
+- **F010**: Verified image block support
+  - Upload and URL paste via BlockNote
+- **F011**: Verified slash command palette
+  - Type / to open, filter, select to insert
+- **F012**: Verified block drag-and-drop
+  - BlockNote provides drag handles and reordering
+- **F033**: Verified block keyboard navigation
+  - Enter, backspace, arrows, tab/shift+tab
 
 #### Technical Additions
 - Created `src/components/PWAUpdatePrompt.tsx`
-- Added useRegisterSW hook integration from vite-plugin-pwa
 - Added drag-and-drop handlers to Sidebar and PageItem
 - Added handleMovePage to AppShell with descendant validation
+- Updated ESLint config with Element and Node globals
 
 #### Pre-Commit Verification
 | Command | Exit Code | Notes |
@@ -51,10 +63,10 @@
 - None
 
 #### Recommended Next Steps
-1. Implement F007-F009: Block types (text formatting, headings, lists)
-2. Implement F011: Slash command palette
-3. Implement F019-F021: Export/import functionality
-4. Implement F025: Keyboard shortcuts documentation
+1. Implement F019-F021: Export/import functionality
+2. Implement F025: Keyboard shortcuts documentation
+3. Implement F015-F017: Database page type (advanced feature)
+4. Implement F026: Light/dark theme support
 
 ---
 
@@ -277,15 +289,22 @@ bun run dev
 | F004 | Page data model and CRUD operations | ✅ verified |
 | F005 | App shell with sidebar, topbar, and content area layout | ✅ verified |
 | F006 | BlockNote editor integration with RichTextEditor wrapper | ✅ verified |
-| F024 | Auto-save with 1 second idle debounce | ✅ verified |
-| F031 | Client-side routing for page navigation | ✅ verified |
-| F032 | Page creation, renaming, and deletion UI | ✅ verified |
+| F007 | Text formatting (bold, italic, underline, etc.) | ✅ verified |
+| F008 | Block types (paragraphs, headings, lists, todos) | ✅ verified |
+| F009 | Block types (quote, divider, code) | ✅ verified |
+| F010 | Image block support with upload and URL | ✅ verified |
+| F011 | Slash command palette for block insertion | ✅ verified |
+| F012 | Block drag-and-drop reordering | ✅ verified |
+| F013 | Page tree navigation with nesting support | ✅ verified |
 | F014 | Page favorites functionality | ✅ verified |
 | F018 | Search across pages by title and content | ✅ verified |
+| F023 | PWA manifest and service worker for offline support | ✅ verified |
+| F024 | Auto-save with 1 second idle debounce | ✅ verified |
 | F027 | Welcome page and onboarding experience | ✅ verified |
 | F029 | Unit test infrastructure with Bun test runner | ✅ verified |
-| F013 | Page tree navigation with nesting support | ✅ verified |
-| F023 | PWA manifest and service worker for offline support | ✅ verified |
+| F031 | Client-side routing for page navigation | ✅ verified |
+| F032 | Page creation, renaming, and deletion UI | ✅ verified |
+| F033 | Block keyboard navigation (enter, backspace, arrows) | ✅ verified |
 | F034 | CSP and security headers for privacy | ✅ verified |
 
 ### Feature Categories
@@ -298,8 +317,8 @@ bun run dev
 
 ### Current Progress
 - **Total Features**: 35
-- **Passing**: 16 (46%)
-- **Remaining**: 19
+- **Passing**: 23 (66%)
+- **Remaining**: 12
 
 ### Tech Stack
 - **Runtime**: Bun
