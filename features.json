@@ -316,12 +316,17 @@
                 "Property schema is stored and editable",
                 "Database is distinguished from regular pages in UI"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T15:00:00Z",
+            "verifiedBy": "agent-session-10",
+            "evidenceLinks": [
+                "src/services/databaseService.ts",
+                "src/components/DatabasePage.tsx",
+                "src/components/PropertyEditor.tsx",
+                "src/components/DatabaseView.tsx"
+            ],
+            "notes": "Database page type with full property schema. Supports text, number, date, checkbox, select, multiSelect, url property types. PropertyEditor for schema editing. Database pages shown with 📊 icon in sidebar."
         },
         {
             "id": "F016",
@@ -335,12 +340,15 @@
                 "User can open row as full page",
                 "Rows persist across reloads"
             ],
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "notes": null
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-06T15:00:00Z",
+            "verifiedBy": "agent-session-10",
+            "evidenceLinks": [
+                "src/services/databaseService.ts",
+                "src/components/DatabaseView.tsx"
+            ],
+            "notes": "Rows are created as pages via createRow. Inline editing for all property types. Open row as page via button. Rows persist to IndexedDB."
         },
         {
             "id": "F017",
@@ -773,8 +781,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-06-30T12:00:00Z",
+        "lastUpdated": "2025-12-06T15:00:00Z",
         "totalFeatures": 35,
-        "passingFeatures": 32
+        "passingFeatures": 34
     }
 }
