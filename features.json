@@ -1307,12 +1307,37 @@
             "blockedBy": null,
             "lastWorkedOn": "2025-12-06T22:00:00Z",
             "notes": "Added isFullWidth property to Page and PageSummary types. Topbar menu includes Full Width toggle with checkmark indicator. PageView applies dynamic width class based on page setting. Persists via IndexedDB."
+        },
+        {
+            "id": "F055",
+            "category": "ui",
+            "priority": 2,
+            "description": "Add 'Turn into' submenu to block drag handle for changing block type",
+            "dependencies": [
+                "F006"
+            ],
+            "acceptanceCriteria": [
+                "Clicking the drag handle (⠿) on a block opens a menu with 'Turn into' option",
+                "Turn into submenu shows available block types: Paragraph, Heading 1-3, Bullet List, Numbered List, Checklist",
+                "Selecting a block type converts the current block to that type",
+                "Block content is preserved when changing types",
+                "Works for all convertible block types (text-based blocks)"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "BlockNote's default + button adds new blocks. This feature adds the ability to change existing block types via the drag handle menu's 'Turn into' submenu."
         }
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-12-06T22:00:00Z",
-        "totalFeatures": 54,
+        "lastUpdated": "2025-12-06T23:00:00Z",
+        "totalFeatures": 55,
         "passingFeatures": 54
     }
 }

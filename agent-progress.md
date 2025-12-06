@@ -2,11 +2,58 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: ✅ 54/54 Features Complete (100%)
+## Current Status: ⏳ 54/55 Features Complete (98%)
 
 ---
 
 ## Session Log
+
+### Session 18 - 2025-12-06
+**Duration**: ~5 minutes
+**Focus**: Adding new feature per user request
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Features Added
+
+| ID | Priority | Category | Description |
+|----|----------|----------|-------------|
+| F055 | 2 | ui | Add 'Turn into' submenu to block drag handle for changing block type |
+
+#### Feature Details
+
+##### F055: Add 'Turn into' submenu to block drag handle for changing block type
+**Priority**: 2 (High)
+**Category**: ui
+**Dependencies**: F006
+**Estimated Effort**: Medium
+
+**Problem Statement**: 
+Currently the + button in the editor adds a new line and opens the slash menu, which means it's impossible to change the formatting of an existing line/block. Users need a way to convert an existing block to a different type.
+
+**Acceptance Criteria**:
+1. Clicking the drag handle (⠿) on a block opens a menu with 'Turn into' option
+2. Turn into submenu shows available block types: Paragraph, Heading 1-3, Bullet List, Numbered List, Checklist
+3. Selecting a block type converts the current block to that type
+4. Block content is preserved when changing types
+5. Works for all convertible block types (text-based blocks)
+
+**Implementation Notes**:
+- BlockNote provides `editor.updateBlock(block, { type: 'newType' })` for changing block types
+- Custom DragHandleMenu can be created with `TurnIntoBlockItem` component
+- Reference: BlockNote's `side-menu-drag-handle-items` example
+- Uses `SideMenuController` with custom `dragHandleMenu` prop
+
+#### Integration Notes
+- Leverages BlockNote's existing side menu infrastructure
+- Similar to the existing `ResetBlockTypeItem` example in BlockNote docs
+- Requires creating a custom `TurnIntoBlockItem` component with submenu
+
+#### Updated Statistics
+- **Total Features**: 54 → 55
+- **Passing**: 54 (98%)
+- **New Features by Category**: 1 ui
+
+---
 
 ### Session 17 - 2025-12-06
 **Duration**: ~20 minutes

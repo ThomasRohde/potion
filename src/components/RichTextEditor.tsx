@@ -282,11 +282,11 @@ function looksLikeMarkdown(text: string): boolean {
 function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record<string, unknown>; content: Array<{ type: string; text: string; styles: Record<string, boolean> }> }> | null {
     const blocks: Array<{ type: string; props?: Record<string, unknown>; content: Array<{ type: string; text: string; styles: Record<string, boolean> }> }> = []
     const lines = text.split('\n')
-    
+
     for (const line of lines) {
         const trimmedLine = line.trim()
         if (!trimmedLine) continue
-        
+
         // Check for headings: # Heading
         const headingMatch = trimmedLine.match(/^(#{1,6})\s+(.+)$/)
         if (headingMatch) {
@@ -299,7 +299,7 @@ function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record
             })
             continue
         }
-        
+
         // Check for unordered list items: - item, * item, + item
         const ulMatch = trimmedLine.match(/^[-*+]\s+(.+)$/)
         if (ulMatch) {
@@ -309,7 +309,7 @@ function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record
             })
             continue
         }
-        
+
         // Check for ordered list items: 1. item
         const olMatch = trimmedLine.match(/^\d+\.\s+(.+)$/)
         if (olMatch) {
@@ -319,7 +319,7 @@ function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record
             })
             continue
         }
-        
+
         // Check for blockquotes: > text
         const quoteMatch = trimmedLine.match(/^>\s*(.+)$/)
         if (quoteMatch) {
@@ -329,7 +329,7 @@ function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record
             })
             continue
         }
-        
+
         // Check for checkbox items: - [ ] item or - [x] item
         const checkboxMatch = trimmedLine.match(/^[-*+]\s+\[([ xX])\]\s+(.+)$/)
         if (checkboxMatch) {
@@ -340,14 +340,14 @@ function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record
             })
             continue
         }
-        
+
         // Default to paragraph for unrecognized lines
         blocks.push({
             type: 'paragraph',
             content: [{ type: 'text', text: trimmedLine, styles: {} }]
         })
     }
-    
+
     return blocks.length > 0 ? blocks : null
 }
 
@@ -400,13 +400,13 @@ export function RichTextEditor({
                 try {
                     // First try BlockNote's built-in markdown parser
                     let blocks = await editor.tryParseMarkdownToBlocks(plainText)
-                    
+
                     console.log('BlockNote parsed blocks:', blocks)
 
                     // Check if BlockNote failed to parse (returned only paragraphs for markdown that should be other types)
                     const allParagraphs = blocks.every((b: { type: string }) => b.type === 'paragraph')
                     const hasStructuredMarkdown = /^#{1,6}\s|^[-*+]\s|^\d+\.\s|^>\s/m.test(plainText)
-                    
+
                     if (allParagraphs && hasStructuredMarkdown) {
                         // BlockNote didn't recognize the markdown, use our simple parser
                         const simpleBlocks = parseSimpleMarkdown(plainText)
@@ -424,12 +424,12 @@ export function RichTextEditor({
                         if (cursorPos && cursorPos.block) {
                             // Check if current block is empty - if so, replace it
                             const currentBlock = cursorPos.block
-                            const isEmptyBlock = !currentBlock.content || 
+                            const isEmptyBlock = !currentBlock.content ||
                                 (Array.isArray(currentBlock.content) && currentBlock.content.length === 0) ||
                                 (Array.isArray(currentBlock.content) && currentBlock.content.every(
                                     (c: { type: string; text?: string }) => c.type === 'text' && (!c.text || c.text.trim() === '')
                                 ))
-                            
+
                             if (isEmptyBlock) {
                                 // Replace the empty block with the parsed blocks
                                 editor.replaceBlocks([currentBlock], blocks)

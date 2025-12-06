@@ -23,7 +23,7 @@ export function PageView() {
     // Get isFullWidth from the store to react to changes without full page reload
     const storePages = useWorkspaceStore(state => state.pages)
     const storePageData = storePages.find(p => p.id === id)
-    
+
     const [page, setPage] = useState<Page | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
