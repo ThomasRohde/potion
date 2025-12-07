@@ -194,6 +194,7 @@ export function PageView() {
                     key={page.id} // Re-mount editor when page changes
                     initialContent={page.content}
                     onChange={handleContentChange}
+                    pages={storePages}
                 />
             </Suspense>
         </div>

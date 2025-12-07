@@ -156,240 +156,240 @@ export function Sidebar({
             className="bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col h-screen"
             style={{ width: `${width}px`, minWidth: '200px', maxWidth: '400px' }}
         >
-                {/* Header */}
-                <SidebarHeader className="p-4 flex flex-row items-center justify-between border-b border-sidebar-border">
-                    <div className="flex items-center gap-2">
-                        <FlaskConical className="w-5 h-5 text-potion-600 dark:text-potion-400" />
-                        <span className="font-semibold">Potion</span>
-                    </div>
+            {/* Header */}
+            <SidebarHeader className="p-4 flex flex-row items-center justify-between border-b border-sidebar-border">
+                <div className="flex items-center gap-2">
+                    <FlaskConical className="w-5 h-5 text-potion-600 dark:text-potion-400" />
+                    <span className="font-semibold">Potion</span>
+                </div>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={onToggleCollapse}
+                            className="h-7 w-7"
+                        >
+                            <ChevronsLeft className="w-4 h-4" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Collapse sidebar</TooltipContent>
+                </Tooltip>
+            </SidebarHeader>
+
+            <SidebarContent className="flex-1 overflow-y-auto">
+                {/* Favorites section - Collapsible */}
+                {favoritePages.length > 0 && (
+                    <Collapsible.Root open={favoritesOpen} onOpenChange={setFavoritesOpen}>
+                        <SidebarGroup className="border-b border-sidebar-border py-2">
+                            <SidebarGroupLabel asChild className="px-2">
+                                <Collapsible.Trigger className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-sidebar-accent rounded-md px-2 py-1.5 text-muted-foreground">
+                                    <ChevronDown className={`w-3 h-3 transition-transform ${favoritesOpen ? '' : '-rotate-90'}`} />
+                                    Favorites
+                                </Collapsible.Trigger>
+                            </SidebarGroupLabel>
+                            <Collapsible.Content>
+                                <SidebarGroupContent className="px-2 pt-1">
+                                    <SidebarMenu>
+                                        {favoritePages.map(page => (
+                                            <PageItem
+                                                key={page.id}
+                                                page={page}
+                                                depth={0}
+                                                isSelected={selectedPageId === page.id}
+                                                isExpanded={expandedPages.has(page.id)}
+                                                isDragOver={dragOverPageId === page.id}
+                                                onSelect={onPageSelect}
+                                                onToggleExpand={toggleExpanded}
+                                                onCreateChild={onCreatePage}
+                                                onRename={onRenamePage}
+                                                onDelete={onDeletePage}
+                                                onToggleFavorite={onToggleFavorite}
+                                                onMovePage={onMovePage}
+                                                onExportPage={onExportPage}
+                                                onDragOverChange={setDragOverPageId}
+                                            />
+                                        ))}
+                                    </SidebarMenu>
+                                </SidebarGroupContent>
+                            </Collapsible.Content>
+                        </SidebarGroup>
+                    </Collapsible.Root>
+                )}
+
+                {/* Pages section - Collapsible */}
+                <Collapsible.Root open={pagesOpen} onOpenChange={setPagesOpen}>
+                    <SidebarGroup
+                        className={`flex-1 py-2 ${dragOverRoot ? 'bg-potion-50 dark:bg-potion-900/20' : ''}`}
+                        onDragOver={(e) => {
+                            e.preventDefault()
+                            e.dataTransfer.dropEffect = 'move'
+                            setDragOverRoot(true)
+                        }}
+                        onDragLeave={(e) => {
+                            const related = e.relatedTarget as Element | null
+                            if (!related || !e.currentTarget.contains(related)) {
+                                setDragOverRoot(false)
+                            }
+                        }}
+                        onDrop={(e) => {
+                            e.preventDefault()
+                            setDragOverRoot(false)
+                            const pageId = e.dataTransfer.getData('text/plain')
+                            if (pageId && onMovePage) {
+                                onMovePage(pageId, null)
+                            }
+                        }}
+                    >
+                        <div className="flex items-center justify-between pr-2">
+                            <SidebarGroupLabel asChild className="px-2 flex-1">
+                                <Collapsible.Trigger className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-sidebar-accent rounded-md px-2 py-1.5 text-muted-foreground">
+                                    <ChevronDown className={`w-3 h-3 transition-transform ${pagesOpen ? '' : '-rotate-90'}`} />
+                                    Pages
+                                </Collapsible.Trigger>
+                            </SidebarGroupLabel>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => onCreatePage()}
+                                        className="h-6 w-6"
+                                    >
+                                        <Plus className="w-3.5 h-3.5" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>New page</TooltipContent>
+                            </Tooltip>
+                        </div>
+                        <Collapsible.Content>
+                            <SidebarGroupContent className="px-2 pt-1">
+                                {pages.length === 0 ? (
+                                    <p className="px-2 text-sm text-muted-foreground">
+                                        No pages yet
+                                    </p>
+                                ) : (
+                                    <SidebarMenu>
+                                        {pages.map(page => (
+                                            <PageItem
+                                                key={page.id}
+                                                page={page}
+                                                depth={0}
+                                                isSelected={selectedPageId === page.id}
+                                                isExpanded={expandedPages.has(page.id)}
+                                                isDragOver={dragOverPageId === page.id}
+                                                onSelect={onPageSelect}
+                                                onToggleExpand={toggleExpanded}
+                                                onCreateChild={onCreatePage}
+                                                onRename={onRenamePage}
+                                                onDelete={onDeletePage}
+                                                onToggleFavorite={onToggleFavorite}
+                                                onMovePage={onMovePage}
+                                                onExportPage={onExportPage}
+                                                onDragOverChange={setDragOverPageId}
+                                            />
+                                        ))}
+                                    </SidebarMenu>
+                                )}
+                            </SidebarGroupContent>
+                        </Collapsible.Content>
+                    </SidebarGroup>
+                </Collapsible.Root>
+            </SidebarContent>
+
+            {/* Footer */}
+            <SidebarFooter className="p-2 border-t border-sidebar-border space-y-1">
+                {/* New page/database dropdown */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            data-testid="new-page-button"
+                            className="w-full justify-start"
+                        >
+                            <Plus className="w-4 h-4" />
+                            New
+                            <ChevronDown className="w-3 h-3 ml-auto" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                        <DropdownMenuItem onSelect={() => onCreatePage()}>
+                            <FileText className="w-4 h-4" />
+                            New page
+                        </DropdownMenuItem>
+                        {onCreateDatabase && (
+                            <DropdownMenuItem onSelect={() => onCreateDatabase()}>
+                                <Database className="w-4 h-4" />
+                                New database
+                            </DropdownMenuItem>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                <div className="flex gap-1">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                onClick={onExportWorkspace}
+                                className="flex-1 h-8 text-xs"
+                            >
+                                <Download className="w-3.5 h-3.5" />
+                                Export
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Export workspace to JSON</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                onClick={onImportWorkspace}
+                                className="flex-1 h-8 text-xs"
+                            >
+                                <Upload className="w-3.5 h-3.5" />
+                                Import
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Import workspace from JSON</TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                onClick={onToggleCollapse}
-                                className="h-7 w-7"
+                                onClick={onShowHelp}
+                                className="h-8 w-8"
                             >
-                                <ChevronsLeft className="w-4 h-4" />
+                                <HelpCircle className="w-3.5 h-3.5" />
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Collapse sidebar</TooltipContent>
+                        <TooltipContent>Keyboard shortcuts (?)</TooltipContent>
                     </Tooltip>
-                </SidebarHeader>
-
-                <SidebarContent className="flex-1 overflow-y-auto">
-                    {/* Favorites section - Collapsible */}
-                    {favoritePages.length > 0 && (
-                        <Collapsible.Root open={favoritesOpen} onOpenChange={setFavoritesOpen}>
-                            <SidebarGroup className="border-b border-sidebar-border py-2">
-                                <SidebarGroupLabel asChild className="px-2">
-                                    <Collapsible.Trigger className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-sidebar-accent rounded-md px-2 py-1.5 text-muted-foreground">
-                                        <ChevronDown className={`w-3 h-3 transition-transform ${favoritesOpen ? '' : '-rotate-90'}`} />
-                                        Favorites
-                                    </Collapsible.Trigger>
-                                </SidebarGroupLabel>
-                                <Collapsible.Content>
-                                    <SidebarGroupContent className="px-2 pt-1">
-                                        <SidebarMenu>
-                                            {favoritePages.map(page => (
-                                                <PageItem
-                                                    key={page.id}
-                                                    page={page}
-                                                    depth={0}
-                                                    isSelected={selectedPageId === page.id}
-                                                    isExpanded={expandedPages.has(page.id)}
-                                                    isDragOver={dragOverPageId === page.id}
-                                                    onSelect={onPageSelect}
-                                                    onToggleExpand={toggleExpanded}
-                                                    onCreateChild={onCreatePage}
-                                                    onRename={onRenamePage}
-                                                    onDelete={onDeletePage}
-                                                    onToggleFavorite={onToggleFavorite}
-                                                    onMovePage={onMovePage}
-                                                    onExportPage={onExportPage}
-                                                    onDragOverChange={setDragOverPageId}
-                                                />
-                                            ))}
-                                        </SidebarMenu>
-                                    </SidebarGroupContent>
-                                </Collapsible.Content>
-                            </SidebarGroup>
-                        </Collapsible.Root>
-                    )}
-
-                    {/* Pages section - Collapsible */}
-                    <Collapsible.Root open={pagesOpen} onOpenChange={setPagesOpen}>
-                        <SidebarGroup
-                            className={`flex-1 py-2 ${dragOverRoot ? 'bg-potion-50 dark:bg-potion-900/20' : ''}`}
-                            onDragOver={(e) => {
-                                e.preventDefault()
-                                e.dataTransfer.dropEffect = 'move'
-                                setDragOverRoot(true)
-                            }}
-                            onDragLeave={(e) => {
-                                const related = e.relatedTarget as Element | null
-                                if (!related || !e.currentTarget.contains(related)) {
-                                    setDragOverRoot(false)
-                                }
-                            }}
-                            onDrop={(e) => {
-                                e.preventDefault()
-                                setDragOverRoot(false)
-                                const pageId = e.dataTransfer.getData('text/plain')
-                                if (pageId && onMovePage) {
-                                    onMovePage(pageId, null)
-                                }
-                            }}
-                        >
-                            <div className="flex items-center justify-between pr-2">
-                                <SidebarGroupLabel asChild className="px-2 flex-1">
-                                    <Collapsible.Trigger className="flex w-full items-center gap-1 text-xs font-semibold uppercase tracking-wider cursor-pointer hover:bg-sidebar-accent rounded-md px-2 py-1.5 text-muted-foreground">
-                                        <ChevronDown className={`w-3 h-3 transition-transform ${pagesOpen ? '' : '-rotate-90'}`} />
-                                        Pages
-                                    </Collapsible.Trigger>
-                                </SidebarGroupLabel>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => onCreatePage()}
-                                            className="h-6 w-6"
-                                        >
-                                            <Plus className="w-3.5 h-3.5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>New page</TooltipContent>
-                                </Tooltip>
-                            </div>
-                            <Collapsible.Content>
-                                <SidebarGroupContent className="px-2 pt-1">
-                                    {pages.length === 0 ? (
-                                        <p className="px-2 text-sm text-muted-foreground">
-                                            No pages yet
-                                        </p>
-                                    ) : (
-                                        <SidebarMenu>
-                                            {pages.map(page => (
-                                                <PageItem
-                                                    key={page.id}
-                                                    page={page}
-                                                    depth={0}
-                                                    isSelected={selectedPageId === page.id}
-                                                    isExpanded={expandedPages.has(page.id)}
-                                                    isDragOver={dragOverPageId === page.id}
-                                                    onSelect={onPageSelect}
-                                                    onToggleExpand={toggleExpanded}
-                                                    onCreateChild={onCreatePage}
-                                                    onRename={onRenamePage}
-                                                    onDelete={onDeletePage}
-                                                    onToggleFavorite={onToggleFavorite}
-                                                    onMovePage={onMovePage}
-                                                    onExportPage={onExportPage}
-                                                    onDragOverChange={setDragOverPageId}
-                                                />
-                                            ))}
-                                        </SidebarMenu>
-                                    )}
-                                </SidebarGroupContent>
-                            </Collapsible.Content>
-                        </SidebarGroup>
-                    </Collapsible.Root>
-                </SidebarContent>
-
-                {/* Footer */}
-                <SidebarFooter className="p-2 border-t border-sidebar-border space-y-1">
-                    {/* New page/database dropdown */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
                             <Button
                                 variant="ghost"
-                                data-testid="new-page-button"
-                                className="w-full justify-start"
+                                size="icon"
+                                onClick={onOpenSettings}
+                                className="h-8 w-8"
+                                aria-label="Settings"
+                                data-testid="settings-button"
                             >
-                                <Plus className="w-4 h-4" />
-                                New
-                                <ChevronDown className="w-3 h-3 ml-auto" />
+                                <Settings className="w-3.5 h-3.5" />
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)]">
-                            <DropdownMenuItem onSelect={() => onCreatePage()}>
-                                <FileText className="w-4 h-4" />
-                                New page
-                            </DropdownMenuItem>
-                            {onCreateDatabase && (
-                                <DropdownMenuItem onSelect={() => onCreateDatabase()}>
-                                    <Database className="w-4 h-4" />
-                                    New database
-                                </DropdownMenuItem>
-                            )}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <div className="flex gap-1">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    onClick={onExportWorkspace}
-                                    className="flex-1 h-8 text-xs"
-                                >
-                                    <Download className="w-3.5 h-3.5" />
-                                    Export
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Export workspace to JSON</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    onClick={onImportWorkspace}
-                                    className="flex-1 h-8 text-xs"
-                                >
-                                    <Upload className="w-3.5 h-3.5" />
-                                    Import
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Import workspace from JSON</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={onShowHelp}
-                                    className="h-8 w-8"
-                                >
-                                    <HelpCircle className="w-3.5 h-3.5" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Keyboard shortcuts (?)</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={onOpenSettings}
-                                    className="h-8 w-8"
-                                    aria-label="Settings"
-                                    data-testid="settings-button"
-                                >
-                                    <Settings className="w-3.5 h-3.5" />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Settings</TooltipContent>
-                        </Tooltip>
-                        {theme && onToggleTheme && (
-                            <ThemeToggle
-                                theme={theme}
-                                onToggle={onToggleTheme}
-                                className="px-2 py-1.5"
-                                data-testid="theme-toggle"
-                            />
-                        )}
-                    </div>
-                </SidebarFooter>
+                        </TooltipTrigger>
+                        <TooltipContent>Settings</TooltipContent>
+                    </Tooltip>
+                    {theme && onToggleTheme && (
+                        <ThemeToggle
+                            theme={theme}
+                            onToggle={onToggleTheme}
+                            className="px-2 py-1.5"
+                            data-testid="theme-toggle"
+                        />
+                    )}
+                </div>
+            </SidebarFooter>
         </div>
     )
 }

@@ -10,9 +10,10 @@
  * - Provides onChange callback for auto-save integration
  * - Native markdown paste support via BlockNote's pasteHandler
  * - Code block syntax highlighting with language selector
+ * - @ mentions for linking to other pages (F069)
  */
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useCallback } from 'react'
 import {
     useCreateBlockNote,
     SideMenuController,
@@ -25,23 +26,32 @@ import {
     NestBlockButton,
     UnnestBlockButton,
     CreateLinkButton,
-    BlockTypeSelect
+    BlockTypeSelect,
+    SuggestionMenuController,
+    DefaultReactSuggestionItem
 } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
-import { BlockNoteSchema, createCodeBlockSpec } from '@blocknote/core'
-import type { Block, BlockNoteEditor } from '@blocknote/core'
+import { BlockNoteSchema, createCodeBlockSpec, defaultInlineContentSpecs } from '@blocknote/core'
+import { filterSuggestionItems } from '@blocknote/core/extensions'
+import type { Block } from '@blocknote/core'
 import { codeBlockOptions } from '@blocknote/code-block'
 import '@blocknote/mantine/style.css'
 
-import type { BlockContent } from '../types'
+import type { BlockContent, PageSummary } from '../types'
 import { CustomDragHandleMenu } from './CustomDragHandleMenu'
 import { useThemeStore, selectAppliedTheme } from '../stores/themeStore'
+import { PageMention } from './PageMention'
 
 /**
- * Custom schema with code block syntax highlighting enabled.
- * This extends BlockNote's default schema with the configured code block.
+ * Custom schema with code block syntax highlighting and page mentions.
+ * This extends BlockNote's default schema with additional features.
  */
-const schema = BlockNoteSchema.create().extend({
+const schema = BlockNoteSchema.create({
+    inlineContentSpecs: {
+        ...defaultInlineContentSpecs,
+        pageMention: PageMention
+    }
+}).extend({
     blockSpecs: {
         codeBlock: createCodeBlockSpec(codeBlockOptions)
     }
@@ -88,6 +98,12 @@ export interface RichTextEditorProps {
      * Placeholder text when editor is empty.
      */
     placeholder?: string
+
+    /**
+     * List of pages for @ mentions feature.
+     * Used to show page suggestions when user types @.
+     */
+    pages?: PageSummary[]
 }
 
 /**
@@ -271,7 +287,8 @@ function fromBlockNoteBlocks(blocks: Block[]): BlockContent {
 export function RichTextEditor({
     initialContent,
     onChange,
-    readOnly = false
+    readOnly = false,
+    pages = []
 }: RichTextEditorProps) {
     // Get the current theme from the store
     const appliedTheme = useThemeStore(selectAppliedTheme)
@@ -284,7 +301,7 @@ export function RichTextEditor({
 
     // Create the BlockNote editor instance with native markdown paste support
     // and code block syntax highlighting
-    const editor: BlockNoteEditor = useCreateBlockNote({
+    const editor = useCreateBlockNote({
         schema,
         initialContent: initialBlocks,
         defaultStyles: true,
@@ -300,13 +317,37 @@ export function RichTextEditor({
         }
     })
 
+    // Get mention items from pages list for @ suggestion menu
+    const getMentionItems = useCallback(
+        (query: string): DefaultReactSuggestionItem[] => {
+            const items = pages.map((page) => ({
+                title: page.title || 'Untitled',
+                onItemClick: () => {
+                    editor.insertInlineContent([
+                        {
+                            type: 'pageMention',
+                            props: {
+                                pageId: page.id,
+                                pageTitle: page.title || 'Untitled'
+                            }
+                        },
+                        ' ' // Add space after mention
+                    ])
+                }
+            }))
+            return filterSuggestionItems(items, query)
+        },
+        [editor, pages]
+    )
+
     // Handle content changes
     useEffect(() => {
         if (!onChange || readOnly) return
 
         // Subscribe to document changes
         const unsubscribe = editor.onChange(() => {
-            const blocks = editor.document
+            // Cast to Block[] for our internal format - safe because we control the schema
+            const blocks = editor.document as unknown as Block[]
             const content = fromBlockNoteBlocks(blocks)
             onChange(content)
         })
@@ -355,6 +396,13 @@ export function RichTextEditor({
                             <CreateLinkButton key="createLinkButton" />
                         </FormattingToolbar>
                     )}
+                />
+                {/* @ mentions suggestion menu for linking to pages */}
+                <SuggestionMenuController
+                    triggerCharacter="@"
+                    getItems={async (query) =>
+                        filterSuggestionItems(getMentionItems(query), query)
+                    }
                 />
             </BlockNoteView>
         </div>
