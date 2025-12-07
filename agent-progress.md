@@ -2,11 +2,98 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 75/90 Features Complete (83%)
+## Current Status: 79/90 Features Complete (88%)
 
 ---
 
 ## Session Log
+
+### Session 27 - 2025-06-19
+**Duration**: ~30 minutes
+**Focus**: ShadCN/ui form components and UX enhancements (F084-F087)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Features Implemented
+
+| ID | Status | Description |
+|----|--------|-------------|
+| F084 | ✅ Verified | Migrate form inputs to ShadCN Input and Select |
+| F085 | ✅ Verified | Add ShadCN Tooltip for icon buttons and actions |
+| F086 | ✅ Verified | Add ShadCN Toast/Sonner for notifications and feedback |
+| F087 | ✅ Verified | Migrate ThemeToggle to ShadCN Toggle pattern (already complete) |
+
+#### Technical Implementation
+
+**New Packages Installed**
+- `@radix-ui/react-select@2.2.6` - Radix Select primitive for ShadCN Select
+- `@radix-ui/react-tooltip@1.2.8` - Radix Tooltip primitive for ShadCN Tooltip
+- `sonner@2.0.7` - Toast notification library
+
+**New Files Created**
+- `src/components/ui/input.tsx` - ShadCN Input component with forwarded ref
+- `src/components/ui/select.tsx` - ShadCN Select with Trigger, Content, Item, Value, Separator, ScrollButtons
+- `src/components/ui/tooltip.tsx` - ShadCN Tooltip with Trigger, Content, Provider
+- `src/components/ui/sonner.tsx` - ShadCN Sonner wrapper with theme-aware styling
+
+**Components Updated**
+
+*Input Migration (7 components, ~20 inputs)*
+- SettingsDialog.tsx - Workspace name input
+- SearchDialog.tsx - Search input (borderless variant)
+- Topbar.tsx - Title inline edit input
+- PropertyEditor.tsx - Property name, select option color, option name inputs
+- DatabaseView.tsx - Filter inputs, property header, editable cells
+- DatabasePage.tsx - Database title input
+- Sidebar.tsx - Page title inline edit input
+
+*Select Migration (~7 selects)*
+- PropertyEditor.tsx - Select option color dropdown
+- DatabaseView.tsx - Filter operator/value selects, editable cell selects
+
+*Tooltip Migration (3 components, ~15 buttons)*
+- Sidebar.tsx - Expand/collapse, new page, export, import, help, settings, add child page, more options
+- Topbar.tsx - Search, favorite toggle, more options
+- ThemeToggle.tsx - Theme cycle tooltip
+
+*Toast Integration (2 components)*
+- AppShell.tsx - Export (workspace, page, markdown, html), import, delete operations
+- PageView.tsx - Auto-save error handling
+
+**App Root Updates**
+- `src/App.tsx` - Added TooltipProvider (300ms delay), Toaster (richColors, bottom-right)
+
+#### Pre-Commit Verification
+
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 3121 modules transformed |
+| bun run test | 0 | ✅ 99 tests passed |
+| bun run lint | 0 | ✅ No errors |
+
+#### Commits Made
+
+1. `196e323` - feat(ui): migrate form inputs to ShadCN Input and Select (F084)
+2. `d858572` - feat(ui): add ShadCN Tooltip for icon buttons and actions (F085)
+3. `70ac325` - feat(ui): add ShadCN Toast/Sonner for notifications and feedback (F086)
+4. `c17e524` - docs(features): mark F087 ThemeToggle as verified
+
+#### Remaining Work
+
+| ID | Priority | Description | Effort |
+|----|----------|-------------|--------|
+| F088 | P3 | Add ShadCN Sidebar component for app navigation | Large |
+| F089 | P4 | Update favicon and PWA icons to Beaker design | Small |
+| F090 | P3 | Update E2E tests for ShadCN component selectors | Medium |
+
+#### Technical Notes
+
+- Input components use Tailwind ring utilities for consistent focus states
+- Select components preserve keyboard navigation and accessibility
+- Tooltips have 300ms delay to avoid accidental triggering
+- Toast notifications auto-close and support rich colors for success/error states
+- F087 was already complete from F085 work - no code changes needed
+
+---
 
 ### Session 26 - 2025-12-07
 **Duration**: ~45 minutes
