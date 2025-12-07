@@ -6,6 +6,7 @@
 
 import React from 'react'
 import { X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface KeyboardShortcutsDialogProps {
     isOpen: boolean
@@ -86,12 +87,13 @@ export function KeyboardShortcutsDialog({ isOpen, onClose }: KeyboardShortcutsDi
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                         Keyboard Shortcuts
                     </h2>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
                     >
                         <X className="w-5 h-5" />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Content */}

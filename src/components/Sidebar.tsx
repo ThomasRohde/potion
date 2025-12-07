@@ -26,6 +26,7 @@ import type { PageSummary, ThemePreference } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { ThemeToggle } from './ThemeToggle'
 import { PageIcon } from './PageIcon'
+import { Button } from '@/components/ui/button'
 
 interface SidebarProps {
     pages: PageTreeNode[]
@@ -93,20 +94,23 @@ export function Sidebar({
     if (collapsed) {
         return (
             <div className="w-12 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col items-center py-4">
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={onToggleCollapse}
-                    className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
                     title="Expand sidebar"
                 >
                     <ChevronsRight className="w-5 h-5" />
-                </button>
-                <button
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onCreatePage()}
-                    className="mt-4 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+                    className="mt-4"
                     title="New page"
                 >
                     <Plus className="w-5 h-5" />
-                </button>
+                </Button>
             </div>
         )
     }
@@ -123,13 +127,15 @@ export function Sidebar({
                     <FlaskConical className="w-5 h-5 text-potion-600 dark:text-potion-400" />
                     <span className="font-semibold text-gray-800 dark:text-gray-200">Potion</span>
                 </div>
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={onToggleCollapse}
-                    className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500"
+                    className="h-7 w-7"
                     title="Collapse sidebar"
                 >
                     <ChevronsLeft className="w-4 h-4" />
-                </button>
+                </Button>
             </div>
 
             {/* Favorites section */}
@@ -188,13 +194,15 @@ export function Sidebar({
                     <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Pages
                     </h3>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => onCreatePage()}
-                        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500"
+                        className="h-7 w-7"
                         title="New page"
                     >
                         <Plus className="w-4 h-4" />
-                    </button>
+                    </Button>
                 </div>
                 {pages.length === 0 ? (
                     <p className="px-2 text-sm text-gray-400 dark:text-gray-500">
@@ -227,76 +235,85 @@ export function Sidebar({
             <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
                 {/* New page/database dropdown */}
                 <div className="relative">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => setShowNewMenu(!showNewMenu)}
                         data-testid="new-page-button"
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="w-full justify-start"
                     >
                         <Plus className="w-4 h-4" />
                         New
                         <ChevronDown className="w-3 h-3 ml-auto" />
-                    </button>
+                    </Button>
                     {showNewMenu && (
                         <div
                             className="absolute bottom-full left-0 right-0 z-50 mb-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
                             onMouseLeave={() => setShowNewMenu(false)}
                         >
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => {
                                     onCreatePage()
                                     setShowNewMenu(false)
                                 }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                className="w-full justify-start rounded-none"
                             >
                                 <FileText className="w-4 h-4" />
                                 New page
-                            </button>
+                            </Button>
                             {onCreateDatabase && (
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => {
                                         onCreateDatabase()
                                         setShowNewMenu(false)
                                     }}
-                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                    className="w-full justify-start rounded-none"
                                 >
                                     <Database className="w-4 h-4" />
                                     New database
-                                </button>
+                                </Button>
                             )}
                         </div>
                     )}
                 </div>
                 <div className="flex gap-1">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={onExportWorkspace}
-                        className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="flex-1 h-8 text-xs"
                         title="Export workspace to JSON"
                     >
                         <Download className="w-3.5 h-3.5" />
                         Export
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={onImportWorkspace}
-                        className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="flex-1 h-8 text-xs"
                         title="Import workspace from JSON"
                     >
                         <Upload className="w-3.5 h-3.5" />
                         Import
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onShowHelp}
-                        className="flex items-center justify-center px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="h-8 w-8"
                         title="Keyboard shortcuts (?)"
                     >
                         <HelpCircle className="w-3.5 h-3.5" />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onOpenSettings}
-                        className="flex items-center justify-center px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="h-8 w-8"
                         title="Settings"
                     >
                         <Settings className="w-3.5 h-3.5" />
-                    </button>
+                    </Button>
                     {theme && onToggleTheme && (
                         <ThemeToggle
                             theme={theme}
@@ -486,17 +503,19 @@ function PageItem({
                 onMouseLeave={() => setShowActions(false)}
             >
                 {/* Expand/collapse toggle */}
-                <button
+                <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={(e) => {
                         e.stopPropagation()
                         onToggleExpand(page.id)
                     }}
-                    className={`p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${hasChildren ? 'visible' : 'invisible'}`}
+                    className={`h-5 w-5 ${hasChildren ? 'visible' : 'invisible'}`}
                 >
                     <ChevronRight
                         className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
                     />
-                </button>
+                </Button>
 
                 {/* Icon */}
                 <PageIcon type={page.type} icon={page.icon} size="sm" className="shrink-0 text-gray-500 dark:text-gray-400" />
@@ -522,27 +541,31 @@ function PageItem({
                 {/* Actions */}
                 {showActions && !isEditing && (
                     <div className="flex items-center gap-0.5">
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={(e) => {
                                 e.stopPropagation()
                                 onCreateChild(page.id)
                             }}
-                            className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+                            className="h-5 w-5"
                             title="Add child page"
                         >
                             <Plus className="w-3 h-3" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             ref={menuButtonRef}
+                            variant="ghost"
+                            size="icon"
                             onClick={(e) => {
                                 e.stopPropagation()
                                 setShowMenu(!showMenu)
                             }}
-                            className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+                            className="h-5 w-5"
                             title="More options"
                         >
                             <MoreVertical className="w-3 h-3" />
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
@@ -553,7 +576,8 @@ function PageItem({
                     ref={menuRef}
                     className="absolute right-2 top-full z-50 mt-1 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
                 >
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={(e) => {
                             e.stopPropagation()
                             if (onToggleFavorite) {
@@ -561,21 +585,23 @@ function PageItem({
                             }
                             setShowMenu(false)
                         }}
-                        className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                        className="w-full justify-start rounded-none h-8 font-normal"
                     >
                         <Star className="w-4 h-4" fill={page.isFavorite ? "currentColor" : "none"} />
                         {page.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={(e) => {
                             e.stopPropagation()
                             startRename()
                         }}
-                        className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full justify-start rounded-none h-8 font-normal"
                     >
                         Rename
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={(e) => {
                             e.stopPropagation()
                             if (onExportPage) {
@@ -583,20 +609,21 @@ function PageItem({
                             }
                             setShowMenu(false)
                         }}
-                        className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                        className="w-full justify-start rounded-none h-8 font-normal"
                     >
                         <Download className="w-4 h-4" />
                         Export
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant="ghost"
                         onClick={(e) => {
                             e.stopPropagation()
                             handleDelete()
                         }}
-                        className="w-full text-left px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="w-full justify-start rounded-none h-8 font-normal text-red-600 dark:text-red-400 hover:text-red-600 dark:hover:text-red-400"
                     >
                         Delete
-                    </button>
+                    </Button>
                 </div>
             )}
 

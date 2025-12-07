@@ -19,6 +19,7 @@ import {
     Trash2
 } from 'lucide-react'
 import type { PageSummary } from '../types'
+import { Button } from '@/components/ui/button'
 
 interface TopbarProps {
     currentPage: PageSummary | null
@@ -165,68 +166,71 @@ export function Topbar({
             <div className="flex items-center gap-1">
                 {/* Search button */}
                 {onOpenSearch && (
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={onOpenSearch}
-                        className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400"
+                        className="gap-2"
                         title="Search (Ctrl+K)"
                     >
                         <Search className="w-4 h-4" />
                         <span className="hidden sm:inline text-sm">Search</span>
                         <kbd className="hidden sm:inline px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">⌘K</kbd>
-                    </button>
+                    </Button>
                 )}
                 {/* Favorite toggle */}
                 {currentPage && (
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onToggleFavorite}
-                        className={`p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 ${currentPage.isFavorite
-                            ? 'text-yellow-500'
-                            : 'text-gray-400 dark:text-gray-500'
-                            }`}
+                        className={currentPage.isFavorite ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-500'}
                         title={currentPage.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                     >
                         <Star
                             className="w-5 h-5"
                             fill={currentPage.isFavorite ? 'currentColor' : 'none'}
                         />
-                    </button>
+                    </Button>
                 )}
 
                 {/* More actions */}
                 {currentPage && (
                     <div className="relative">
-                        <button
+                        <Button
                             ref={menuButtonRef}
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setShowMenu(!showMenu)}
-                            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500"
                             title="More options"
                         >
                             <MoreVertical className="w-5 h-5" />
-                        </button>
+                        </Button>
                         {showMenu && (
                             <div
                                 ref={menuRef}
                                 className="absolute right-0 top-full z-50 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
                             >
                                 {onDuplicatePage && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             onDuplicatePage()
                                             setShowMenu(false)
                                         }}
-                                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        className="w-full justify-start rounded-none h-9 font-normal"
                                     >
                                         <Copy className="w-4 h-4" />
                                         Duplicate
-                                    </button>
+                                    </Button>
                                 )}
                                 {onToggleFullWidth && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             onToggleFullWidth()
                                             setShowMenu(false)
                                         }}
-                                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        className="w-full justify-start rounded-none h-9 font-normal"
                                     >
                                         {isFullWidth ? (
                                             <Minimize2 className="w-4 h-4" />
@@ -237,57 +241,61 @@ export function Topbar({
                                         {isFullWidth && (
                                             <Check className="w-4 h-4 text-potion-500" />
                                         )}
-                                    </button>
+                                    </Button>
                                 )}
                                 {onExportPage && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             onExportPage()
                                             setShowMenu(false)
                                         }}
-                                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        className="w-full justify-start rounded-none h-9 font-normal"
                                     >
                                         <Download className="w-4 h-4" />
                                         Export JSON
-                                    </button>
+                                    </Button>
                                 )}
                                 {onExportMarkdown && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             onExportMarkdown()
                                             setShowMenu(false)
                                         }}
-                                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        className="w-full justify-start rounded-none h-9 font-normal"
                                     >
                                         <FileText className="w-4 h-4" />
                                         Export Markdown
-                                    </button>
+                                    </Button>
                                 )}
                                 {onExportHtml && (
-                                    <button
+                                    <Button
+                                        variant="ghost"
                                         onClick={() => {
                                             onExportHtml()
                                             setShowMenu(false)
                                         }}
-                                        className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        className="w-full justify-start rounded-none h-9 font-normal"
                                     >
                                         <Code className="w-4 h-4" />
                                         Export HTML
-                                    </button>
+                                    </Button>
                                 )}
                                 {onDeletePage && (
                                     <>
                                         <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-                                        <button
+                                        <Button
+                                            variant="ghost"
                                             onClick={() => {
                                                 onDeletePage()
                                                 setShowMenu(false)
                                             }}
-                                            className="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                            className="w-full justify-start rounded-none h-9 font-normal text-red-600 dark:text-red-400 hover:text-red-600 dark:hover:text-red-400"
                                         >
                                             <Trash2 className="w-4 h-4" />
                                             Delete
-                                        </button>
+                                        </Button>
                                     </>
                                 )}
                             </div>

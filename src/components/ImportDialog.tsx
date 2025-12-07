@@ -9,6 +9,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Check } from 'lucide-react'
 import { validateExportFile } from '../services'
 import type { WorkspaceExport } from '../types'
+import { Button } from '@/components/ui/button'
 
 export type ImportMode = 'replace' | 'merge'
 
@@ -248,22 +249,18 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
 
                 {/* Actions */}
                 <div className="flex gap-3 justify-end">
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={onCancel}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                     >
                         Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={() => onConfirm(importMode)}
                         disabled={!validation?.valid || isValidating}
-                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${validation?.valid && !isValidating
-                            ? 'bg-potion-600 text-white hover:bg-potion-700'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}
                     >
                         {importMode === 'replace' ? 'Import & Replace' : 'Import & Merge'}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -391,12 +388,12 @@ export function ImportResultDialog({ isOpen, result, onClose }: ImportResultDial
 
                 {/* Actions */}
                 <div className="px-6 pb-6">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="w-full px-4 py-2 text-sm font-medium bg-potion-600 text-white hover:bg-potion-700 rounded-lg transition-colors"
+                        className="w-full"
                     >
                         Done
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

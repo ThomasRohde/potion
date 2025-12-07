@@ -5,6 +5,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
 
 export interface ConfirmDialogProps {
     isOpen: boolean
@@ -52,11 +53,7 @@ export function ConfirmDialog({
 
     if (!isOpen) return null
 
-    const confirmButtonClass = variant === 'danger'
-        ? 'bg-red-600 hover:bg-red-700 text-white'
-        : variant === 'warning'
-            ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
-            : 'bg-potion-600 hover:bg-potion-700 text-white'
+    const confirmVariant = variant === 'danger' || variant === 'warning' ? 'destructive' : 'default'
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -85,18 +82,18 @@ export function ConfirmDialog({
                     {message}
                 </p>
                 <div className="flex justify-end gap-3">
-                    <button
+                    <Button
+                        variant="secondary"
                         onClick={onCancel}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
                     >
                         {cancelLabel}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                        variant={confirmVariant}
                         onClick={onConfirm}
-                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${confirmButtonClass}`}
                     >
                         {confirmLabel}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import { useRegisterSW } from 'virtual:pwa-register/react'
+import { Button } from '@/components/ui/button'
 
 export function PWAUpdatePrompt() {
     const {
@@ -47,18 +48,19 @@ export function PWAUpdatePrompt() {
                         A new version of Potion is available. Reload to update.
                     </p>
                     <div className="mt-3 flex gap-2">
-                        <button
+                        <Button
                             onClick={() => updateServiceWorker(true)}
-                            className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
+                            size="sm"
                         >
                             Reload
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            size="sm"
                             onClick={close}
-                            className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                         >
                             Later
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

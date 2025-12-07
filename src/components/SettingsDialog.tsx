@@ -10,6 +10,7 @@ import { FlaskConical, X } from 'lucide-react'
 import type { Settings, ThemePreference } from '../types'
 import { getStorage } from '../storage'
 import { useThemeStore } from '../stores'
+import { Button } from '@/components/ui/button'
 
 interface SettingsDialogProps {
     isOpen: boolean
@@ -120,12 +121,13 @@ export function SettingsDialog({
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                         Settings
                     </h2>
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                        className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
                     >
                         <X className="w-5 h-5" />
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Content */}
@@ -153,13 +155,12 @@ export function SettingsDialog({
                                                 onChange={(e) => setEditedWorkspaceName(e.target.value)}
                                                 className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-potion-500"
                                             />
-                                            <button
+                                            <Button
                                                 onClick={handleWorkspaceNameSave}
                                                 disabled={!editedWorkspaceName.trim() || editedWorkspaceName === workspaceName}
-                                                className="px-3 py-2 text-sm font-medium bg-potion-600 text-white rounded-lg hover:bg-potion-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
                                             >
                                                 Save
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
@@ -279,12 +280,13 @@ export function SettingsDialog({
 
                 {/* Footer */}
                 <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-                    <button
+                    <Button
+                        variant="secondary"
                         onClick={onClose}
-                        className="w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                        className="w-full"
                     >
                         Done
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
