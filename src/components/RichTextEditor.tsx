@@ -317,14 +317,37 @@ export function RichTextEditor({
         [initialContent]
     )
 
+    /**
+     * Upload file handler that converts files to base64 data URLs.
+     * This enables file uploads for image, video, audio, and file blocks
+     * without requiring an external server - all data is stored locally in IndexedDB.
+     */
+    const uploadFile = useCallback(async (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => {
+                // FileReader.result is a base64 data URL
+                const dataUrl = reader.result as string
+                resolve(dataUrl)
+            }
+            reader.onerror = () => {
+                reject(new Error('Failed to read file'))
+            }
+            reader.readAsDataURL(file)
+        })
+    }, [])
+
     // Create the BlockNote editor instance with native markdown paste support,
-    // code block syntax highlighting, and multi-column support
+    // code block syntax highlighting, multi-column support, and file upload handler
     const editor = useCreateBlockNote({
         schema,
         initialContent: initialBlocks,
         defaultStyles: true,
         // Multi-column drop cursor allows dragging blocks to create columns
         dropCursor: multiColumnDropCursor,
+        // File upload handler for image, video, audio, and file blocks
+        // Converts files to base64 data URLs for local storage
+        uploadFile,
         // Merge core dictionary with multi-column dictionary for localized slash menu items
         dictionary: {
             ...coreLocales.en,
