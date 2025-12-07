@@ -11,6 +11,7 @@
  * - Native markdown paste support via BlockNote's pasteHandler
  * - Code block syntax highlighting with language selector
  * - @ mentions for linking to other pages (F069)
+ * - Multi-column layout support (F068)
  */
 
 import { useEffect, useMemo, useCallback } from 'react'
@@ -32,10 +33,17 @@ import {
     getDefaultReactSlashMenuItems
 } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
-import { BlockNoteSchema, createCodeBlockSpec, defaultInlineContentSpecs } from '@blocknote/core'
+import { BlockNoteSchema, createCodeBlockSpec, defaultInlineContentSpecs, combineByGroup } from '@blocknote/core'
+import * as coreLocales from '@blocknote/core/locales'
 import { filterSuggestionItems, insertOrUpdateBlockForSlashMenu } from '@blocknote/core/extensions'
 import type { Block } from '@blocknote/core'
 import { codeBlockOptions } from '@blocknote/code-block'
+import {
+    withMultiColumn,
+    multiColumnDropCursor,
+    getMultiColumnSlashMenuItems,
+    locales as multiColumnLocales
+} from '@blocknote/xl-multi-column'
 import '@blocknote/mantine/style.css'
 
 import type { BlockContent, PageSummary } from '../types'
@@ -45,10 +53,11 @@ import { PageMention } from './PageMention'
 import { Callout, insertCalloutItem } from './CalloutBlock'
 
 /**
- * Custom schema with code block syntax highlighting, page mentions, and callout blocks.
+ * Custom schema with code block syntax highlighting, page mentions, callout blocks,
+ * and multi-column layout support.
  * This extends BlockNote's default schema with additional features.
  */
-const schema = BlockNoteSchema.create({
+const baseSchema = BlockNoteSchema.create({
     inlineContentSpecs: {
         ...defaultInlineContentSpecs,
         pageMention: PageMention
@@ -59,6 +68,9 @@ const schema = BlockNoteSchema.create({
         callout: Callout()
     }
 })
+
+// Add multi-column support (column and columnList block types)
+const schema = withMultiColumn(baseSchema)
 
 /**
  * BlockNote's default supported block types.
@@ -77,7 +89,9 @@ const SUPPORTED_BLOCK_TYPES = new Set([
     'audio',
     'file',
     'codeBlock',
-    'callout'
+    'callout',
+    'column',
+    'columnList'
 ])
 
 export interface RichTextEditorProps {
@@ -303,12 +317,19 @@ export function RichTextEditor({
         [initialContent]
     )
 
-    // Create the BlockNote editor instance with native markdown paste support
-    // and code block syntax highlighting
+    // Create the BlockNote editor instance with native markdown paste support,
+    // code block syntax highlighting, and multi-column support
     const editor = useCreateBlockNote({
         schema,
         initialContent: initialBlocks,
         defaultStyles: true,
+        // Multi-column drop cursor allows dragging blocks to create columns
+        dropCursor: multiColumnDropCursor,
+        // Merge core dictionary with multi-column dictionary for localized slash menu items
+        dictionary: {
+            ...coreLocales.en,
+            multi_column: multiColumnLocales.en
+        },
         // Use BlockNote's native paste handler with markdown support
         // This interprets plain text as markdown and converts it to rich text
         pasteHandler: ({ defaultPasteHandler }) => {
@@ -344,16 +365,22 @@ export function RichTextEditor({
         [editor, pages]
     )
 
-    // Get slash menu items including custom callout block
+    // Get slash menu items including custom callout block and multi-column blocks
     const getSlashMenuItems = useCallback(
         async (query: string): Promise<DefaultReactSuggestionItem[]> => {
             // Get default slash menu items
             const defaultItems = getDefaultReactSlashMenuItems(editor)
 
+            // Get multi-column slash menu items (Two Columns, Three Columns)
+            const multiColumnItems = getMultiColumnSlashMenuItems(editor)
+
+            // Combine items, grouping by their group property
+            const combinedItems = combineByGroup(defaultItems, multiColumnItems)
+
             // Find index of last item in "Basic blocks" group
             let lastBasicBlockIndex = -1
-            for (let i = defaultItems.length - 1; i >= 0; i--) {
-                if (defaultItems[i].group === 'Basic blocks') {
+            for (let i = combinedItems.length - 1; i >= 0; i--) {
+                if (combinedItems[i].group === 'Basic blocks') {
                     lastBasicBlockIndex = i
                     break
                 }
@@ -374,12 +401,12 @@ export function RichTextEditor({
 
             // Insert callout item after last basic block (or at end if not found)
             if (lastBasicBlockIndex >= 0) {
-                defaultItems.splice(lastBasicBlockIndex + 1, 0, calloutItem)
+                combinedItems.splice(lastBasicBlockIndex + 1, 0, calloutItem)
             } else {
-                defaultItems.push(calloutItem)
+                combinedItems.push(calloutItem)
             }
 
-            return filterSuggestionItems(defaultItems, query)
+            return filterSuggestionItems(combinedItems, query)
         },
         [editor]
     )
