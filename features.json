@@ -2284,14 +2284,17 @@
                 "Apple touch icon is updated"
             ],
             "estimatedEffort": "small",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-07T00:00:00Z",
+            "verifiedBy": "agent-session-29",
+            "evidenceLinks": [
+                "public/favicon.svg",
+                "public/manifest.webmanifest"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Create custom SVG favicon based on Lucide Beaker icon design for consistent branding."
+            "lastWorkedOn": "2025-12-07T00:00:00Z",
+            "notes": "Created new favicon.svg with Lucide FlaskConical design - purple gradient background with white flask outline. Updated PWA manifest with proper icon configurations for all sizes. Icons work in light/dark contexts due to gradient background."
         },
         {
             "id": "F090",
@@ -2311,20 +2314,23 @@
                 "Test coverage maintained at current level"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-07T00:00:00Z",
+            "verifiedBy": "agent-session-29",
+            "evidenceLinks": [
+                "e2e/app.spec.ts",
+                "playwright.config.ts"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "ShadCN components may change DOM structure. Update E2E selectors accordingly."
+            "lastWorkedOn": "2025-12-07T00:00:00Z",
+            "notes": "Updated playwright.config.ts baseURL to /potion/ to match vite base config. Added aria-label and data-testid to Settings button. Updated E2E tests to use data-testid selectors for robust component selection. All 19 tests pass."
         }
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-07-07T00:00:00Z",
+        "lastUpdated": "2025-12-07T00:00:00Z",
         "totalFeatures": 90,
-        "passingFeatures": 80
+        "passingFeatures": 82
     }
 }

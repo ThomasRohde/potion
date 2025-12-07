@@ -372,6 +372,8 @@ export function Sidebar({
                                     size="icon"
                                     onClick={onOpenSettings}
                                     className="h-8 w-8"
+                                    aria-label="Settings"
+                                    data-testid="settings-button"
                                 >
                                     <Settings className="w-3.5 h-3.5" />
                                 </Button>

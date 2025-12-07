@@ -81,7 +81,8 @@ test.describe('App Shell', () => {
         await page.goto('/');
         await waitForAppReady(page);
 
-        await expect(page.getByRole('button', { name: /settings/i })).toBeVisible();
+        // Use data-testid for more robust selection
+        await expect(page.locator('[data-testid="settings-button"]')).toBeVisible();
     });
 });
 
@@ -261,8 +262,8 @@ test.describe('Settings', () => {
         await page.goto('/');
         await waitForAppReady(page);
 
-        // Click settings button
-        const settingsButton = page.getByRole('button', { name: /settings/i });
+        // Click settings button using data-testid for robust selection
+        const settingsButton = page.locator('[data-testid="settings-button"]');
         await settingsButton.click();
         await page.waitForTimeout(200);
 
@@ -274,8 +275,8 @@ test.describe('Settings', () => {
         await page.goto('/');
         await waitForAppReady(page);
 
-        // Open settings
-        const settingsButton = page.getByRole('button', { name: /settings/i });
+        // Open settings using data-testid for robust selection
+        const settingsButton = page.locator('[data-testid="settings-button"]');
         await settingsButton.click();
         await page.waitForTimeout(200);
 
