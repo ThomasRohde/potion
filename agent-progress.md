@@ -2,11 +2,109 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 71/90 Features Complete (79%)
+## Current Status: 74/90 Features Complete (82%)
 
 ---
 
 ## Session Log
+
+### Session 26 - 2025-12-07
+**Duration**: ~45 minutes
+**Focus**: ShadCN/ui migration (F080-F082)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Features Implemented
+
+| ID | Status | Description |
+|----|--------|-------------|
+| F080 | ✅ Verified | Install and configure ShadCN/ui with Tailwind (infrastructure) |
+| F081 | ✅ Verified | Migrate Button components to ShadCN Button |
+| F082 | ✅ Verified | Migrate Dialog components to ShadCN Dialog |
+
+#### Technical Implementation
+
+**New Packages Installed**
+- `clsx@2.1.1` - Utility for constructing className strings
+- `tailwind-merge@3.4.0` - Merge Tailwind classes without conflicts
+- `class-variance-authority@0.7.1` - CSS-in-JS for component variants
+- `@radix-ui/react-slot@1.2.4` - Radix Slot primitive
+- `@radix-ui/react-dialog@1.1.15` - Radix Dialog primitive
+- `tailwindcss-animate@1.0.7` - Tailwind animation utilities
+
+**New Files Created**
+- `src/lib/utils.ts` - `cn()` utility function for merging Tailwind classes
+- `components.json` - ShadCN CLI configuration
+- `src/components/ui/button.tsx` - ShadCN Button with 6 variants, 4 sizes
+- `src/components/ui/dialog.tsx` - ShadCN Dialog with Portal, Overlay, Content, Header, Footer, Title, Description
+
+**Configuration Updated**
+- `tailwind.config.js` - Added ShadCN theme colors (CSS vars), border-radius vars, animation keyframes, tailwindcss-animate plugin
+- `src/index.css` - Added CSS variables for light/dark themes (--background, --foreground, --primary, --secondary, etc.)
+
+**Components Migrated**
+
+*Button Migration (9 components)*
+- ConfirmDialog.tsx - Cancel/Confirm buttons
+- SettingsDialog.tsx - Close, Save, Done buttons
+- ImportDialog.tsx - Cancel, Import, Done buttons
+- KeyboardShortcutsDialog.tsx - Close button
+- Topbar.tsx - Search, Favorite, Menu, dropdown items
+- Sidebar.tsx - Expand/collapse, new page, footer actions, page item actions
+- ThemeToggle.tsx - Complete rewrite using Button
+- PWAUpdatePrompt.tsx - Reload, Later buttons
+
+*Dialog Migration (4 components)*
+- ConfirmDialog.tsx - Full Radix Dialog with DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+- KeyboardShortcutsDialog.tsx - Radix Dialog with scrollable content
+- SettingsDialog.tsx - Radix Dialog with sections for Workspace, Appearance, Editor, About
+- ImportDialog.tsx and ImportResultDialog - Radix Dialog with validation states
+
+**Button Variants Created**
+| Variant | Use Case |
+|---------|----------|
+| default | Primary actions (import, save) |
+| destructive | Dangerous actions (delete) |
+| outline | Bordered buttons |
+| secondary | Secondary actions (cancel, done) |
+| ghost | Subtle actions (menu items, icon buttons) |
+| link | Text-only links |
+
+**Button Sizes**
+| Size | Use Case |
+|------|----------|
+| default | Standard buttons |
+| sm | Compact buttons |
+| lg | Large buttons |
+| icon | Icon-only buttons (square) |
+
+#### Pre-Commit Verification
+
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| npm run build | 0 | ✅ 3098 modules transformed |
+| npm test | 0 | ✅ 99 tests passed |
+| npm run lint | 0 | ✅ No errors |
+
+#### Commits Made
+
+1. `3bb6087` - feat(infra): install and configure ShadCN/ui foundation (F080)
+2. `5694fec` - feat(ui): migrate Button components to ShadCN Button (F081)
+3. `c6e18ae` - feat(ui): migrate Dialogs to ShadCN Dialog (F082)
+
+#### Next Steps
+
+1. **F083**: Migrate Dropdown/Menu components to ShadCN DropdownMenu
+2. **F084**: Update E2E tests for ShadCN component selectors
+3. Consider migrating SearchDialog to ShadCN Command pattern for better UX
+
+#### Technical Notes
+
+- CSS bundle increased from ~246KB to ~249KB due to animation utilities
+- All dialogs now have built-in focus trapping, keyboard navigation (Escape to close), and smooth animations
+- Button component uses `asChild` prop via Radix Slot for composition patterns
+- Theme toggle buttons in SettingsDialog kept as native buttons (radio-like toggle groups, not standard buttons)
+
+---
 
 ### Session 25 - 2025-06-18
 **Duration**: ~30 minutes

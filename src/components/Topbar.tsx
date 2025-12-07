@@ -20,6 +20,13 @@ import {
 } from 'lucide-react'
 import type { PageSummary } from '../types'
 import { Button } from '@/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface TopbarProps {
     currentPage: PageSummary | null
@@ -50,10 +57,7 @@ export function Topbar({
 }: TopbarProps) {
     const [isEditing, setIsEditing] = useState(false)
     const [editTitle, setEditTitle] = useState('')
-    const [showMenu, setShowMenu] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
-    const menuRef = useRef<HTMLDivElement>(null)
-    const menuButtonRef = useRef<HTMLButtonElement>(null)
 
     // Focus input when editing starts
     useEffect(() => {
@@ -92,34 +96,6 @@ export function Topbar({
             setIsEditing(false)
         }
     }
-
-    // Close menu when clicking outside
-    useEffect(() => {
-        if (!showMenu) return
-
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as Node
-            if (
-                menuRef.current && !menuRef.current.contains(target) &&
-                menuButtonRef.current && !menuButtonRef.current.contains(target)
-            ) {
-                setShowMenu(false)
-            }
-        }
-
-        const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setShowMenu(false)
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside)
-        document.addEventListener('keydown', handleEscape)
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-            document.removeEventListener('keydown', handleEscape)
-        }
-    }, [showMenu])
 
     return (
         <header className="h-12 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 flex items-center px-4 gap-2">
@@ -195,112 +171,68 @@ export function Topbar({
 
                 {/* More actions */}
                 {currentPage && (
-                    <div className="relative">
-                        <Button
-                            ref={menuButtonRef}
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setShowMenu(!showMenu)}
-                            title="More options"
-                        >
-                            <MoreVertical className="w-5 h-5" />
-                        </Button>
-                        {showMenu && (
-                            <div
-                                ref={menuRef}
-                                className="absolute right-0 top-full z-50 mt-1 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                title="More options"
                             >
-                                {onDuplicatePage && (
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            onDuplicatePage()
-                                            setShowMenu(false)
-                                        }}
-                                        className="w-full justify-start rounded-none h-9 font-normal"
+                                <MoreVertical className="w-5 h-5" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                            {onDuplicatePage && (
+                                <DropdownMenuItem onSelect={onDuplicatePage}>
+                                    <Copy className="w-4 h-4" />
+                                    Duplicate
+                                </DropdownMenuItem>
+                            )}
+                            {onToggleFullWidth && (
+                                <DropdownMenuItem onSelect={onToggleFullWidth}>
+                                    {isFullWidth ? (
+                                        <Minimize2 className="w-4 h-4" />
+                                    ) : (
+                                        <Maximize2 className="w-4 h-4" />
+                                    )}
+                                    <span className="flex-1">Full width</span>
+                                    {isFullWidth && (
+                                        <Check className="w-4 h-4 text-potion-500" />
+                                    )}
+                                </DropdownMenuItem>
+                            )}
+                            {onExportPage && (
+                                <DropdownMenuItem onSelect={onExportPage}>
+                                    <Download className="w-4 h-4" />
+                                    Export JSON
+                                </DropdownMenuItem>
+                            )}
+                            {onExportMarkdown && (
+                                <DropdownMenuItem onSelect={onExportMarkdown}>
+                                    <FileText className="w-4 h-4" />
+                                    Export Markdown
+                                </DropdownMenuItem>
+                            )}
+                            {onExportHtml && (
+                                <DropdownMenuItem onSelect={onExportHtml}>
+                                    <Code className="w-4 h-4" />
+                                    Export HTML
+                                </DropdownMenuItem>
+                            )}
+                            {onDeletePage && (
+                                <>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        onSelect={onDeletePage}
+                                        className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
                                     >
-                                        <Copy className="w-4 h-4" />
-                                        Duplicate
-                                    </Button>
-                                )}
-                                {onToggleFullWidth && (
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            onToggleFullWidth()
-                                            setShowMenu(false)
-                                        }}
-                                        className="w-full justify-start rounded-none h-9 font-normal"
-                                    >
-                                        {isFullWidth ? (
-                                            <Minimize2 className="w-4 h-4" />
-                                        ) : (
-                                            <Maximize2 className="w-4 h-4" />
-                                        )}
-                                        <span className="flex-1">Full width</span>
-                                        {isFullWidth && (
-                                            <Check className="w-4 h-4 text-potion-500" />
-                                        )}
-                                    </Button>
-                                )}
-                                {onExportPage && (
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            onExportPage()
-                                            setShowMenu(false)
-                                        }}
-                                        className="w-full justify-start rounded-none h-9 font-normal"
-                                    >
-                                        <Download className="w-4 h-4" />
-                                        Export JSON
-                                    </Button>
-                                )}
-                                {onExportMarkdown && (
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            onExportMarkdown()
-                                            setShowMenu(false)
-                                        }}
-                                        className="w-full justify-start rounded-none h-9 font-normal"
-                                    >
-                                        <FileText className="w-4 h-4" />
-                                        Export Markdown
-                                    </Button>
-                                )}
-                                {onExportHtml && (
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => {
-                                            onExportHtml()
-                                            setShowMenu(false)
-                                        }}
-                                        className="w-full justify-start rounded-none h-9 font-normal"
-                                    >
-                                        <Code className="w-4 h-4" />
-                                        Export HTML
-                                    </Button>
-                                )}
-                                {onDeletePage && (
-                                    <>
-                                        <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-                                        <Button
-                                            variant="ghost"
-                                            onClick={() => {
-                                                onDeletePage()
-                                                setShowMenu(false)
-                                            }}
-                                            className="w-full justify-start rounded-none h-9 font-normal text-red-600 dark:text-red-400 hover:text-red-600 dark:hover:text-red-400"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                            Delete
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                                        <Trash2 className="w-4 h-4" />
+                                        Delete
+                                    </DropdownMenuItem>
+                                </>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 )}
             </div>
         </header>

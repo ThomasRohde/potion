@@ -27,6 +27,13 @@ import type { PageTreeNode } from '../services/pageService'
 import { ThemeToggle } from './ThemeToggle'
 import { PageIcon } from './PageIcon'
 import { Button } from '@/components/ui/button'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface SidebarProps {
     pages: PageTreeNode[]
@@ -75,7 +82,6 @@ export function Sidebar({
     const [expandedPages, setExpandedPages] = useState<Set<string>>(new Set())
     const [dragOverPageId, setDragOverPageId] = useState<string | null>(null)
     const [dragOverRoot, setDragOverRoot] = useState(false)
-    const [showNewMenu, setShowNewMenu] = useState(false)
 
     const toggleExpanded = useCallback((pageId: string) => {
         setExpandedPages(prev => {
@@ -234,49 +240,31 @@ export function Sidebar({
             {/* Footer */}
             <div className="p-2 border-t border-gray-200 dark:border-gray-700 space-y-1">
                 {/* New page/database dropdown */}
-                <div className="relative">
-                    <Button
-                        variant="ghost"
-                        onClick={() => setShowNewMenu(!showNewMenu)}
-                        data-testid="new-page-button"
-                        className="w-full justify-start"
-                    >
-                        <Plus className="w-4 h-4" />
-                        New
-                        <ChevronDown className="w-3 h-3 ml-auto" />
-                    </Button>
-                    {showNewMenu && (
-                        <div
-                            className="absolute bottom-full left-0 right-0 z-50 mb-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
-                            onMouseLeave={() => setShowNewMenu(false)}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            data-testid="new-page-button"
+                            className="w-full justify-start"
                         >
-                            <Button
-                                variant="ghost"
-                                onClick={() => {
-                                    onCreatePage()
-                                    setShowNewMenu(false)
-                                }}
-                                className="w-full justify-start rounded-none"
-                            >
-                                <FileText className="w-4 h-4" />
-                                New page
-                            </Button>
-                            {onCreateDatabase && (
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => {
-                                        onCreateDatabase()
-                                        setShowNewMenu(false)
-                                    }}
-                                    className="w-full justify-start rounded-none"
-                                >
-                                    <Database className="w-4 h-4" />
-                                    New database
-                                </Button>
-                            )}
-                        </div>
-                    )}
-                </div>
+                            <Plus className="w-4 h-4" />
+                            New
+                            <ChevronDown className="w-3 h-3 ml-auto" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                        <DropdownMenuItem onSelect={() => onCreatePage()}>
+                            <FileText className="w-4 h-4" />
+                            New page
+                        </DropdownMenuItem>
+                        {onCreateDatabase && (
+                            <DropdownMenuItem onSelect={() => onCreateDatabase()}>
+                                <Database className="w-4 h-4" />
+                                New database
+                            </DropdownMenuItem>
+                        )}
+                    </DropdownMenuContent>
+                </DropdownMenu>
                 <div className="flex gap-1">
                     <Button
                         variant="ghost"
@@ -363,41 +351,10 @@ function PageItem({
 }: PageItemProps) {
     const hasChildren = page.children && page.children.length > 0
     const [showActions, setShowActions] = useState(false)
-    const [showMenu, setShowMenu] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
     const [editTitle, setEditTitle] = useState(page.title)
     const [isDragging, setIsDragging] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
-    const menuRef = useRef<HTMLDivElement>(null)
-    const menuButtonRef = useRef<HTMLButtonElement>(null)
-
-    // Close menu when clicking outside
-    useEffect(() => {
-        if (!showMenu) return
-
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as Node
-            if (
-                menuRef.current && !menuRef.current.contains(target) &&
-                menuButtonRef.current && !menuButtonRef.current.contains(target)
-            ) {
-                setShowMenu(false)
-            }
-        }
-
-        const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setShowMenu(false)
-            }
-        }
-
-        document.addEventListener('mousedown', handleClickOutside)
-        document.addEventListener('keydown', handleEscape)
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-            document.removeEventListener('keydown', handleEscape)
-        }
-    }, [showMenu])
 
     // Focus input when editing starts
     useEffect(() => {
@@ -427,13 +384,11 @@ function PageItem({
         if (onDelete) {
             onDelete(page.id, hasChildren)
         }
-        setShowMenu(false)
     }
 
     const startRename = () => {
         setEditTitle(page.title)
         setIsEditing(true)
-        setShowMenu(false)
     }
 
     // Drag and drop handlers
@@ -553,79 +508,54 @@ function PageItem({
                         >
                             <Plus className="w-3 h-3" />
                         </Button>
-                        <Button
-                            ref={menuButtonRef}
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                setShowMenu(!showMenu)
-                            }}
-                            className="h-5 w-5"
-                            title="More options"
-                        >
-                            <MoreVertical className="w-3 h-3" />
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="h-5 w-5"
+                                    title="More options"
+                                >
+                                    <MoreVertical className="w-3 h-3" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-44">
+                                <DropdownMenuItem
+                                    onSelect={() => {
+                                        if (onToggleFavorite) {
+                                            onToggleFavorite(page.id, !page.isFavorite)
+                                        }
+                                    }}
+                                >
+                                    <Star className="w-4 h-4" fill={page.isFavorite ? "currentColor" : "none"} />
+                                    {page.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onSelect={startRename}>
+                                    Rename
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={() => {
+                                        if (onExportPage) {
+                                            onExportPage(page.id, true)
+                                        }
+                                    }}
+                                >
+                                    <Download className="w-4 h-4" />
+                                    Export
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                    onSelect={handleDelete}
+                                    className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+                                >
+                                    Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 )}
             </div>
-
-            {/* Dropdown menu */}
-            {showMenu && (
-                <div
-                    ref={menuRef}
-                    className="absolute right-2 top-full z-50 mt-1 w-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1"
-                >
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            if (onToggleFavorite) {
-                                onToggleFavorite(page.id, !page.isFavorite)
-                            }
-                            setShowMenu(false)
-                        }}
-                        className="w-full justify-start rounded-none h-8 font-normal"
-                    >
-                        <Star className="w-4 h-4" fill={page.isFavorite ? "currentColor" : "none"} />
-                        {page.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            startRename()
-                        }}
-                        className="w-full justify-start rounded-none h-8 font-normal"
-                    >
-                        Rename
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            if (onExportPage) {
-                                onExportPage(page.id, true)
-                            }
-                            setShowMenu(false)
-                        }}
-                        className="w-full justify-start rounded-none h-8 font-normal"
-                    >
-                        <Download className="w-4 h-4" />
-                        Export
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        onClick={(e) => {
-                            e.stopPropagation()
-                            handleDelete()
-                        }}
-                        className="w-full justify-start rounded-none h-8 font-normal text-red-600 dark:text-red-400 hover:text-red-600 dark:hover:text-red-400"
-                    >
-                        Delete
-                    </Button>
-                </div>
-            )}
 
             {/* Children */}
             {hasChildren && isExpanded && (
