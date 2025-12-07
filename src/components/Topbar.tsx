@@ -189,19 +189,14 @@ export function Topbar({
                 {/* More actions */}
                 {currentPage && (
                     <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-                        <Tooltip open={isDropdownOpen ? false : undefined}>
-                            <TooltipTrigger asChild>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                    >
-                                        <MoreVertical className="w-5 h-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                            </TooltipTrigger>
-                            <TooltipContent>More options</TooltipContent>
-                        </Tooltip>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                            >
+                                <MoreVertical className="w-5 h-5" />
+                            </Button>
+                        </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
                             {onDuplicatePage && (
                                 <DropdownMenuItem onSelect={onDuplicatePage}>
