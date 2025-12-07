@@ -16,6 +16,7 @@ import {
 } from '@blocknote/react'
 import { ReactNode, useMemo } from 'react'
 import {
+    RiArrowRightSLine,
     RiH1,
     RiH2,
     RiH3,
@@ -31,7 +32,7 @@ import {
  */
 interface TurnIntoItem {
     name: string
-    type: 'paragraph' | 'heading' | 'bulletListItem' | 'numberedListItem' | 'checkListItem'
+    type: 'paragraph' | 'heading' | 'bulletListItem' | 'numberedListItem' | 'checkListItem' | 'toggleListItem'
     props?: Record<string, string | number | boolean>
     icon: ReactNode
 }
@@ -50,19 +51,37 @@ function getTurnIntoItems(): TurnIntoItem[] {
         {
             name: 'Heading 1',
             type: 'heading',
-            props: { level: 1 },
+            props: { level: 1, isToggleable: false },
             icon: <RiH1 size={18} />
         },
         {
             name: 'Heading 2',
             type: 'heading',
-            props: { level: 2 },
+            props: { level: 2, isToggleable: false },
             icon: <RiH2 size={18} />
         },
         {
             name: 'Heading 3',
             type: 'heading',
-            props: { level: 3 },
+            props: { level: 3, isToggleable: false },
+            icon: <RiH3 size={18} />
+        },
+        {
+            name: 'Toggle Heading 1',
+            type: 'heading',
+            props: { level: 1, isToggleable: true },
+            icon: <RiH1 size={18} />
+        },
+        {
+            name: 'Toggle Heading 2',
+            type: 'heading',
+            props: { level: 2, isToggleable: true },
+            icon: <RiH2 size={18} />
+        },
+        {
+            name: 'Toggle Heading 3',
+            type: 'heading',
+            props: { level: 3, isToggleable: true },
             icon: <RiH3 size={18} />
         },
         {
@@ -79,6 +98,11 @@ function getTurnIntoItems(): TurnIntoItem[] {
             name: 'Checklist',
             type: 'checkListItem',
             icon: <RiListCheck3 size={18} />
+        },
+        {
+            name: 'Toggle List',
+            type: 'toggleListItem',
+            icon: <RiArrowRightSLine size={18} />
         }
     ]
 }
@@ -132,7 +156,8 @@ export function TurnIntoSubmenu({ children }: TurnIntoSubmenuProps) {
         'heading',
         'bulletListItem',
         'numberedListItem',
-        'checkListItem'
+        'checkListItem',
+        'toggleListItem'
     ])
 
     if (!block || !convertibleTypes.has(block.type)) {

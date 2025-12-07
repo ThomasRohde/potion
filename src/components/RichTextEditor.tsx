@@ -9,6 +9,7 @@
  * - Handles content serialization/deserialization
  * - Provides onChange callback for auto-save integration
  * - Native markdown paste support via BlockNote's pasteHandler
+ * - Code block syntax highlighting with language selector
  */
 
 import { useEffect, useMemo } from 'react'
@@ -27,12 +28,24 @@ import {
     BlockTypeSelect
 } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
+import { BlockNoteSchema, createCodeBlockSpec } from '@blocknote/core'
 import type { Block, BlockNoteEditor } from '@blocknote/core'
+import { codeBlockOptions } from '@blocknote/code-block'
 import '@blocknote/mantine/style.css'
 
 import type { BlockContent } from '../types'
 import { CustomDragHandleMenu } from './CustomDragHandleMenu'
 import { useThemeStore, selectAppliedTheme } from '../stores/themeStore'
+
+/**
+ * Custom schema with code block syntax highlighting enabled.
+ * This extends BlockNote's default schema with the configured code block.
+ */
+const schema = BlockNoteSchema.create().extend({
+    blockSpecs: {
+        codeBlock: createCodeBlockSpec(codeBlockOptions)
+    }
+})
 
 /**
  * BlockNote's default supported block types.
@@ -44,6 +57,7 @@ const SUPPORTED_BLOCK_TYPES = new Set([
     'bulletListItem',
     'numberedListItem',
     'checkListItem',
+    'toggleListItem',
     'table',
     'image',
     'video',
@@ -269,7 +283,9 @@ export function RichTextEditor({
     )
 
     // Create the BlockNote editor instance with native markdown paste support
+    // and code block syntax highlighting
     const editor: BlockNoteEditor = useCreateBlockNote({
+        schema,
         initialContent: initialBlocks,
         defaultStyles: true,
         // Use BlockNote's native paste handler with markdown support

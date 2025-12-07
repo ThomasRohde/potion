@@ -2,11 +2,70 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 64/75 Features Complete (85%)
+## Current Status: 66/75 Features Complete (88%)
 
 ---
 
 ## Session Log
+
+### Session 23 - 2025-06-22
+**Duration**: ~20 minutes
+**Focus**: Implement toggle blocks (F061/F062) and code block syntax highlighting (F067)
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| F061 | Add toggle list block type | ✅ VERIFIED |
+| F062 | Add toggle heading block type | ✅ VERIFIED |
+| F067 | Add code block syntax highlighting language selector | ✅ VERIFIED |
+
+#### Implementation Details
+
+**F061 - Toggle List Block:**
+- Added `toggleListItem` to `SUPPORTED_BLOCK_TYPES` in RichTextEditor.tsx
+- Added Toggle List option to TurnIntoSubmenu with `RiArrowRightSLine` icon
+- Toggle blocks expand/collapse to show/hide nested content
+
+**F062 - Toggle Heading Block:**
+- Added Toggle Heading 1/2/3 options to TurnIntoSubmenu
+- Uses BlockNote's `isToggleable: true` prop for heading blocks
+- Regular Heading 1/2/3 explicitly set to `isToggleable: false`
+
+**F067 - Code Block Syntax Highlighting:**
+- Installed `@blocknote/code-block@0.44.0` package
+- Created custom schema with `createCodeBlockSpec(codeBlockOptions)`
+- Shiki-based syntax highlighting with 30+ languages
+- Language selector dropdown in code blocks
+
+#### Code Changes
+- `src/components/RichTextEditor.tsx`: 
+  - Added toggleListItem to SUPPORTED_BLOCK_TYPES
+  - Added BlockNoteSchema, createCodeBlockSpec imports
+  - Created custom schema with code block syntax highlighting
+- `src/components/TurnIntoSubmenu.tsx`:
+  - Added Toggle Heading 1/2/3 with isToggleable prop
+  - Added Toggle List option
+- `package.json`: Added @blocknote/code-block dependency
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| bun run build | 0 | ✅ 1411 modules (increased due to Shiki language bundles) |
+| bun test | 0 | ✅ 99 tests passed |
+
+#### Recommended Next Steps
+1. **F068** - Multi-column layout support (use @blocknote/xl-multi-column)
+2. **F063/F064/F065** - File/video/audio blocks (need custom upload handlers)
+3. **F069** - @ mentions inline content support
+
+#### Technical Notes
+- @blocknote/code-block includes Shiki highlighter with many language bundles
+- Build size increased due to language-specific code splitting
+- Languages loaded on-demand for performance
+
+---
 
 ### Session 22 - 2025-06-19
 **Duration**: ~30 minutes
