@@ -52,6 +52,7 @@ export default [
                 MouseEvent: 'readonly',
                 ClipboardEvent: 'readonly',
                 CustomEvent: 'readonly',
+                PopStateEvent: 'readonly',
                 crypto: 'readonly'
             }
         },
