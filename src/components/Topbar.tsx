@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import type { PageSummary } from '../types'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -107,14 +108,14 @@ export function Topbar({
                             <span className="text-lg">{currentPage.icon}</span>
                         )}
                         {isEditing ? (
-                            <input
+                            <Input
                                 ref={inputRef}
                                 type="text"
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
                                 onBlur={handleTitleSubmit}
                                 onKeyDown={handleTitleKeyDown}
-                                className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-potion-500 rounded px-2 py-0.5 outline-none flex-1 min-w-0"
+                                className="h-auto py-0.5 text-sm font-medium flex-1 min-w-0"
                             />
                         ) : (
                             <h1

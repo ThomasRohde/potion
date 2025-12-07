@@ -27,6 +27,7 @@ import type { PageTreeNode } from '../services/pageService'
 import { ThemeToggle } from './ThemeToggle'
 import { PageIcon } from './PageIcon'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -477,7 +478,7 @@ function PageItem({
 
                 {/* Title - editable or static */}
                 {isEditing ? (
-                    <input
+                    <Input
                         ref={inputRef}
                         type="text"
                         value={editTitle}
@@ -485,7 +486,7 @@ function PageItem({
                         onBlur={handleRenameSubmit}
                         onKeyDown={handleRenameKeyDown}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-sm flex-1 bg-white dark:bg-gray-700 border border-potion-500 rounded px-1 py-0.5 outline-none"
+                        className="text-sm flex-1 h-auto py-0.5"
                     />
                 ) : (
                     <span className="text-sm truncate flex-1">

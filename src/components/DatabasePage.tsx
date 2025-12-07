@@ -13,6 +13,7 @@ import { getDatabase, getFullRows, updateDatabaseProperties } from '../services'
 import { DatabaseView } from './DatabaseView'
 import { PropertyEditor } from './PropertyEditor'
 import { PageIcon } from './PageIcon'
+import { Input } from '@/components/ui/input'
 
 interface DatabasePageProps {
     page: Page
@@ -103,7 +104,7 @@ export function DatabasePage({ page, onTitleChange }: DatabasePageProps) {
                 <div className="flex items-center gap-3 mb-4">
                     <PageIcon type="database" icon={page.icon} size="lg" className="text-gray-600 dark:text-gray-400" />
                     {isEditingTitle ? (
-                        <input
+                        <Input
                             type="text"
                             value={titleValue}
                             onChange={(e) => setTitleValue(e.target.value)}
@@ -115,7 +116,7 @@ export function DatabasePage({ page, onTitleChange }: DatabasePageProps) {
                                     setIsEditingTitle(false)
                                 }
                             }}
-                            className="text-3xl font-bold bg-transparent border-b-2 border-potion-500 outline-none text-gray-900 dark:text-white"
+                            className="text-3xl font-bold h-auto py-1"
                             autoFocus
                         />
                     ) : (

@@ -9,6 +9,15 @@ import { useState, useCallback } from 'react'
 import { Plus, SlidersHorizontal, ChevronUp, ChevronDown, Trash2, X } from 'lucide-react'
 import type { PropertyDefinition, PropertyType, SelectOption } from '../types'
 import { PROPERTY_TYPE_LABELS, PROPERTY_TYPE_ICONS, SELECT_OPTION_COLORS, createSelectOption } from '../services'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 
 interface PropertyEditorProps {
     properties: PropertyDefinition[]
@@ -159,7 +168,7 @@ function PropertyRow({
 
                 {/* Property name */}
                 {isEditing ? (
-                    <input
+                    <Input
                         type="text"
                         value={property.name}
                         onChange={(e) => onUpdate?.({ name: e.target.value })}
@@ -169,7 +178,7 @@ function PropertyRow({
                                 onStopEditing?.()
                             }
                         }}
-                        className="flex-1 bg-white dark:bg-gray-700 border border-potion-500 rounded px-2 py-0.5 text-sm outline-none"
+                        className="flex-1 h-auto py-0.5"
                         autoFocus
                     />
                 ) : (
@@ -298,33 +307,41 @@ function SelectOptionsEditor({ options, onChange }: SelectOptionsEditorProps) {
 
             {options.map(option => (
                 <div key={option.id} className="flex items-center gap-2">
-                    <select
+                    <Select
                         value={option.color}
-                        onChange={(e) => handleUpdateOption(option.id, { color: e.target.value })}
-                        className="w-20 text-xs bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-1 py-1"
+                        onValueChange={(value) => handleUpdateOption(option.id, { color: value })}
                     >
-                        {SELECT_OPTION_COLORS.map(color => (
-                            <option key={color} value={color}>{color}</option>
-                        ))}
-                    </select>
-                    <input
+                        <SelectTrigger className="w-24 h-8 text-xs">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {SELECT_OPTION_COLORS.map(color => (
+                                <SelectItem key={color} value={color} className="text-xs">
+                                    {color}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Input
                         type="text"
                         value={option.name}
                         onChange={(e) => handleUpdateOption(option.id, { name: e.target.value })}
-                        className="flex-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1"
+                        className="flex-1 h-8"
                     />
-                    <button
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleDeleteOption(option.id)}
-                        className="p-1 text-gray-400 hover:text-red-500"
+                        className="h-8 w-8 text-gray-400 hover:text-red-500"
                     >
                         <X className="w-4 h-4" />
-                    </button>
+                    </Button>
                 </div>
             ))}
 
             {/* Add new option */}
             <div className="flex items-center gap-2">
-                <input
+                <Input
                     type="text"
                     value={newOptionName}
                     onChange={(e) => setNewOptionName(e.target.value)}
@@ -334,15 +351,15 @@ function SelectOptionsEditor({ options, onChange }: SelectOptionsEditorProps) {
                         }
                     }}
                     placeholder="Add option..."
-                    className="flex-1 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1"
+                    className="flex-1 h-8"
                 />
-                <button
+                <Button
                     onClick={handleAddOption}
                     disabled={!newOptionName.trim()}
-                    className="px-2 py-1 text-xs bg-potion-500 text-white rounded hover:bg-potion-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    size="sm"
                 >
                     Add
-                </button>
+                </Button>
             </div>
         </div>
     )

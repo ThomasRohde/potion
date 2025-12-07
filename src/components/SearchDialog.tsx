@@ -10,6 +10,7 @@ import { Search } from 'lucide-react'
 import type { SearchResult } from '../services'
 import { searchPagesWithSnippets } from '../services'
 import { PageIcon } from './PageIcon'
+import { Input } from '@/components/ui/input'
 
 interface SearchDialogProps {
     isOpen: boolean
@@ -118,14 +119,14 @@ export function SearchDialog({
                 {/* Search input */}
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                     <Search className="w-5 h-5 text-gray-400" />
-                    <input
+                    <Input
                         ref={inputRef}
                         type="text"
                         value={query}
                         onChange={e => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Search pages..."
-                        className="flex-1 bg-transparent outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400"
+                        className="flex-1 border-0 shadow-none focus-visible:ring-0 h-auto px-0 py-0"
                     />
                     {isSearching && (
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-potion-600" />

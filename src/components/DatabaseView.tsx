@@ -10,6 +10,15 @@ import { Filter as FilterIcon, ExternalLink, Trash2, Plus, X, ChevronDown, Chevr
 import type { Database, Row, PropertyDefinition, PropertyType, SelectOption, Filter, Sort, DatabaseView as DatabaseViewType } from '../types'
 import { PROPERTY_TYPE_ICONS, updateRowValue, updateRowTitle, createRow, deleteRow as deleteRowService, getPage, updateDatabaseViews } from '../services'
 import { getSelectOptionColorClass } from './PropertyEditor'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
 
 // Filter operator labels
 const FILTER_OPERATOR_LABELS: Record<Filter['operator'], string> = {
@@ -508,15 +517,19 @@ function FilterPill({ filter, propertyName, propertyType, properties, onUpdate, 
                         {/* Operator selector */}
                         <div>
                             <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Operator</label>
-                            <select
+                            <Select
                                 value={filter.operator}
-                                onChange={(e) => onUpdate({ operator: e.target.value as Filter['operator'] })}
-                                className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                                onValueChange={(value) => onUpdate({ operator: value as Filter['operator'] })}
                             >
-                                {operators.map(op => (
-                                    <option key={op} value={op}>{FILTER_OPERATOR_LABELS[op]}</option>
-                                ))}
-                            </select>
+                                <SelectTrigger className="w-full h-8">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {operators.map(op => (
+                                        <SelectItem key={op} value={op}>{FILTER_OPERATOR_LABELS[op]}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Value input (unless isEmpty/isNotEmpty) */}
@@ -524,58 +537,66 @@ function FilterPill({ filter, propertyName, propertyType, properties, onUpdate, 
                             <div>
                                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Value</label>
                                 {propertyType === 'checkbox' ? (
-                                    <select
+                                    <Select
                                         value={filter.value ? 'true' : 'false'}
-                                        onChange={(e) => onUpdate({ value: e.target.value === 'true' })}
-                                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                                        onValueChange={(value) => onUpdate({ value: value === 'true' })}
                                     >
-                                        <option value="true">Checked</option>
-                                        <option value="false">Unchecked</option>
-                                    </select>
+                                        <SelectTrigger className="w-full h-8">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="true">Checked</SelectItem>
+                                            <SelectItem value="false">Unchecked</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 ) : propertyType === 'select' && property?.options ? (
-                                    <select
+                                    <Select
                                         value={String(filter.value || '')}
-                                        onChange={(e) => onUpdate({ value: e.target.value })}
-                                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                                        onValueChange={(value) => onUpdate({ value: value })}
                                     >
-                                        <option value="">Select...</option>
-                                        {property.options.map(option => (
-                                            <option key={option.id} value={option.id}>{option.name}</option>
-                                        ))}
-                                    </select>
+                                        <SelectTrigger className="w-full h-8">
+                                            <SelectValue placeholder="Select..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {property.options.map(option => (
+                                                <SelectItem key={option.id} value={option.id}>{option.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 ) : propertyType === 'number' ? (
-                                    <input
+                                    <Input
                                         type="number"
                                         value={filter.value as number || ''}
                                         onChange={(e) => onUpdate({ value: e.target.value ? Number(e.target.value) : '' })}
-                                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                                        className="h-8"
                                     />
                                 ) : propertyType === 'date' ? (
-                                    <input
+                                    <Input
                                         type="date"
                                         value={String(filter.value || '')}
                                         onChange={(e) => onUpdate({ value: e.target.value })}
-                                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                                        className="h-8"
                                     />
                                 ) : (
-                                    <input
+                                    <Input
                                         type="text"
                                         value={String(filter.value || '')}
                                         onChange={(e) => onUpdate({ value: e.target.value })}
                                         placeholder="Enter value..."
-                                        className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"
+                                        className="h-8"
                                     />
                                 )}
                             </div>
                         )}
 
                         {/* Done button */}
-                        <button
+                        <Button
                             onClick={() => setShowEditor(false)}
-                            className="w-full px-3 py-1.5 text-sm bg-potion-500 text-white rounded hover:bg-potion-600"
+                            className="w-full"
+                            size="sm"
                         >
                             Done
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}
@@ -612,7 +633,7 @@ function PropertyHeader({ property, sortDirection, onSort, onUpdate, onDelete }:
                 >
                     <span className="text-gray-400">{PROPERTY_TYPE_ICONS[property.type]}</span>
                     {isEditing ? (
-                        <input
+                        <Input
                             ref={inputRef}
                             type="text"
                             value={property.name}
@@ -624,7 +645,7 @@ function PropertyHeader({ property, sortDirection, onSort, onUpdate, onDelete }:
                                     setIsEditing(false)
                                 }
                             }}
-                            className="flex-1 bg-white dark:bg-gray-700 border border-potion-500 rounded px-1 py-0.5 text-sm font-normal outline-none"
+                            className="flex-1 h-auto py-0.5 text-sm font-normal"
                         />
                     ) : (
                         <span className="cursor-pointer">
@@ -769,18 +790,21 @@ function EditableCell({
 
         if (isEditing) {
             return (
-                <select
-                    autoFocus
+                <Select
                     value={String(value || '')}
-                    onChange={(e) => onEndEdit(e.target.value || null)}
-                    onBlur={() => onCancel()}
-                    className="w-full bg-white dark:bg-gray-700 border border-potion-500 rounded px-2 py-1 text-sm outline-none"
+                    onValueChange={(v) => onEndEdit(v || null)}
+                    onOpenChange={(open) => !open && onCancel()}
+                    defaultOpen
                 >
-                    <option value="">Select...</option>
-                    {options?.map(option => (
-                        <option key={option.id} value={option.id}>{option.name}</option>
-                    ))}
-                </select>
+                    <SelectTrigger className="w-full h-8">
+                        <SelectValue placeholder="Select..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {options?.map(option => (
+                            <SelectItem key={option.id} value={option.id}>{option.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             )
         }
 
@@ -839,14 +863,14 @@ function EditableCell({
     if (type === 'date') {
         if (isEditing) {
             return (
-                <input
+                <Input
                     ref={inputRef}
                     type="date"
                     value={String(localValue || '')}
                     onChange={(e) => setLocalValue(e.target.value)}
                     onBlur={() => onEndEdit(localValue)}
                     onKeyDown={handleKeyDown}
-                    className="w-full bg-white dark:bg-gray-700 border border-potion-500 rounded px-2 py-1 text-sm outline-none"
+                    className="w-full h-8"
                 />
             )
         }
@@ -865,14 +889,14 @@ function EditableCell({
     if (type === 'number') {
         if (isEditing) {
             return (
-                <input
+                <Input
                     ref={inputRef}
                     type="number"
                     value={localValue as number || ''}
                     onChange={(e) => setLocalValue(e.target.value ? Number(e.target.value) : null)}
                     onBlur={() => onEndEdit(localValue)}
                     onKeyDown={handleKeyDown}
-                    className="w-full bg-white dark:bg-gray-700 border border-potion-500 rounded px-2 py-1 text-sm outline-none"
+                    className="w-full h-8"
                 />
             )
         }
@@ -891,7 +915,7 @@ function EditableCell({
     if (type === 'url') {
         if (isEditing) {
             return (
-                <input
+                <Input
                     ref={inputRef}
                     type="url"
                     value={String(localValue || '')}
@@ -899,7 +923,7 @@ function EditableCell({
                     onBlur={() => onEndEdit(localValue)}
                     onKeyDown={handleKeyDown}
                     placeholder="https://..."
-                    className="w-full bg-white dark:bg-gray-700 border border-potion-500 rounded px-2 py-1 text-sm outline-none"
+                    className="w-full h-8"
                 />
             )
         }
@@ -931,14 +955,14 @@ function EditableCell({
     // Text (default)
     if (isEditing) {
         return (
-            <input
+            <Input
                 ref={inputRef}
                 type="text"
                 value={String(localValue || '')}
                 onChange={(e) => setLocalValue(e.target.value)}
                 onBlur={() => onEndEdit(localValue)}
                 onKeyDown={handleKeyDown}
-                className="w-full bg-white dark:bg-gray-700 border border-potion-500 rounded px-2 py-1 text-sm outline-none"
+                className="w-full h-8"
             />
         )
     }
