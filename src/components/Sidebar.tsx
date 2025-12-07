@@ -392,6 +392,7 @@ function PageItem({
     const [isEditing, setIsEditing] = useState(false)
     const [editTitle, setEditTitle] = useState(page.title)
     const [isDragging, setIsDragging] = useState(false)
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
 
     // Focus input when editing starts
@@ -550,18 +551,22 @@ function PageItem({
                             </TooltipTrigger>
                             <TooltipContent>Add child page</TooltipContent>
                         </Tooltip>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="h-5 w-5"
-                                    title="More options"
-                                >
-                                    <MoreVertical className="w-3 h-3" />
-                                </Button>
-                            </DropdownMenuTrigger>
+                        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+                            <Tooltip open={isDropdownOpen ? false : undefined}>
+                                <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="h-5 w-5"
+                                        >
+                                            <MoreVertical className="w-3 h-3" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>More options</TooltipContent>
+                            </Tooltip>
                             <DropdownMenuContent align="end" className="w-44">
                                 <DropdownMenuItem
                                     onSelect={() => {
