@@ -28,11 +28,12 @@ import {
     CreateLinkButton,
     BlockTypeSelect,
     SuggestionMenuController,
-    DefaultReactSuggestionItem
+    DefaultReactSuggestionItem,
+    getDefaultReactSlashMenuItems
 } from '@blocknote/react'
 import { BlockNoteView } from '@blocknote/mantine'
 import { BlockNoteSchema, createCodeBlockSpec, defaultInlineContentSpecs } from '@blocknote/core'
-import { filterSuggestionItems } from '@blocknote/core/extensions'
+import { filterSuggestionItems, insertOrUpdateBlockForSlashMenu } from '@blocknote/core/extensions'
 import type { Block } from '@blocknote/core'
 import { codeBlockOptions } from '@blocknote/code-block'
 import '@blocknote/mantine/style.css'
@@ -41,9 +42,10 @@ import type { BlockContent, PageSummary } from '../types'
 import { CustomDragHandleMenu } from './CustomDragHandleMenu'
 import { useThemeStore, selectAppliedTheme } from '../stores/themeStore'
 import { PageMention } from './PageMention'
+import { Callout, insertCalloutItem } from './CalloutBlock'
 
 /**
- * Custom schema with code block syntax highlighting and page mentions.
+ * Custom schema with code block syntax highlighting, page mentions, and callout blocks.
  * This extends BlockNote's default schema with additional features.
  */
 const schema = BlockNoteSchema.create({
@@ -53,7 +55,8 @@ const schema = BlockNoteSchema.create({
     }
 }).extend({
     blockSpecs: {
-        codeBlock: createCodeBlockSpec(codeBlockOptions)
+        codeBlock: createCodeBlockSpec(codeBlockOptions),
+        callout: Callout()
     }
 })
 
@@ -73,7 +76,8 @@ const SUPPORTED_BLOCK_TYPES = new Set([
     'video',
     'audio',
     'file',
-    'codeBlock'
+    'codeBlock',
+    'callout'
 ])
 
 export interface RichTextEditorProps {
@@ -340,6 +344,46 @@ export function RichTextEditor({
         [editor, pages]
     )
 
+    // Get slash menu items including custom callout block
+    const getSlashMenuItems = useCallback(
+        async (query: string): Promise<DefaultReactSuggestionItem[]> => {
+            // Get default slash menu items
+            const defaultItems = getDefaultReactSlashMenuItems(editor)
+            
+            // Find index of last item in "Basic blocks" group
+            let lastBasicBlockIndex = -1
+            for (let i = defaultItems.length - 1; i >= 0; i--) {
+                if (defaultItems[i].group === 'Basic blocks') {
+                    lastBasicBlockIndex = i
+                    break
+                }
+            }
+            
+            // Create callout insertion item
+            const calloutItem: DefaultReactSuggestionItem = {
+                title: insertCalloutItem.title,
+                subtext: insertCalloutItem.subtext,
+                onItemClick: () => {
+                    insertOrUpdateBlockForSlashMenu(editor, {
+                        type: 'callout',
+                    })
+                },
+                aliases: insertCalloutItem.aliases,
+                group: insertCalloutItem.group
+            }
+            
+            // Insert callout item after last basic block (or at end if not found)
+            if (lastBasicBlockIndex >= 0) {
+                defaultItems.splice(lastBasicBlockIndex + 1, 0, calloutItem)
+            } else {
+                defaultItems.push(calloutItem)
+            }
+            
+            return filterSuggestionItems(defaultItems, query)
+        },
+        [editor]
+    )
+
     // Handle content changes
     useEffect(() => {
         if (!onChange || readOnly) return
@@ -363,6 +407,7 @@ export function RichTextEditor({
                 theme={appliedTheme}
                 sideMenu={false}
                 formattingToolbar={false}
+                slashMenu={false}
             >
                 {/* Custom side menu with Turn Into submenu */}
                 <SideMenuController
@@ -396,6 +441,11 @@ export function RichTextEditor({
                             <CreateLinkButton key="createLinkButton" />
                         </FormattingToolbar>
                     )}
+                />
+                {/* Custom slash menu with callout block */}
+                <SuggestionMenuController
+                    triggerCharacter="/"
+                    getItems={getSlashMenuItems}
                 />
                 {/* @ mentions suggestion menu for linking to pages */}
                 <SuggestionMenuController

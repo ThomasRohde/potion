@@ -1434,14 +1434,16 @@
                 "Callout serializes and deserializes correctly"
             ],
             "estimatedEffort": "large",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-07-03T21:00:00Z",
+            "verifiedBy": "agent-session-29",
+            "evidenceLinks": [
+                "src/components/CalloutBlock.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "BlockNote docs show how to create custom blocks with createReactBlockSpec. Alert/callout example is in the documentation."
+            "lastWorkedOn": "2025-07-03T21:00:00Z",
+            "notes": "Implemented using createReactBlockSpec with 4 types (info, warning, error, success). Integrated into custom slash menu via SuggestionMenuController. Uses Lucide icons and ShadCN dropdown for type selection."
         },
         {
             "id": "F060",
@@ -2336,8 +2338,8 @@
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-07-03T20:00:00Z",
+        "lastUpdated": "2025-07-03T21:00:00Z",
         "totalFeatures": 90,
-        "passingFeatures": 84
+        "passingFeatures": 85
     }
 }
