@@ -1752,32 +1752,6 @@
             "notes": "RichTextEditor lazy loaded with React.lazy(). BlockNote split into separate 817KB chunk. EditorLoadingFallback shows skeleton while loading."
         },
         {
-            "id": "F071",
-            "category": "ui",
-            "priority": 4,
-            "description": "Add block comments/annotations feature",
-            "dependencies": [
-                "F006"
-            ],
-            "acceptanceCriteria": [
-                "User can add comment to any block via context menu",
-                "Comment indicator appears on block with comments",
-                "Clicking indicator shows comment thread",
-                "Comments can be replied to and resolved",
-                "Comments persist across save and reload",
-                "Resolved comments can be hidden/shown"
-            ],
-            "estimatedEffort": "large",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Not a BlockNote feature - would require custom implementation with block metadata storage."
-        },
-        {
             "id": "F072",
             "category": "ui",
             "priority": 3,
@@ -2348,7 +2322,7 @@
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
         "lastUpdated": "2025-12-07T13:00:00Z",
-        "totalFeatures": 90,
+        "totalFeatures": 89,
         "passingFeatures": 89
     }
 }
