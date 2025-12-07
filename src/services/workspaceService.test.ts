@@ -79,7 +79,7 @@ describe('Welcome Page Structure', () => {
                 {
                     id: 'heading-1',
                     type: 'heading',
-                    content: [{ type: 'text', text: 'Welcome to Potion! 🧪' }],
+                    content: [{ type: 'text', text: 'Welcome to Potion!' }],
                     props: { level: 1 }
                 },
                 {

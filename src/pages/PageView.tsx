@@ -10,7 +10,7 @@
 import { useEffect, useState, useCallback, lazy, Suspense } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getPage, getOrCreateDefaultWorkspace, updatePageContent, updatePageTitle, listPages } from '../services'
-import { SaveStatusIndicator, DatabasePage } from '../components'
+import { SaveStatusIndicator, DatabasePage, PageIcon } from '../components'
 import { useAutoSave } from '../hooks'
 import { useWorkspaceStore } from '../stores'
 import type { Page, BlockContent } from '../types'
@@ -144,7 +144,7 @@ export function PageView() {
     if (error) {
         return (
             <div className="max-w-4xl mx-auto px-8 py-12 text-center">
-                <div className="text-6xl mb-4">📄</div>
+                <PageIcon type="page" size="xl" className="mx-auto mb-4 text-gray-400 dark:text-gray-500" />
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {error === 'Page not found' ? 'Page Not Found' : 'Error'}
                 </h1>

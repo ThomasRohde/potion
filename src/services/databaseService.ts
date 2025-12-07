@@ -28,7 +28,7 @@ export async function createDatabase(
     const page = await createPage(workspaceId, title, {
         parentPageId: options.parentPageId,
         type: 'database',
-        icon: options.icon ?? '📊'
+        icon: options.icon // Let PageIcon component handle default
     })
 
     // Create default properties if none provided

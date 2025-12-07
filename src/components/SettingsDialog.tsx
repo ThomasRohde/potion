@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { FlaskConical, X } from 'lucide-react'
 import type { Settings, ThemePreference } from '../types'
 import { getStorage } from '../storage'
 import { useThemeStore } from '../stores'
@@ -123,9 +124,7 @@ export function SettingsDialog({
                         onClick={onClose}
                         className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500"
                     >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
@@ -262,7 +261,7 @@ export function SettingsDialog({
                                 </h3>
                                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 text-sm text-gray-600 dark:text-gray-400">
                                     <p className="flex items-center gap-2 mb-2">
-                                        <span className="text-xl">🧪</span>
+                                        <FlaskConical className="w-5 h-5 text-potion-600 dark:text-potion-400" />
                                         <span className="font-medium text-gray-900 dark:text-gray-100">Potion</span>
                                     </p>
                                     <p className="mb-2">

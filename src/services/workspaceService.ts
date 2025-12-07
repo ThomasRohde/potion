@@ -179,7 +179,7 @@ function createWelcomePage(workspaceId: string, timestamp: string): Page {
             {
                 id: uuidv4(),
                 type: 'heading',
-                content: [{ type: 'text', text: 'Welcome to Potion! 🧪' }],
+                content: [{ type: 'text', text: 'Welcome to Potion!' }],
                 props: { level: 1 }
             },
             {

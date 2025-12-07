@@ -6,9 +6,26 @@
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react'
+import { 
+    FlaskConical, 
+    FileText, 
+    Database, 
+    ChevronsRight, 
+    ChevronsLeft, 
+    Plus, 
+    ChevronDown, 
+    ChevronRight,
+    Download,
+    Upload,
+    HelpCircle,
+    Settings,
+    Star,
+    MoreVertical
+} from 'lucide-react'
 import type { PageSummary, ThemePreference } from '../types'
 import type { PageTreeNode } from '../services/pageService'
 import { ThemeToggle } from './ThemeToggle'
+import { PageIcon } from './PageIcon'
 
 interface SidebarProps {
     pages: PageTreeNode[]
@@ -81,18 +98,14 @@ export function Sidebar({
                     className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
                     title="Expand sidebar"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                    </svg>
+                    <ChevronsRight className="w-5 h-5" />
                 </button>
                 <button
                     onClick={() => onCreatePage()}
                     className="mt-4 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
                     title="New page"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
+                    <Plus className="w-5 h-5" />
                 </button>
             </div>
         )
@@ -107,7 +120,7 @@ export function Sidebar({
             {/* Header */}
             <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2">
-                    <span className="text-xl">🧪</span>
+                    <FlaskConical className="w-5 h-5 text-potion-600 dark:text-potion-400" />
                     <span className="font-semibold text-gray-800 dark:text-gray-200">Potion</span>
                 </div>
                 <button
@@ -115,9 +128,7 @@ export function Sidebar({
                     className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500"
                     title="Collapse sidebar"
                 >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                    </svg>
+                    <ChevronsLeft className="w-4 h-4" />
                 </button>
             </div>
 
@@ -182,9 +193,7 @@ export function Sidebar({
                         className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500"
                         title="New page"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+                        <Plus className="w-4 h-4" />
                     </button>
                 </div>
                 {pages.length === 0 ? (
@@ -223,13 +232,9 @@ export function Sidebar({
                         data-testid="new-page-button"
                         className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
+                        <Plus className="w-4 h-4" />
                         New
-                        <svg className="w-3 h-3 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <ChevronDown className="w-3 h-3 ml-auto" />
                     </button>
                     {showNewMenu && (
                         <div
@@ -243,7 +248,7 @@ export function Sidebar({
                                 }}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                             >
-                                <span>📄</span>
+                                <FileText className="w-4 h-4" />
                                 New page
                             </button>
                             {onCreateDatabase && (
@@ -254,7 +259,7 @@ export function Sidebar({
                                     }}
                                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 >
-                                    <span>📊</span>
+                                    <Database className="w-4 h-4" />
                                     New database
                                 </button>
                             )}
@@ -267,9 +272,7 @@ export function Sidebar({
                         className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         title="Export workspace to JSON"
                     >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
+                        <Download className="w-3.5 h-3.5" />
                         Export
                     </button>
                     <button
@@ -277,9 +280,7 @@ export function Sidebar({
                         className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         title="Import workspace from JSON"
                     >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
+                        <Upload className="w-3.5 h-3.5" />
                         Import
                     </button>
                     <button
@@ -287,19 +288,14 @@ export function Sidebar({
                         className="flex items-center justify-center px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         title="Keyboard shortcuts (?)"
                     >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <HelpCircle className="w-3.5 h-3.5" />
                     </button>
                     <button
                         onClick={onOpenSettings}
                         className="flex items-center justify-center px-2 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         title="Settings"
                     >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
+                        <Settings className="w-3.5 h-3.5" />
                     </button>
                     {theme && onToggleTheme && (
                         <ThemeToggle
@@ -497,20 +493,13 @@ function PageItem({
                     }}
                     className={`p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${hasChildren ? 'visible' : 'invisible'}`}
                 >
-                    <svg
+                    <ChevronRight
                         className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    />
                 </button>
 
                 {/* Icon */}
-                <span className="text-sm shrink-0">
-                    {page.icon ?? (page.type === 'database' ? '📊' : '📄')}
-                </span>
+                <PageIcon type={page.type} icon={page.icon} size="sm" className="shrink-0 text-gray-500 dark:text-gray-400" />
 
                 {/* Title - editable or static */}
                 {isEditing ? (
@@ -541,9 +530,7 @@ function PageItem({
                             className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                             title="Add child page"
                         >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
+                            <Plus className="w-3 h-3" />
                         </button>
                         <button
                             ref={menuButtonRef}
@@ -554,9 +541,7 @@ function PageItem({
                             className="p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
                             title="More options"
                         >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
-                            </svg>
+                            <MoreVertical className="w-3 h-3" />
                         </button>
                     </div>
                 )}
@@ -578,9 +563,7 @@ function PageItem({
                         }}
                         className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                     >
-                        <svg className="w-4 h-4" fill={page.isFavorite ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                        </svg>
+                        <Star className="w-4 h-4" fill={page.isFavorite ? "currentColor" : "none"} />
                         {page.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                     </button>
                     <button
@@ -602,9 +585,7 @@ function PageItem({
                         }}
                         className="w-full text-left px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
+                        <Download className="w-4 h-4" />
                         Export
                     </button>
                     <button

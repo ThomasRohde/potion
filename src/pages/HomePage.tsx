@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FlaskConical } from 'lucide-react'
 import { getOrCreateDefaultWorkspace, listPages, createPage } from '../services'
 import type { PageSummary } from '../types'
 
@@ -69,7 +70,7 @@ export function HomePage() {
 
     return (
         <div className="max-w-4xl mx-auto px-8 py-12 text-center">
-            <div className="text-6xl mb-4">🧪</div>
+            <FlaskConical className="w-16 h-16 mx-auto mb-4 text-potion-600 dark:text-potion-400" />
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 Welcome to Potion
             </h1>

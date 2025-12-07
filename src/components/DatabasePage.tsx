@@ -7,10 +7,12 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { SlidersHorizontal } from 'lucide-react'
 import type { Page, Database, Row, PropertyDefinition } from '../types'
 import { getDatabase, getFullRows, updateDatabaseProperties } from '../services'
 import { DatabaseView } from './DatabaseView'
 import { PropertyEditor } from './PropertyEditor'
+import { PageIcon } from './PageIcon'
 
 interface DatabasePageProps {
     page: Page
@@ -99,7 +101,7 @@ export function DatabasePage({ page, onTitleChange }: DatabasePageProps) {
             {/* Header */}
             <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
-                    <span className="text-3xl">{page.icon || '📊'}</span>
+                    <PageIcon type="database" icon={page.icon} size="lg" className="text-gray-600 dark:text-gray-400" />
                     {isEditingTitle ? (
                         <input
                             type="text"
@@ -135,9 +137,7 @@ export function DatabasePage({ page, onTitleChange }: DatabasePageProps) {
                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                             }`}
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
+                        <SlidersHorizontal className="w-4 h-4" />
                         Properties
                     </button>
                     <span className="text-gray-400 dark:text-gray-500">

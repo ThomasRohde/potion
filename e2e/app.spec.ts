@@ -64,8 +64,8 @@ test.describe('App Shell', () => {
         await page.goto('/');
         await waitForAppReady(page);
 
-        // Should show welcome message (in the editor content area - includes emoji)
-        await expect(page.getByRole('heading', { name: /Welcome to Potion!.*🧪/i })).toBeVisible();
+        // Should show welcome message (in the editor content area)
+        await expect(page.getByRole('heading', { name: /Welcome to Potion!/i })).toBeVisible();
         await expect(page.getByText(/privacy-first workspace/i)).toBeVisible();
     });
 
@@ -233,8 +233,8 @@ test.describe('Routing', () => {
         // App may redirect to welcome page, so check we're on a valid page URL or root
         expect(page.url()).toMatch(/\/(page\/[\w-]+)?$/);
 
-        // Welcome content should be visible (in the editor - has emoji)
-        await expect(page.getByRole('heading', { name: /Welcome to Potion!.*🧪/i })).toBeVisible();
+        // Welcome content should be visible (in the editor)
+        await expect(page.getByRole('heading', { name: /Welcome to Potion!/i })).toBeVisible();
     });
 
     test('should handle invalid URLs gracefully', async ({ page }) => {

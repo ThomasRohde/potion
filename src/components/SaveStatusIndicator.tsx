@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { Circle, Loader2, Check, AlertTriangle } from 'lucide-react'
 import type { SaveStatus } from '../hooks/useAutoSave'
 
 export interface SaveStatusIndicatorProps {
@@ -22,39 +23,22 @@ export function SaveStatusIndicator({ status, className = '' }: SaveStatusIndica
         idle: { label: '', icon: null, color: '' },
         pending: {
             label: 'Unsaved changes',
-            icon: (
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="8" />
-                </svg>
-            ),
+            icon: <Circle className="w-3 h-3" fill="currentColor" />,
             color: 'text-yellow-600 dark:text-yellow-400'
         },
         saving: {
             label: 'Saving...',
-            icon: (
-                <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-            ),
+            icon: <Loader2 className="w-3 h-3 animate-spin" />,
             color: 'text-potion-600 dark:text-potion-400'
         },
         saved: {
             label: 'Saved',
-            icon: (
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-            ),
+            icon: <Check className="w-3 h-3" />,
             color: 'text-green-600 dark:text-green-400'
         },
         error: {
             label: 'Save failed',
-            icon: (
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            ),
+            icon: <AlertTriangle className="w-3 h-3" />,
             color: 'text-red-600 dark:text-red-400'
         }
     }

@@ -2,7 +2,7 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 66/90 Features Complete (73%)
+## Current Status: 67/90 Features Complete (74%)
 
 ---
 

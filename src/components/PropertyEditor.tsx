@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback } from 'react'
+import { Plus, SlidersHorizontal, ChevronUp, ChevronDown, Trash2, X } from 'lucide-react'
 import type { PropertyDefinition, PropertyType, SelectOption } from '../types'
 import { PROPERTY_TYPE_LABELS, PROPERTY_TYPE_ICONS, SELECT_OPTION_COLORS, createSelectOption } from '../services'
 
@@ -88,9 +89,7 @@ export function PropertyEditor({ properties, onChange, readOnly = false }: Prope
                     onClick={() => setShowAddMenu(!showAddMenu)}
                     className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 transition-colors"
                 >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
+                    <Plus className="w-4 h-4" />
                     Add property
                 </button>
 
@@ -220,9 +219,7 @@ function PropertyRow({
                         className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                         title="Edit options"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
+                        <SlidersHorizontal className="w-4 h-4" />
                     </button>
                 )}
 
@@ -234,9 +231,7 @@ function PropertyRow({
                             className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                             title="Move up"
                         >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                            </svg>
+                            <ChevronUp className="w-3 h-3" />
                         </button>
                     )}
                     {onMoveDown && (
@@ -245,9 +240,7 @@ function PropertyRow({
                             className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                             title="Move down"
                         >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
+                            <ChevronDown className="w-3 h-3" />
                         </button>
                     )}
                 </div>
@@ -258,9 +251,7 @@ function PropertyRow({
                     className="p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                     title="Delete property"
                 >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <Trash2 className="w-4 h-4" />
                 </button>
             </div>
 
@@ -326,9 +317,7 @@ function SelectOptionsEditor({ options, onChange }: SelectOptionsEditorProps) {
                         onClick={() => handleDeleteOption(option.id)}
                         className="p-1 text-gray-400 hover:text-red-500"
                     >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="w-4 h-4" />
                     </button>
                 </div>
             ))}
