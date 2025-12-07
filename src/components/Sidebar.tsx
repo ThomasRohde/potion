@@ -31,6 +31,7 @@ import { PageIcon } from './PageIcon'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
+    SidebarProvider,
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
@@ -152,6 +153,7 @@ export function Sidebar({
     }
 
     return (
+        <SidebarProvider>
         <div
             data-testid="sidebar"
             className="bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col"
@@ -390,6 +392,7 @@ export function Sidebar({
                 </div>
             </SidebarFooter>
         </div>
+        </SidebarProvider>
     )
 }
 
@@ -533,18 +536,26 @@ function PageItem({
                 onMouseLeave={() => setShowActions(false)}
             >
                 {/* Expand/collapse toggle */}
-                <button
-                    type="button"
+                <span
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => {
                         e.stopPropagation()
                         onToggleExpand(page.id)
                     }}
-                    className={`h-5 w-5 flex items-center justify-center shrink-0 ${hasChildren ? 'visible' : 'invisible'}`}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            onToggleExpand(page.id)
+                        }
+                    }}
+                    className={`h-5 w-5 flex items-center justify-center shrink-0 cursor-pointer ${hasChildren ? 'visible' : 'invisible'}`}
                 >
                     <ChevronRight
                         className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
                     />
-                </button>
+                </span>
 
                 {/* Icon */}
                 <PageIcon type={page.type} icon={page.icon} size="sm" className="shrink-0" />
@@ -572,16 +583,24 @@ function PageItem({
                     <SidebarMenuAction showOnHover className="flex items-center gap-0.5 right-1">
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <button
-                                    type="button"
+                                <span
+                                    role="button"
+                                    tabIndex={0}
                                     onClick={(e) => {
                                         e.stopPropagation()
                                         onCreateChild(page.id)
                                     }}
-                                    className="h-5 w-5 flex items-center justify-center hover:bg-sidebar-accent rounded"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault()
+                                            e.stopPropagation()
+                                            onCreateChild(page.id)
+                                        }
+                                    }}
+                                    className="h-5 w-5 flex items-center justify-center hover:bg-sidebar-accent rounded cursor-pointer"
                                 >
                                     <Plus className="w-3 h-3" />
-                                </button>
+                                </span>
                             </TooltipTrigger>
                             <TooltipContent>Add child page</TooltipContent>
                         </Tooltip>
@@ -589,13 +608,14 @@ function PageItem({
                             <Tooltip open={isDropdownOpen ? false : undefined}>
                                 <TooltipTrigger asChild>
                                     <DropdownMenuTrigger asChild>
-                                        <button
-                                            type="button"
+                                        <span
+                                            role="button"
+                                            tabIndex={0}
                                             onClick={(e) => e.stopPropagation()}
-                                            className="h-5 w-5 flex items-center justify-center hover:bg-sidebar-accent rounded"
+                                            className="h-5 w-5 flex items-center justify-center hover:bg-sidebar-accent rounded cursor-pointer"
                                         >
                                             <MoreVertical className="w-3 h-3" />
-                                        </button>
+                                        </span>
                                     </DropdownMenuTrigger>
                                 </TooltipTrigger>
                                 <TooltipContent>More options</TooltipContent>
