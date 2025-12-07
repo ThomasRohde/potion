@@ -1872,12 +1872,401 @@
             "blockedBy": null,
             "lastWorkedOn": null,
             "notes": "Requires CSS @media print rules and possibly a print-specific layout component."
+        },
+        {
+            "id": "F076",
+            "category": "infrastructure",
+            "priority": 2,
+            "description": "Install and configure Lucide React icons",
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "lucide-react package is installed as dependency",
+                "Icons can be imported and rendered in components",
+                "TypeScript types work correctly with Lucide components",
+                "Build completes without errors",
+                "Tree-shaking works correctly (only used icons are bundled)"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Foundation for emoji-to-icon migration. Lucide is MIT licensed, tree-shakeable, and has excellent React support."
+        },
+        {
+            "id": "F077",
+            "category": "ui",
+            "priority": 2,
+            "description": "Replace app branding emoji with Lucide Beaker icon",
+            "dependencies": [
+                "F076"
+            ],
+            "acceptanceCriteria": [
+                "Sidebar header shows Beaker icon instead of 🧪 emoji",
+                "HomePage welcome screen uses Beaker icon",
+                "SettingsDialog about section uses Beaker icon",
+                "All branding locations are consistent",
+                "Icon color follows theme (light/dark mode)"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "The Beaker icon from Lucide will replace the 🧪 emoji as the app's visual identity."
+        },
+        {
+            "id": "F078",
+            "category": "ui",
+            "priority": 2,
+            "description": "Replace page/database type emojis with Lucide icons",
+            "dependencies": [
+                "F076"
+            ],
+            "acceptanceCriteria": [
+                "📄 page emoji replaced with Lucide FileText icon",
+                "📊 database emoji replaced with Lucide Database icon",
+                "👋 welcome page emoji replaced with Lucide Hand icon",
+                "Icons render correctly in sidebar page tree",
+                "Icons render correctly in search results",
+                "Icons render correctly in topbar and page view"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Default page type icons should be Lucide icons. User-set custom icons will remain as emojis for flexibility."
+        },
+        {
+            "id": "F079",
+            "category": "ui",
+            "priority": 2,
+            "description": "Replace inline SVG icons with Lucide React components",
+            "dependencies": [
+                "F076"
+            ],
+            "acceptanceCriteria": [
+                "All sidebar action icons use Lucide components (Plus, ChevronLeft, ChevronRight, etc.)",
+                "All topbar action icons use Lucide components (Star, MoreHorizontal, etc.)",
+                "Export/Import buttons use Lucide Download/Upload icons",
+                "Settings and Help buttons use Lucide Settings/HelpCircle icons",
+                "Expand/collapse chevrons use Lucide ChevronRight/ChevronDown icons",
+                "All icons maintain consistent sizing (w-4 h-4 or similar)"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Replace all inline SVG paths with Lucide icon components for consistency and maintainability."
+        },
+        {
+            "id": "F080",
+            "category": "infrastructure",
+            "priority": 2,
+            "description": "Install and configure ShadCN/ui with Tailwind",
+            "dependencies": [],
+            "acceptanceCriteria": [
+                "ShadCN/ui CLI is configured in the project",
+                "components.json configuration file is created",
+                "cn() utility function is available",
+                "CSS variables for theming are configured",
+                "Path aliases (@/components, @/lib) are set up in tsconfig",
+                "Build completes without errors"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "ShadCN/ui uses Radix primitives and Tailwind. Requires setting up the CLI configuration and utility functions."
+        },
+        {
+            "id": "F081",
+            "category": "ui",
+            "priority": 2,
+            "description": "Migrate Button components to ShadCN Button",
+            "dependencies": [
+                "F080"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN Button component is installed",
+                "All sidebar buttons use ShadCN Button with appropriate variants",
+                "All topbar buttons use ShadCN Button",
+                "All dialog buttons use ShadCN Button (primary, secondary, destructive variants)",
+                "Button styling is consistent across the application",
+                "Icon buttons use Button with size='icon' variant"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Button is the most used component. Migrate all custom button implementations to ShadCN Button."
+        },
+        {
+            "id": "F082",
+            "category": "ui",
+            "priority": 2,
+            "description": "Migrate Dialog components to ShadCN Dialog",
+            "dependencies": [
+                "F080"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN Dialog component is installed",
+                "ConfirmDialog migrated to use ShadCN Dialog, DialogContent, DialogHeader, etc.",
+                "SearchDialog migrated to use ShadCN Command (command palette pattern)",
+                "SettingsDialog migrated to use ShadCN Dialog",
+                "ImportDialog migrated to use ShadCN Dialog",
+                "KeyboardShortcutsDialog migrated to use ShadCN Dialog",
+                "All dialogs support keyboard navigation and focus trapping"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Dialogs should use Radix-based ShadCN components for accessibility. SearchDialog should use Command pattern."
+        },
+        {
+            "id": "F083",
+            "category": "ui",
+            "priority": 2,
+            "description": "Migrate dropdown menus to ShadCN DropdownMenu",
+            "dependencies": [
+                "F080"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN DropdownMenu component is installed",
+                "Sidebar page context menu uses ShadCN DropdownMenu",
+                "Topbar three-dot menu uses ShadCN DropdownMenu",
+                "New page/database dropdown uses ShadCN DropdownMenu",
+                "All dropdown menus have proper accessibility (keyboard nav, ARIA)",
+                "Dropdown items support icons and keyboard shortcuts display"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Replace custom dropdown menu implementations with ShadCN DropdownMenu for accessibility."
+        },
+        {
+            "id": "F084",
+            "category": "ui",
+            "priority": 3,
+            "description": "Migrate form inputs to ShadCN Input and Select",
+            "dependencies": [
+                "F080"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN Input component is installed",
+                "ShadCN Select component is installed",
+                "Page title inline edit uses ShadCN Input",
+                "Settings dialog form fields use ShadCN Input/Select",
+                "Property editor inputs use ShadCN components",
+                "Database filter inputs use ShadCN Input/Select",
+                "All inputs have consistent focus and error states"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Form inputs should be consistent. Use ShadCN Input for text and Select for dropdowns."
+        },
+        {
+            "id": "F085",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add ShadCN Tooltip for icon buttons and actions",
+            "dependencies": [
+                "F080"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN Tooltip component is installed",
+                "All icon-only buttons have tooltips showing their action",
+                "Sidebar collapse/expand has tooltip",
+                "Topbar action buttons have tooltips",
+                "Tooltips show keyboard shortcuts where applicable",
+                "Tooltips have appropriate delay and positioning"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Replace title attributes with ShadCN Tooltip for better accessibility and appearance."
+        },
+        {
+            "id": "F086",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add ShadCN Toast for notifications and feedback",
+            "dependencies": [
+                "F080"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN Toast/Sonner component is installed and configured",
+                "Toaster provider is added to app root",
+                "Page save confirmation shows toast",
+                "Export success shows toast with filename",
+                "Import success shows toast with summary",
+                "Error states show error toasts with message",
+                "Toasts are dismissible and auto-close"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Add proper toast notifications for user feedback. ShadCN recommends Sonner for toasts."
+        },
+        {
+            "id": "F087",
+            "category": "ui",
+            "priority": 3,
+            "description": "Migrate ThemeToggle to ShadCN Toggle pattern",
+            "dependencies": [
+                "F080",
+                "F079"
+            ],
+            "acceptanceCriteria": [
+                "Theme toggle uses Lucide Sun/Moon/Monitor icons",
+                "Toggle cycles through light/dark/system themes",
+                "Current theme state is visually indicated",
+                "Toggle has proper ARIA labels for accessibility",
+                "Toggle integrates with ShadCN styling patterns"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "ThemeToggle should use Lucide icons and follow ShadCN patterns."
+        },
+        {
+            "id": "F088",
+            "category": "ui",
+            "priority": 3,
+            "description": "Add ShadCN Sidebar component for app navigation",
+            "dependencies": [
+                "F080",
+                "F081"
+            ],
+            "acceptanceCriteria": [
+                "ShadCN Sidebar component is installed",
+                "App sidebar uses ShadCN Sidebar with collapsible sections",
+                "Favorites section is collapsible",
+                "Pages section is collapsible",
+                "Sidebar footer uses ShadCN Sidebar footer pattern",
+                "Sidebar resize functionality is preserved"
+            ],
+            "estimatedEffort": "large",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Major refactor to use ShadCN Sidebar component with proper structure. May require significant changes."
+        },
+        {
+            "id": "F089",
+            "category": "infrastructure",
+            "priority": 4,
+            "description": "Update favicon and PWA icons to Beaker design",
+            "dependencies": [
+                "F077"
+            ],
+            "acceptanceCriteria": [
+                "favicon.svg updated with Beaker design matching Lucide style",
+                "PWA manifest icons updated for all sizes (192x192, 512x512)",
+                "Icons work in light and dark contexts",
+                "Icons display correctly in browser tabs",
+                "Icons display correctly when app is installed",
+                "Apple touch icon is updated"
+            ],
+            "estimatedEffort": "small",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "Create custom SVG favicon based on Lucide Beaker icon design for consistent branding."
+        },
+        {
+            "id": "F090",
+            "category": "testing",
+            "priority": 3,
+            "description": "Update E2E tests for ShadCN component selectors",
+            "dependencies": [
+                "F081",
+                "F082",
+                "F083"
+            ],
+            "acceptanceCriteria": [
+                "E2E tests updated to use ShadCN component data-attributes",
+                "All existing E2E tests pass with new components",
+                "No flaky tests due to component transition",
+                "Test selectors use stable attributes (data-testid, role)",
+                "Test coverage maintained at current level"
+            ],
+            "estimatedEffort": "medium",
+            "status": "not-started",
+            "passes": false,
+            "verifiedAt": null,
+            "verifiedBy": null,
+            "evidenceLinks": [],
+            "blockedBy": null,
+            "lastWorkedOn": null,
+            "notes": "ShadCN components may change DOM structure. Update E2E selectors accordingly."
         }
     ],
     "metadata": {
         "createdAt": "2025-12-06T00:00:00Z",
-        "lastUpdated": "2025-06-22T00:00:00Z",
-        "totalFeatures": 75,
+        "lastUpdated": "2025-12-07T00:00:00Z",
+        "totalFeatures": 90,
         "passingFeatures": 66
     }
 }
