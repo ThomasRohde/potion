@@ -2147,7 +2147,10 @@
             "passes": true,
             "verifiedAt": "2025-06-19T00:00:00Z",
             "verifiedBy": "agent-session-27",
-            "evidenceLinks": ["src/components/ui/input.tsx", "src/components/ui/select.tsx"],
+            "evidenceLinks": [
+                "src/components/ui/input.tsx",
+                "src/components/ui/select.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-19T00:00:00Z",
             "notes": "Created ShadCN Input and Select components. Migrated inputs in SettingsDialog, SearchDialog, Topbar, PropertyEditor, DatabaseView, DatabasePage, and Sidebar. All inputs now have consistent styling and focus states via Tailwind ring utilities."
@@ -2173,7 +2176,9 @@
             "passes": true,
             "verifiedAt": "2025-06-19T00:00:00Z",
             "verifiedBy": "agent-session-27",
-            "evidenceLinks": ["src/components/ui/tooltip.tsx"],
+            "evidenceLinks": [
+                "src/components/ui/tooltip.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-19T00:00:00Z",
             "notes": "Created ShadCN Tooltip component with TooltipProvider at app root (300ms delay). Added tooltips to Sidebar (expand/collapse, new page, footer buttons), Topbar (search, favorite, more options), ThemeToggle, and PageItem actions."
@@ -2200,7 +2205,9 @@
             "passes": true,
             "verifiedAt": "2025-06-19T00:00:00Z",
             "verifiedBy": "agent-session-27",
-            "evidenceLinks": ["src/components/ui/sonner.tsx"],
+            "evidenceLinks": [
+                "src/components/ui/sonner.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-19T00:00:00Z",
             "notes": "Installed Sonner toast library with ShadCN wrapper. Added Toaster to app root with richColors and bottom-right position. Added toasts for: export (workspace, page, markdown, html), import (success/error with summary), page delete, and save errors. Uses theme-aware styling."
@@ -2226,7 +2233,9 @@
             "passes": true,
             "verifiedAt": "2025-06-19T00:00:00Z",
             "verifiedBy": "agent-session-27",
-            "evidenceLinks": ["src/components/ThemeToggle.tsx"],
+            "evidenceLinks": [
+                "src/components/ThemeToggle.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-19T00:00:00Z",
             "notes": "ThemeToggle already uses Lucide Sun/Moon/Monitor icons, cycles through themes, has proper ARIA labels, and integrates with ShadCN Button and Tooltip components. Updated in F085 to use ShadCN Tooltip. All acceptance criteria already met."
