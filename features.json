@@ -1891,7 +1891,10 @@
             "passes": true,
             "verifiedAt": "2025-12-07T12:00:00Z",
             "verifiedBy": "agent-session-25",
-            "evidenceLinks": ["package.json", "src/components/Sidebar.tsx"],
+            "evidenceLinks": [
+                "package.json",
+                "src/components/Sidebar.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-07T12:00:00Z",
             "notes": "lucide-react@0.556.0 installed. TypeScript types work correctly. Build passes with tree-shaking."
@@ -1916,7 +1919,11 @@
             "passes": true,
             "verifiedAt": "2025-12-07T12:00:00Z",
             "verifiedBy": "agent-session-25",
-            "evidenceLinks": ["src/components/Sidebar.tsx", "src/pages/HomePage.tsx", "src/components/SettingsDialog.tsx"],
+            "evidenceLinks": [
+                "src/components/Sidebar.tsx",
+                "src/pages/HomePage.tsx",
+                "src/components/SettingsDialog.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-07T12:00:00Z",
             "notes": "Replaced 🧪 emoji with FlaskConical icon from Lucide in Sidebar, HomePage, and SettingsDialog. Icon color follows theme via text-potion-600/400 classes."
@@ -1942,7 +1949,12 @@
             "passes": true,
             "verifiedAt": "2025-12-07T12:30:00Z",
             "verifiedBy": "agent-session-25",
-            "evidenceLinks": ["src/components/PageIcon.tsx", "src/components/Sidebar.tsx", "src/components/SearchDialog.tsx", "src/components/DatabasePage.tsx"],
+            "evidenceLinks": [
+                "src/components/PageIcon.tsx",
+                "src/components/Sidebar.tsx",
+                "src/components/SearchDialog.tsx",
+                "src/components/DatabasePage.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-12-07T12:30:00Z",
             "notes": "Created PageIcon component that renders FileText or Database icons based on page type. Handles custom emoji icons if set. Used in Sidebar, SearchDialog, PageView, and DatabasePage."

@@ -133,8 +133,8 @@ export function DatabasePage({ page, onTitleChange }: DatabasePageProps) {
                     <button
                         onClick={() => setShowPropertiesPanel(!showPropertiesPanel)}
                         className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${showPropertiesPanel
-                                ? 'bg-potion-100 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
-                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+                            ? 'bg-potion-100 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                             }`}
                     >
                         <SlidersHorizontal className="w-4 h-4" />

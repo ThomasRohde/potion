@@ -48,7 +48,7 @@ export function PageIcon({ type, icon, className = '', size = 'md' }: PageIconPr
 
     // Render Lucide icon based on page type
     const iconClassName = `${sizeClasses[size]} ${className}`
-    
+
     switch (type) {
         case 'database':
             return <Database className={iconClassName} />

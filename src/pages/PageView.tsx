@@ -17,9 +17,9 @@ import type { Page, BlockContent } from '../types'
 
 // Lazy load the RichTextEditor for better initial page load performance
 // BlockNote is a large dependency (~1MB) that doesn't need to be in the initial bundle
-const RichTextEditor = lazy(() => 
-    import('../components/RichTextEditor').then(module => ({ 
-        default: module.RichTextEditor 
+const RichTextEditor = lazy(() =>
+    import('../components/RichTextEditor').then(module => ({
+        default: module.RichTextEditor
     }))
 )
 

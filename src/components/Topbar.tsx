@@ -5,18 +5,18 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react'
-import { 
-    Search, 
-    Star, 
-    MoreVertical, 
-    Copy, 
-    Maximize2, 
-    Minimize2, 
-    Check, 
-    Download, 
-    FileText, 
-    Code, 
-    Trash2 
+import {
+    Search,
+    Star,
+    MoreVertical,
+    Copy,
+    Maximize2,
+    Minimize2,
+    Check,
+    Download,
+    FileText,
+    Code,
+    Trash2
 } from 'lucide-react'
 import type { PageSummary } from '../types'
 

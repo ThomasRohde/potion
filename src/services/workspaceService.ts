@@ -25,7 +25,7 @@ export function blockContentToMarkdown(content: BlockContent | undefined): strin
 
     for (const block of content.blocks) {
         const textContent = extractTextFromBlock(block)
-        
+
         switch (block.type) {
             case 'heading': {
                 const level = (block.props?.level as number) || 1
@@ -474,7 +474,7 @@ export function blockContentToHtml(content: BlockContent | undefined): string {
 
     for (const block of content.blocks) {
         const textContent = extractHtmlFromBlock(block)
-        
+
         switch (block.type) {
             case 'heading': {
                 const level = Math.min((block.props?.level as number) || 1, 6)

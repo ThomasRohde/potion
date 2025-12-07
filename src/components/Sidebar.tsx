@@ -6,14 +6,14 @@
  */
 
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { 
-    FlaskConical, 
-    FileText, 
-    Database, 
-    ChevronsRight, 
-    ChevronsLeft, 
-    Plus, 
-    ChevronDown, 
+import {
+    FlaskConical,
+    FileText,
+    Database,
+    ChevronsRight,
+    ChevronsLeft,
+    Plus,
+    ChevronDown,
     ChevronRight,
     Download,
     Upload,

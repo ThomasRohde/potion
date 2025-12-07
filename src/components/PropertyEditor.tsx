@@ -200,8 +200,8 @@ function PropertyRow({
                                         setShowTypeMenu(false)
                                     }}
                                     className={`w-full flex items-center gap-2 px-3 py-1.5 text-sm transition-colors ${type === property.type
-                                            ? 'bg-potion-100 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
-                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                        ? 'bg-potion-100 dark:bg-potion-900/30 text-potion-700 dark:text-potion-300'
+                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                                         }`}
                                 >
                                     <span className="w-5 text-center">{PROPERTY_TYPE_ICONS[type]}</span>
