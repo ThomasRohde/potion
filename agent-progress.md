@@ -2,7 +2,7 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 74/90 Features Complete (82%)
+## Current Status: 75/90 Features Complete (83%)
 
 ---
 
@@ -20,6 +20,7 @@
 | F080 | ✅ Verified | Install and configure ShadCN/ui with Tailwind (infrastructure) |
 | F081 | ✅ Verified | Migrate Button components to ShadCN Button |
 | F082 | ✅ Verified | Migrate Dialog components to ShadCN Dialog |
+| F083 | ✅ Verified | Migrate Dropdown menus to ShadCN DropdownMenu |
 
 #### Technical Implementation
 
@@ -31,11 +32,14 @@
 - `@radix-ui/react-dialog@1.1.15` - Radix Dialog primitive
 - `tailwindcss-animate@1.0.7` - Tailwind animation utilities
 
+- `@radix-ui/react-dropdown-menu@2.1.16` - Radix DropdownMenu primitive
+
 **New Files Created**
 - `src/lib/utils.ts` - `cn()` utility function for merging Tailwind classes
 - `components.json` - ShadCN CLI configuration
 - `src/components/ui/button.tsx` - ShadCN Button with 6 variants, 4 sizes
 - `src/components/ui/dialog.tsx` - ShadCN Dialog with Portal, Overlay, Content, Header, Footer, Title, Description
+- `src/components/ui/dropdown-menu.tsx` - ShadCN DropdownMenu with trigger, content, item, separator, shortcut, checkbox item, radio item, sub-menu support
 
 **Configuration Updated**
 - `tailwind.config.js` - Added ShadCN theme colors (CSS vars), border-radius vars, animation keyframes, tailwindcss-animate plugin
@@ -58,6 +62,11 @@
 - KeyboardShortcutsDialog.tsx - Radix Dialog with scrollable content
 - SettingsDialog.tsx - Radix Dialog with sections for Workspace, Appearance, Editor, About
 - ImportDialog.tsx and ImportResultDialog - Radix Dialog with validation states
+
+*DropdownMenu Migration (3 components)*
+- Sidebar.tsx 'New' dropdown - Now uses DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
+- Sidebar.tsx PageItem context menu - Migrated with separator and destructive delete item
+- Topbar.tsx 'More options' dropdown - Full migration with all export options and delete
 
 **Button Variants Created**
 | Variant | Use Case |
@@ -90,19 +99,21 @@
 1. `3bb6087` - feat(infra): install and configure ShadCN/ui foundation (F080)
 2. `5694fec` - feat(ui): migrate Button components to ShadCN Button (F081)
 3. `c6e18ae` - feat(ui): migrate Dialogs to ShadCN Dialog (F082)
+4. `d753899` - feat(ui): migrate DropdownMenu to ShadCN DropdownMenu (F083)
 
 #### Next Steps
 
-1. **F083**: Migrate Dropdown/Menu components to ShadCN DropdownMenu
-2. **F084**: Update E2E tests for ShadCN component selectors
-3. Consider migrating SearchDialog to ShadCN Command pattern for better UX
+1. **F084**: Update E2E tests for ShadCN component selectors
+2. **F085**: Migrate SearchDialog to ShadCN Command pattern for better UX
+3. Consider adding ShadCN Tooltip for icon-only buttons
 
 #### Technical Notes
 
-- CSS bundle increased from ~246KB to ~249KB due to animation utilities
-- All dialogs now have built-in focus trapping, keyboard navigation (Escape to close), and smooth animations
+- CSS bundle increased from ~246KB to ~251KB due to animation utilities and additional components
+- All dialogs and dropdowns now have built-in focus trapping, keyboard navigation (Escape to close, arrow keys for dropdowns), and smooth animations
 - Button component uses `asChild` prop via Radix Slot for composition patterns
 - Theme toggle buttons in SettingsDialog kept as native buttons (radio-like toggle groups, not standard buttons)
+- DropdownMenu migration removed ~100 lines of manual state management and event handlers per component (showMenu state, menuRef, menuButtonRef, click-outside handlers, Escape key handlers)
 
 ---
 

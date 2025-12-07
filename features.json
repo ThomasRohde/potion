@@ -2112,14 +2112,18 @@
                 "Dropdown items support icons and keyboard shortcuts display"
             ],
             "estimatedEffort": "medium",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-07T00:00:00Z",
+            "verifiedBy": "agent-session-26",
+            "evidenceLinks": [
+                "src/components/ui/dropdown-menu.tsx",
+                "src/components/Sidebar.tsx",
+                "src/components/Topbar.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Replace custom dropdown menu implementations with ShadCN DropdownMenu for accessibility."
+            "lastWorkedOn": "2025-12-07T00:00:00Z",
+            "notes": "Migrated Sidebar 'New' dropdown, PageItem context menu, and Topbar 'More options' dropdown to ShadCN DropdownMenu. Removed ~100 lines of manual menu state and event handlers per component."
         },
         {
             "id": "F084",
@@ -2312,6 +2316,6 @@
         "createdAt": "2025-12-06T00:00:00Z",
         "lastUpdated": "2025-12-07T00:00:00Z",
         "totalFeatures": 90,
-        "passingFeatures": 74
+        "passingFeatures": 75
     }
 }
