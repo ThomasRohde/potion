@@ -23,6 +23,7 @@ import { SettingsDialog } from './SettingsDialog'
 import type { PageSummary } from '../types'
 import { useWorkspaceStore, useUIStore, useThemeStore } from '../stores'
 import { getOrCreateDefaultWorkspace, listPages, createPage, updatePageTitle, updatePage, deletePage, getChildPages, exportWorkspaceToFile, exportPageToFile, exportPageAsMarkdown, exportPageAsHtml, importWorkspaceFromFile, updateWorkspace, createDatabase } from '../services'
+import { toast } from '@/components/ui/sonner'
 
 interface AppShellProps {
     children?: React.ReactNode
@@ -255,46 +256,67 @@ export function AppShell({ children }: AppShellProps) {
             await deletePage(deleteConfirm.pageId)
             await refreshPagesFromStorage(workspaceId)
 
+            toast.success(`"${deleteConfirm.pageTitle}" deleted`)
+
             // If we deleted the current page, navigate to home
             if (currentPageId === deleteConfirm.pageId) {
                 navigate('/')
             }
         } catch (error) {
             console.error('Failed to delete page:', error)
+            toast.error('Failed to delete page', {
+                description: error instanceof Error ? error.message : 'Unknown error'
+            })
         } finally {
             closeDeleteConfirm()
         }
-    }, [workspaceId, deleteConfirm.pageId, refreshPagesFromStorage, currentPageId, navigate, closeDeleteConfirm])
+    }, [workspaceId, deleteConfirm.pageId, deleteConfirm.pageTitle, refreshPagesFromStorage, currentPageId, navigate, closeDeleteConfirm])
 
     const handleExportWorkspace = useCallback(async () => {
         try {
             await exportWorkspaceToFile()
+            toast.success('Workspace exported successfully')
         } catch (error) {
             console.error('Failed to export workspace:', error)
+            toast.error('Failed to export workspace', {
+                description: error instanceof Error ? error.message : 'Unknown error'
+            })
         }
     }, [])
 
     const handleExportPage = useCallback(async (pageId: string, includeChildren: boolean) => {
         try {
             await exportPageToFile(pageId, includeChildren)
+            toast.success('Page exported successfully')
         } catch (error) {
             console.error('Failed to export page:', error)
+            toast.error('Failed to export page', {
+                description: error instanceof Error ? error.message : 'Unknown error'
+            })
         }
     }, [])
 
     const handleExportMarkdown = useCallback(async (pageId: string) => {
         try {
             await exportPageAsMarkdown(pageId)
+            toast.success('Exported as Markdown')
         } catch (error) {
             console.error('Failed to export page as markdown:', error)
+            toast.error('Failed to export as Markdown', {
+                description: error instanceof Error ? error.message : 'Unknown error'
+            })
         }
     }, [])
 
     const handleExportHtml = useCallback(async (pageId: string) => {
         try {
             await exportPageAsHtml(pageId)
+            toast.success('Exported as HTML')
         } catch (error) {
             console.error('Failed to export page as HTML:', error)
+            toast.error('Failed to export as HTML', {
+                description: error instanceof Error ? error.message : 'Unknown error'
+            })
         }
     }, [])
 
@@ -315,6 +337,9 @@ export function AppShell({ children }: AppShellProps) {
                 openImport(data)
             } catch (error) {
                 console.error('Failed to parse import file:', error)
+                toast.error('Failed to read import file', {
+                    description: 'The file could not be parsed as valid JSON'
+                })
             }
         }
 
@@ -347,6 +372,12 @@ export function AppShell({ children }: AppShellProps) {
             })
 
             if (result.success && workspaceId) {
+                // Show success toast with summary
+                const summary = result.pagesAdded > 0 || result.pagesUpdated > 0
+                    ? `${result.pagesAdded} pages added, ${result.pagesUpdated} updated`
+                    : 'No changes made'
+                toast.success('Import completed', { description: summary })
+
                 // Refresh the pages after import
                 await refreshPagesFromStorage(workspaceId)
                 // Navigate to home after import
@@ -364,6 +395,9 @@ export function AppShell({ children }: AppShellProps) {
                     conflicts: [],
                     errors: [error instanceof Error ? error.message : 'Import failed']
                 }
+            })
+            toast.error('Import failed', {
+                description: error instanceof Error ? error.message : 'Unknown error'
             })
         }
     }, [importState.data, workspaceId, refreshPagesFromStorage, navigate, closeImport])

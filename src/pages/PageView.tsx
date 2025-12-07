@@ -14,6 +14,7 @@ import { SaveStatusIndicator, DatabasePage, PageIcon } from '../components'
 import { useAutoSave } from '../hooks'
 import { useWorkspaceStore } from '../stores'
 import type { Page, BlockContent } from '../types'
+import { toast } from '@/components/ui/sonner'
 
 // Lazy load the RichTextEditor for better initial page load performance
 // BlockNote is a large dependency (~1MB) that doesn't need to be in the initial bundle
@@ -109,7 +110,12 @@ export function PageView() {
         onSave: saveContent,
         debounceMs: 1000,
         enabled: !!page && !!editorContent && page.type !== 'database',
-        onError: (err) => console.error('Auto-save failed:', err)
+        onError: (err) => {
+            console.error('Auto-save failed:', err)
+            toast.error('Failed to save changes', {
+                description: 'Your changes may not be saved. Please try again.'
+            })
+        }
     })
 
     // Handle content changes from the editor

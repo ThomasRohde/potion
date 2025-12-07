@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { AppShell, PWAUpdatePrompt } from './components'
 import { HomePage, PageView, NotFound } from './pages'
 import { TooltipProvider } from './components/ui/tooltip'
+import { Toaster } from './components/ui/sonner'
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 </Routes>
             </AppShell>
             <PWAUpdatePrompt />
+            <Toaster richColors position="bottom-right" />
         </TooltipProvider>
     )
 }
