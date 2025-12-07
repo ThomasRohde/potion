@@ -551,21 +551,17 @@ function PageItem({
                             <TooltipContent>Add child page</TooltipContent>
                         </Tooltip>
                         <DropdownMenu>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="h-5 w-5"
-                                        >
-                                            <MoreVertical className="w-3 h-3" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                </TooltipTrigger>
-                                <TooltipContent>More options</TooltipContent>
-                            </Tooltip>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="h-5 w-5"
+                                    title="More options"
+                                >
+                                    <MoreVertical className="w-3 h-3" />
+                                </Button>
+                            </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-44">
                                 <DropdownMenuItem
                                     onSelect={() => {
