@@ -2,15 +2,15 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 84/90 Features Complete (93%)
+## Current Status: 85/90 Features Complete (94%)
 
 ---
 
 ## Session Log
 
 ### Session 29 - 2025-07-03
-**Duration**: ~30 minutes
-**Focus**: @ Mentions inline content support (F069)
+**Duration**: ~45 minutes
+**Focus**: @ Mentions (F069) and Callout Blocks (F059)
 **Agent**: GitHub Copilot (Claude Opus 4.5)
 
 #### Features Implemented
@@ -18,38 +18,57 @@
 | ID | Status | Description |
 |----|--------|-------------|
 | F069 | ✅ Verified | Add @ mentions inline content support |
+| F059 | ✅ Verified | Add custom callout/alert block type |
 
 #### Technical Implementation
 
-**New Files Created**
+**F069 - @ Mentions**
+
+*New Files Created*
 - `src/components/PageMention.tsx` - Custom inline content spec for @ mentions using `createReactInlineContentSpec`
   - Props: `pageId`, `pageTitle` 
   - Renders as styled span with AtSign icon
   - Click handler navigates via `window.location.hash`
   - Parse function handles HTML roundtrip with data attributes
 
-**Components Modified**
+*Components Modified*
 - `src/components/RichTextEditor.tsx`:
   - Extended schema with `pageMention` inline content type via `defaultInlineContentSpecs`
   - Added `pages` prop to receive list of pages for mentions
   - Added `getMentionItems` callback with `filterSuggestionItems` for query filtering
   - Added `SuggestionMenuController` with `triggerCharacter="@"`
-  - Fixed TypeScript type cast for custom schema blocks
 
 - `src/pages/PageView.tsx`:
   - Pass `pages={storePages}` to RichTextEditor for @ mentions
 
-- `e2e/app.spec.ts`:
-  - Added "@ Mentions" test section with editor typing test
+**F059 - Callout Blocks**
+
+*New Files Created*
+- `src/components/CalloutBlock.tsx` - Custom block spec for callout/alert blocks
+  - 4 types: info (blue), warning (yellow), error (red), success (green)
+  - Lucide icons: Info, AlertTriangle, AlertCircle, CheckCircle
+  - ShadCN DropdownMenu for type selection via icon click
+  - Dark mode aware background colors
+  - Inline content support via contentRef
+
+*Components Modified*
+- `src/components/RichTextEditor.tsx`:
+  - Added `callout: Callout()` to custom schema blockSpecs
+  - Added `'callout'` to SUPPORTED_BLOCK_TYPES
+  - Added custom slash menu via `SuggestionMenuController` with `triggerCharacter="/"`
+  - Added `getSlashMenuItems` callback that injects callout item into Basic blocks group
+  - Set `slashMenu={false}` on BlockNoteView to use custom menu
 
 **BlockNote API Used**
 - `createReactInlineContentSpec` from `@blocknote/react`
-- `SuggestionMenuController`, `DefaultReactSuggestionItem` from `@blocknote/react`
-- `filterSuggestionItems` from `@blocknote/core/extensions`
+- `createReactBlockSpec` from `@blocknote/react`
+- `SuggestionMenuController`, `DefaultReactSuggestionItem`, `getDefaultReactSlashMenuItems` from `@blocknote/react`
+- `filterSuggestionItems`, `insertOrUpdateBlockForSlashMenu` from `@blocknote/core/extensions`
 - `defaultInlineContentSpecs` from `@blocknote/core`
 
 #### Acceptance Criteria Verification
 
+**F069 - @ Mentions**
 | Criterion | Status | Evidence |
 |-----------|--------|----------|
 | Typing @ opens mentions suggestion menu | ✅ | SuggestionMenuController with triggerCharacter="@" |
@@ -59,24 +78,35 @@
 | Clicking mention navigates to referenced page | ✅ | handleClick sets window.location.hash |
 | Mentions update if page title changes | ⚠️ | Title stored at insert time; would need live query |
 
+**F059 - Callout Blocks**
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| User can insert callout block via slash menu | ✅ | Custom SuggestionMenuController with "/" trigger |
+| Callout supports 4 types | ✅ | info, warning, error, success in calloutTypes |
+| Each type has distinct icon and color | ✅ | Lucide icons + distinct color schemes |
+| User can change callout type via icon dropdown | ✅ | ShadCN DropdownMenu on icon click |
+| Callout content supports inline text formatting | ✅ | content: 'inline' with contentRef |
+| Callout serializes and deserializes correctly | ✅ | Added to SUPPORTED_BLOCK_TYPES |
+
 #### Pre-Commit Verification
 
 | Command | Exit Code | Notes |
 |---------|-----------|-------|
-| npm run build | 0 | ✅ 3129 modules |
+| npm run build | 0 | ✅ 3130 modules |
 | npm test | 0 | ✅ 99 tests passed |
 | npm run lint | 0 | ✅ |
 | bunx playwright test | 0 | ✅ 20 tests passed |
 
-#### Git Commit
+#### Git Commits
 ```
 a63f287 feat(editor): add @ mentions inline content support (F069)
+b11294e feat(editor): add callout/alert block type with 4 variants (F059)
 ```
 
 #### Recommended Next Steps
-1. Implement F059 (callout blocks) or F068 (multi-column layout)
-2. Consider live title updates for mentions if needed
-3. Continue with remaining priority 2 features
+1. Implement F068 (multi-column layout) - requires @blocknote/xl-multi-column package
+2. Continue with remaining priority 3/4 features (F063, F064, F065, F071)
+3. Only 5 features remaining to reach 100%
 
 ---
 
