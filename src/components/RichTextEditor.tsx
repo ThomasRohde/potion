@@ -349,7 +349,7 @@ export function RichTextEditor({
         async (query: string): Promise<DefaultReactSuggestionItem[]> => {
             // Get default slash menu items
             const defaultItems = getDefaultReactSlashMenuItems(editor)
-            
+
             // Find index of last item in "Basic blocks" group
             let lastBasicBlockIndex = -1
             for (let i = defaultItems.length - 1; i >= 0; i--) {
@@ -358,7 +358,7 @@ export function RichTextEditor({
                     break
                 }
             }
-            
+
             // Create callout insertion item
             const calloutItem: DefaultReactSuggestionItem = {
                 title: insertCalloutItem.title,
@@ -371,14 +371,14 @@ export function RichTextEditor({
                 aliases: insertCalloutItem.aliases,
                 group: insertCalloutItem.group
             }
-            
+
             // Insert callout item after last basic block (or at end if not found)
             if (lastBasicBlockIndex >= 0) {
                 defaultItems.splice(lastBasicBlockIndex + 1, 0, calloutItem)
             } else {
                 defaultItems.push(calloutItem)
             }
-            
+
             return filterSuggestionItems(defaultItems, query)
         },
         [editor]

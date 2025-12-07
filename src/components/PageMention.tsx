@@ -32,9 +32,14 @@ export const PageMention = createReactInlineContentSpec(
 
             const handleClick = (e: React.MouseEvent) => {
                 e.preventDefault()
-                // Navigate to the page
+                e.stopPropagation()
+                // Navigate to the page using History API (works with BrowserRouter)
                 if (pageId) {
-                    window.location.hash = `/page/${pageId}`
+                    const basePath = import.meta.env.BASE_URL || '/'
+                    const targetPath = `${basePath}page/${pageId}`.replace(/\/+/g, '/')
+                    window.history.pushState({}, '', targetPath)
+                    // Dispatch popstate event to notify React Router of the navigation
+                    window.dispatchEvent(new PopStateEvent('popstate'))
                 }
             }
 

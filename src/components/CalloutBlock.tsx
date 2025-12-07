@@ -7,12 +7,12 @@
 
 import { defaultProps } from '@blocknote/core'
 import { createReactBlockSpec } from '@blocknote/react'
-import { 
-    Info, 
-    AlertTriangle, 
-    AlertCircle, 
+import {
+    Info,
+    AlertTriangle,
+    AlertCircle,
     CheckCircle,
-    type LucideIcon 
+    type LucideIcon
 } from 'lucide-react'
 import {
     DropdownMenu,
@@ -93,8 +93,8 @@ export const Callout = createReactBlockSpec(
             )!
             const Icon: LucideIcon = calloutType.icon
             const isDark = document.documentElement.classList.contains('dark')
-            const bgColor = isDark 
-                ? calloutType.backgroundColor.dark 
+            const bgColor = isDark
+                ? calloutType.backgroundColor.dark
                 : calloutType.backgroundColor.light
 
             return (
@@ -144,7 +144,7 @@ export const Callout = createReactBlockSpec(
                         </DropdownMenuContent>
                     </DropdownMenu>
                     {/* Editable content area */}
-                    <div 
+                    <div
                         className="callout-content flex-grow min-w-0"
                         ref={props.contentRef}
                     />
