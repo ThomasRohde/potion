@@ -28,6 +28,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface TopbarProps {
     currentPage: PageSummary | null
@@ -143,45 +148,59 @@ export function Topbar({
             <div className="flex items-center gap-1">
                 {/* Search button */}
                 {onOpenSearch && (
-                    <Button
-                        variant="ghost"
-                        onClick={onOpenSearch}
-                        className="gap-2"
-                        title="Search (Ctrl+K)"
-                    >
-                        <Search className="w-4 h-4" />
-                        <span className="hidden sm:inline text-sm">Search</span>
-                        <kbd className="hidden sm:inline px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">⌘K</kbd>
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                onClick={onOpenSearch}
+                                className="gap-2"
+                            >
+                                <Search className="w-4 h-4" />
+                                <span className="hidden sm:inline text-sm">Search</span>
+                                <kbd className="hidden sm:inline px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">⌘K</kbd>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Search (Ctrl+K)</TooltipContent>
+                    </Tooltip>
                 )}
                 {/* Favorite toggle */}
                 {currentPage && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onToggleFavorite}
-                        className={currentPage.isFavorite ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-500'}
-                        title={currentPage.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                    >
-                        <Star
-                            className="w-5 h-5"
-                            fill={currentPage.isFavorite ? 'currentColor' : 'none'}
-                        />
-                    </Button>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={onToggleFavorite}
+                                className={currentPage.isFavorite ? 'text-yellow-500' : 'text-gray-400 dark:text-gray-500'}
+                            >
+                                <Star
+                                    className="w-5 h-5"
+                                    fill={currentPage.isFavorite ? 'currentColor' : 'none'}
+                                />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            {currentPage.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        </TooltipContent>
+                    </Tooltip>
                 )}
 
                 {/* More actions */}
                 {currentPage && (
                     <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                title="More options"
-                            >
-                                <MoreVertical className="w-5 h-5" />
-                            </Button>
-                        </DropdownMenuTrigger>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                    >
+                                        <MoreVertical className="w-5 h-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>More options</TooltipContent>
+                        </Tooltip>
                         <DropdownMenuContent align="end" className="w-48">
                             {onDuplicatePage && (
                                 <DropdownMenuItem onSelect={onDuplicatePage}>

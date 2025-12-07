@@ -7,6 +7,11 @@
 import { Sun, Moon, Monitor } from 'lucide-react'
 import type { ThemePreference } from '../types'
 import { Button } from '@/components/ui/button'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface ThemeToggleProps {
     theme: ThemePreference
@@ -36,16 +41,20 @@ export function ThemeToggle({ theme, onToggle, className = '', 'data-testid': te
     }
 
     return (
-        <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggle}
-            data-testid={testId}
-            className={className}
-            title={`${getLabel()} - Click to change`}
-            aria-label={`Current theme: ${getLabel()}`}
-        >
-            {getIcon()}
-        </Button>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onToggle}
+                    data-testid={testId}
+                    className={className}
+                    aria-label={`Current theme: ${getLabel()}`}
+                >
+                    {getIcon()}
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>{getLabel()} - Click to change</TooltipContent>
+        </Tooltip>
     )
 }
