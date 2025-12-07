@@ -8,10 +8,11 @@
  * Uses BlockNote's editor.updateBlock() API to change block types.
  */
 
-import { Block, DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema } from '@blocknote/core'
+import { SideMenuExtension } from '@blocknote/core/extensions'
 import {
     useBlockNoteEditor,
-    useComponentsContext
+    useComponentsContext,
+    useExtensionState
 } from '@blocknote/react'
 import { ReactNode, useMemo } from 'react'
 import {
@@ -84,10 +85,8 @@ function getTurnIntoItems(): TurnIntoItem[] {
 
 /**
  * Props for TurnIntoSubmenu component.
- * Requires the block from the parent DragHandleMenu.
  */
 interface TurnIntoSubmenuProps {
-    block: Block<DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema>
     children: ReactNode
 }
 
@@ -95,9 +94,14 @@ interface TurnIntoSubmenuProps {
  * TurnIntoSubmenu - A submenu item for the drag handle menu
  * that allows changing the current block's type.
  */
-export function TurnIntoSubmenu({ block, children }: TurnIntoSubmenuProps) {
+export function TurnIntoSubmenu({ children }: TurnIntoSubmenuProps) {
     const editor = useBlockNoteEditor()
     const Components = useComponentsContext()!
+
+    // Get the block from the side menu extension state
+    const block = useExtensionState(SideMenuExtension, {
+        selector: (state) => state?.block
+    })
 
     const turnIntoItems = useMemo(() => getTurnIntoItems(), [])
 
@@ -131,7 +135,7 @@ export function TurnIntoSubmenu({ block, children }: TurnIntoSubmenuProps) {
         'checkListItem'
     ])
 
-    if (!convertibleTypes.has(block.type)) {
+    if (!block || !convertibleTypes.has(block.type)) {
         return null
     }
 

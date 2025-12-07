@@ -8,9 +8,10 @@
  * - Renders BlockNote editor in the content area
  * - Handles content serialization/deserialization
  * - Provides onChange callback for auto-save integration
+ * - Native markdown paste support via BlockNote's pasteHandler
  */
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo } from 'react'
 import {
     useCreateBlockNote,
     SideMenuController,
@@ -253,118 +254,6 @@ function fromBlockNoteBlocks(blocks: Block[]): BlockContent {
     }
 }
 
-/**
- * Detect if text content looks like markdown.
- * Returns true if the text contains common markdown patterns.
- * Uses patterns that are likely to produce valid BlockNote blocks.
- */
-function looksLikeMarkdown(text: string): boolean {
-    // Patterns that are likely to produce meaningful BlockNote blocks
-    const markdownPatterns = [
-        // Headings: # Heading followed by newline
-        /^#{1,6}\s+\S+/m,
-        // Bold: **text**
-        /\*\*[^*]+\*\*/,
-        // Italic: *text* (but not lists)
-        /(?<!\n)\*[^*\n]+\*(?!\*)/,
-        // Bold: __text__
-        /__[^_]+__/,
-        // Links: [text](url)
-        /\[.+?\]\(.+?\)/,
-        // Unordered lists: - item or * item (at start of line with space)
-        /^[-*+]\s+\S+/m,
-        // Ordered lists: 1. item
-        /^\d+\.\s+\S+/m,
-        // Blockquotes: > text
-        /^>\s+\S+/m,
-        // Inline code: `code`
-        /`[^`\n]+`/,
-        // Code blocks: ```
-        /^```/m,
-        // Strikethrough: ~~text~~
-        /~~[^~]+~~/,
-    ]
-
-    return markdownPatterns.some(pattern => pattern.test(text))
-}
-
-/**
- * Manually parse simple markdown patterns that BlockNote might not handle.
- * BlockNote's tryParseMarkdownToBlocks requires headings to have content after them,
- * so we need to handle simple cases ourselves.
- */
-function parseSimpleMarkdown(text: string): Array<{ type: string; props?: Record<string, unknown>; content: Array<{ type: string; text: string; styles: Record<string, boolean> }> }> | null {
-    const blocks: Array<{ type: string; props?: Record<string, unknown>; content: Array<{ type: string; text: string; styles: Record<string, boolean> }> }> = []
-    const lines = text.split('\n')
-
-    for (const line of lines) {
-        const trimmedLine = line.trim()
-        if (!trimmedLine) continue
-
-        // Check for headings: # Heading
-        const headingMatch = trimmedLine.match(/^(#{1,6})\s+(.+)$/)
-        if (headingMatch) {
-            const level = headingMatch[1].length as 1 | 2 | 3 | 4 | 5 | 6
-            const headingText = headingMatch[2]
-            blocks.push({
-                type: 'heading',
-                props: { level: Math.min(level, 3) as 1 | 2 | 3 }, // BlockNote only supports 1-3
-                content: [{ type: 'text', text: headingText, styles: {} }]
-            })
-            continue
-        }
-
-        // Check for unordered list items: - item, * item, + item
-        const ulMatch = trimmedLine.match(/^[-*+]\s+(.+)$/)
-        if (ulMatch) {
-            blocks.push({
-                type: 'bulletListItem',
-                content: [{ type: 'text', text: ulMatch[1], styles: {} }]
-            })
-            continue
-        }
-
-        // Check for ordered list items: 1. item
-        const olMatch = trimmedLine.match(/^\d+\.\s+(.+)$/)
-        if (olMatch) {
-            blocks.push({
-                type: 'numberedListItem',
-                content: [{ type: 'text', text: olMatch[1], styles: {} }]
-            })
-            continue
-        }
-
-        // Check for blockquotes: > text
-        const quoteMatch = trimmedLine.match(/^>\s*(.+)$/)
-        if (quoteMatch) {
-            blocks.push({
-                type: 'paragraph', // BlockNote doesn't have a quote block in default schema
-                content: [{ type: 'text', text: quoteMatch[1], styles: {} }]
-            })
-            continue
-        }
-
-        // Check for checkbox items: - [ ] item or - [x] item
-        const checkboxMatch = trimmedLine.match(/^[-*+]\s+\[([ xX])\]\s+(.+)$/)
-        if (checkboxMatch) {
-            blocks.push({
-                type: 'checkListItem',
-                props: { checked: checkboxMatch[1].toLowerCase() === 'x' },
-                content: [{ type: 'text', text: checkboxMatch[2], styles: {} }]
-            })
-            continue
-        }
-
-        // Default to paragraph for unrecognized lines
-        blocks.push({
-            type: 'paragraph',
-            content: [{ type: 'text', text: trimmedLine, styles: {} }]
-        })
-    }
-
-    return blocks.length > 0 ? blocks : null
-}
-
 export function RichTextEditor({
     initialContent,
     onChange,
@@ -379,112 +268,21 @@ export function RichTextEditor({
         [initialContent]
     )
 
-    // Ref for the editor container to attach paste handler
-    const containerRef = useRef<HTMLDivElement>(null)
-
-    // Create the BlockNote editor instance
+    // Create the BlockNote editor instance with native markdown paste support
     const editor: BlockNoteEditor = useCreateBlockNote({
         initialContent: initialBlocks,
-        defaultStyles: true
+        defaultStyles: true,
+        // Use BlockNote's native paste handler with markdown support
+        // This interprets plain text as markdown and converts it to rich text
+        pasteHandler: ({ defaultPasteHandler }) => {
+            // Use the default handler with plainTextAsMarkdown enabled
+            // This makes pasting markdown "just work" without custom logic
+            return defaultPasteHandler({
+                plainTextAsMarkdown: true,
+                prioritizeMarkdownOverHTML: false
+            })
+        }
     })
-
-    /**
-     * Handle paste events to detect and convert markdown content.
-     * This effect attaches a paste handler to intercept clipboard events.
-     */
-    useEffect(() => {
-        const container = containerRef.current
-        if (!container || readOnly) return
-
-        const handlePaste = async (event: ClipboardEvent) => {
-            const clipboardData = event.clipboardData
-            if (!clipboardData) return
-
-            // Get plain text from clipboard
-            const plainText = clipboardData.getData('text/plain')
-            if (!plainText) return
-
-            // If we have HTML content, let BlockNote handle it natively
-            const hasHtml = clipboardData.types.includes('text/html')
-            if (hasHtml) return
-
-            // If the text looks like markdown, parse and insert it
-            if (looksLikeMarkdown(plainText)) {
-                // Prevent default paste behavior
-                event.preventDefault()
-                event.stopPropagation()
-
-                try {
-                    // First try BlockNote's built-in markdown parser
-                    let blocks = await editor.tryParseMarkdownToBlocks(plainText)
-
-                    console.log('BlockNote parsed blocks:', blocks)
-
-                    // Check if BlockNote failed to parse (returned only paragraphs for markdown that should be other types)
-                    const allParagraphs = blocks.every((b: { type: string }) => b.type === 'paragraph')
-                    const hasStructuredMarkdown = /^#{1,6}\s|^[-*+]\s|^\d+\.\s|^>\s/m.test(plainText)
-
-                    if (allParagraphs && hasStructuredMarkdown) {
-                        // BlockNote didn't recognize the markdown, use our simple parser
-                        const simpleBlocks = parseSimpleMarkdown(plainText)
-                        console.log('Fallback simple parsed blocks:', simpleBlocks)
-                        if (simpleBlocks && simpleBlocks.length > 0) {
-                            // Use unknown as intermediate to satisfy TypeScript - BlockNote's insertBlocks accepts partial blocks
-                            blocks = simpleBlocks as unknown as typeof blocks
-                        }
-                    }
-
-                    if (blocks.length > 0) {
-                        // Get current cursor position
-                        const cursorPos = editor.getTextCursorPosition()
-
-                        if (cursorPos && cursorPos.block) {
-                            // Check if current block is empty - if so, replace it
-                            const currentBlock = cursorPos.block
-                            const isEmptyBlock = !currentBlock.content ||
-                                (Array.isArray(currentBlock.content) && currentBlock.content.length === 0) ||
-                                (Array.isArray(currentBlock.content) && currentBlock.content.every(
-                                    (c: { type: string; text?: string }) => c.type === 'text' && (!c.text || c.text.trim() === '')
-                                ))
-
-                            if (isEmptyBlock) {
-                                // Replace the empty block with the parsed blocks
-                                editor.replaceBlocks([currentBlock], blocks)
-                            } else {
-                                // Insert parsed blocks after the current block
-                                editor.insertBlocks(blocks, cursorPos.block, 'after')
-                            }
-                        } else {
-                            // If no cursor position, append to document
-                            const lastBlock = editor.document[editor.document.length - 1]
-                            if (lastBlock) {
-                                editor.insertBlocks(blocks, lastBlock, 'after')
-                            }
-                        }
-                    }
-                } catch (err) {
-                    // If markdown parsing fails, let the default paste happen
-                    console.warn('Markdown paste parsing failed, falling back to plain text:', err)
-                    // Insert as plain text since we prevented default
-                    const textContent = [{
-                        type: 'paragraph' as const,
-                        content: [{ type: 'text' as const, text: plainText, styles: {} }]
-                    }]
-                    const cursorPos = editor.getTextCursorPosition()
-                    if (cursorPos && cursorPos.block) {
-                        editor.insertBlocks(textContent, cursorPos.block, 'after')
-                    }
-                }
-            }
-        }
-
-        // Use capture phase to intercept before BlockNote handles it
-        container.addEventListener('paste', handlePaste, { capture: true })
-
-        return () => {
-            container.removeEventListener('paste', handlePaste, { capture: true })
-        }
-    }, [editor, readOnly])
 
     // Handle content changes
     useEffect(() => {
@@ -501,7 +299,7 @@ export function RichTextEditor({
     }, [editor, onChange, readOnly])
 
     return (
-        <div ref={containerRef} className="rich-text-editor">
+        <div className="rich-text-editor">
             <BlockNoteView
                 editor={editor}
                 editable={!readOnly}

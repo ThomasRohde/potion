@@ -8,35 +8,36 @@
  * drag handle menu in the block side menu.
  */
 
-import { Block, DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema, PartialBlock } from '@blocknote/core'
-import { useBlockNoteEditor, useComponentsContext, BlockColorsItem } from '@blocknote/react'
+import { PartialBlock } from '@blocknote/core'
+import { SideMenuExtension } from '@blocknote/core/extensions'
+import {
+    useBlockNoteEditor,
+    useComponentsContext,
+    useExtensionState,
+    DragHandleMenu,
+    RemoveBlockItem,
+    BlockColorsItem
+} from '@blocknote/react'
 import { TurnIntoSubmenu } from './TurnIntoSubmenu'
-
-/**
- * Props for CustomDragHandleMenu component.
- */
-interface CustomDragHandleMenuProps {
-    block: Block<DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema>
-}
 
 /**
  * Deep clone a block and assign new IDs to it and all nested children.
  * This ensures the duplicated block has unique IDs throughout.
  */
 function cloneBlockWithNewIds(
-    block: Block<DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema>
-): PartialBlock<DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    block: any
+): PartialBlock {
     // Clone children recursively, each with new IDs
-    const clonedChildren = (block.children || []).map(child => cloneBlockWithNewIds(child))
+    const clonedChildren = (block.children || []).map((child: unknown) => cloneBlockWithNewIds(child))
 
     // Return block without id (BlockNote will assign a new one)
-    // We use a type assertion here because BlockNote's PartialBlock is complex
     return {
         type: block.type,
         props: { ...block.props },
         content: block.content,
         children: clonedChildren
-    } as PartialBlock<DefaultBlockSchema, DefaultInlineContentSchema, DefaultStyleSchema>
+    } as PartialBlock
 }
 
 /**
@@ -45,11 +46,21 @@ function cloneBlockWithNewIds(
  * Includes:
  * - Delete: Remove the block
  * - Duplicate: Create a copy of the block below
+ * - Colors: Change block text/background color
  * - Turn into: Change block type (paragraph, headings, lists)
  */
-export function CustomDragHandleMenu({ block }: CustomDragHandleMenuProps) {
+export function CustomDragHandleMenu() {
     const editor = useBlockNoteEditor()
     const Components = useComponentsContext()!
+
+    // Get the block from the side menu extension state
+    const block = useExtensionState(SideMenuExtension, {
+        selector: (state) => state?.block
+    })
+
+    if (!block) {
+        return null
+    }
 
     const handleDuplicate = () => {
         // Create a deep copy of the block without the id
@@ -59,16 +70,11 @@ export function CustomDragHandleMenu({ block }: CustomDragHandleMenuProps) {
     }
 
     return (
-        <Components.Generic.Menu.Dropdown
-            className="bn-menu-dropdown bn-drag-handle-menu"
-        >
-            {/* Delete block item */}
-            <Components.Generic.Menu.Item
-                className="bn-menu-item"
-                onClick={() => editor.removeBlocks([block])}
-            >
+        <DragHandleMenu>
+            {/* Delete block item - uses internal block from context */}
+            <RemoveBlockItem>
                 Delete
-            </Components.Generic.Menu.Item>
+            </RemoveBlockItem>
 
             {/* Duplicate block item */}
             <Components.Generic.Menu.Item
@@ -78,16 +84,16 @@ export function CustomDragHandleMenu({ block }: CustomDragHandleMenuProps) {
                 Duplicate
             </Components.Generic.Menu.Item>
 
-            {/* Colors submenu - uses BlockNote's built-in color picker */}
-            <BlockColorsItem block={block}>
+            {/* Colors submenu - uses internal block from context */}
+            <BlockColorsItem>
                 Colors
             </BlockColorsItem>
 
             {/* Turn into submenu */}
-            <TurnIntoSubmenu block={block}>
+            <TurnIntoSubmenu>
                 Turn into
             </TurnIntoSubmenu>
-        </Components.Generic.Menu.Dropdown>
+        </DragHandleMenu>
     )
 }
 

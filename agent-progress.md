@@ -2,11 +2,94 @@
 
 ## Project: Potion
 ## Started: 2025-12-06
-## Current Status: 63/75 Features Complete (84%)
+## Current Status: 64/75 Features Complete (85%)
 
 ---
 
 ## Session Log
+
+### Session 22 - 2025-06-19
+**Duration**: ~30 minutes
+**Focus**: Major BlockNote upgrade (v0.17.1 → v0.44.0) and native Markdown paste handling
+**Agent**: GitHub Copilot (Claude Opus 4.5)
+
+#### Completed
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| F057 | Use BlockNote's native pasteHandler for markdown paste | ✅ VERIFIED |
+| F061 | Toggle list block type | UNBLOCKED (was blocked) |
+| F062 | Toggle heading block type | UNBLOCKED (was blocked) |
+| F067 | Code block syntax highlighting | UNBLOCKED (was blocked) |
+
+#### Major Upgrade: BlockNote v0.17.1 → v0.44.0
+
+**Package Changes:**
+- `@blocknote/core`: 0.17.1 → 0.44.0
+- `@blocknote/mantine`: 0.17.2 → 0.44.0
+- `@blocknote/react`: 0.17.2 → 0.44.0
+- `@mantine/core`: 7.x → 8.0.7 (peer dependency requirement)
+- `@mantine/hooks`: 7.x → 8.0.7
+
+**Breaking Changes Fixed:**
+1. **SideMenu/DragHandleMenu API**: Components no longer receive `block` prop
+   - Refactored `CustomDragHandleMenu.tsx` to use `useExtensionState(SideMenuExtension)` hook
+   - Refactored `TurnIntoSubmenu.tsx` to use same hook pattern
+   - Import changed: `SideMenuExtension` from `@blocknote/core/extensions`
+
+2. **DragHandleMenu components**: No longer take `block` prop
+   - `<RemoveBlockItem />` and `<BlockColorsItem />` now work without props
+
+**F057 - Native Markdown Paste:**
+- Removed ~150 lines of custom paste handling code
+- Replaced with native `pasteHandler` option:
+  ```typescript
+  pasteHandler: ({ defaultPasteHandler }) => {
+    return defaultPasteHandler({
+      plainTextAsMarkdown: true,
+      prioritizeMarkdownOverHTML: false
+    })
+  }
+  ```
+- Cleaner, more reliable markdown paste conversion
+
+#### Unblocked Features
+
+All previously blocked features are now unblocked with BlockNote v0.44.0:
+
+| Feature | Was Blocked By | Now Available |
+|---------|---------------|---------------|
+| F061 | toggleListItem block type | ✅ Native support |
+| F062 | isToggleable heading prop | ✅ Native support |
+| F067 | createCodeBlockSpec API | ✅ + @blocknote/code-block |
+
+#### Code Changes
+- `RichTextEditor.tsx`: Removed custom paste handler, added native pasteHandler option
+- `RichTextEditor.tsx`: Removed containerRef, looksLikeMarkdown(), parseSimpleMarkdown()
+- `CustomDragHandleMenu.tsx`: Refactored to useExtensionState hook pattern
+- `TurnIntoSubmenu.tsx`: Refactored to useExtensionState hook pattern
+- `features.json`: F057 verified, F061/F062/F067 unblocked
+
+#### Pre-Commit Verification
+| Command | Exit Code | Notes |
+|---------|-----------|-------|
+| npm run build | 0 | ✅ 1335 modules transformed |
+| npm test | 0 | ✅ 99 tests passed |
+| npm run lint | 0 | ✅ No errors |
+
+#### Recommended Next Steps
+1. **F061** - Toggle list block type (now available, small effort)
+2. **F062** - Toggle heading (now available, small effort)
+3. **F067** - Code block syntax highlighting (use @blocknote/code-block package)
+4. **F063/F064/F065** - File/video/audio blocks (need custom upload handlers)
+
+#### Technical Notes
+- BlockNote v0.44.0 uses hook-based API for accessing block state in menus
+- Mantine v8 is required as peer dependency for BlockNote v0.40.0+
+- Native pasteHandler is simpler and more reliable than custom DOM handling
+- Zero blocked features remaining in features.json
+
+---
 
 ### Session 21 - 2025-06-19
 **Duration**: ~45 minutes

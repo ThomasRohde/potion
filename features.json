@@ -1381,14 +1381,16 @@
                 "No duplicate paste handling from both DOM and BlockNote"
             ],
             "estimatedEffort": "small",
-            "status": "blocked",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
-            "blockedBy": "Requires BlockNote upgrade - pasteHandler option with plainTextAsMarkdown was added in v0.27.0. Current version is v0.17.1.",
-            "lastWorkedOn": "2025-06-19T18:10:00Z",
-            "notes": "The pasteHandler option with defaultPasteHandler({ plainTextAsMarkdown }) API was introduced in BlockNote v0.27.0. Our current v0.17.1 doesn't have this feature."
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-07T18:00:00Z",
+            "verifiedBy": "agent-session-22",
+            "evidenceLinks": [
+                "src/components/RichTextEditor.tsx"
+            ],
+            "blockedBy": null,
+            "lastWorkedOn": "2025-12-07T18:00:00Z",
+            "notes": "Upgraded BlockNote to v0.44.0. Now uses native pasteHandler with defaultPasteHandler({ plainTextAsMarkdown: true }) for automatic markdown conversion. Removed custom DOM-level paste handler."
         },
         {
             "id": "F058",
@@ -1485,14 +1487,14 @@
                 "Toggle indicator (▶/▼) shows current state"
             ],
             "estimatedEffort": "small",
-            "status": "blocked",
+            "status": "not-started",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": "Requires BlockNote v0.20.0+ for toggleListItem block type",
+            "blockedBy": null,
             "lastWorkedOn": "2025-06-19T18:30:00Z",
-            "notes": "BlockNote v0.17.1 does not have toggleListItem. Toggle blocks were added in later versions."
+            "notes": "UNBLOCKED: BlockNote v0.44.0 now has toggleListItem block type. Type 'toggle' in slash menu or insert programmatically."
         },
         {
             "id": "F062",
@@ -1510,14 +1512,14 @@
                 "Toggle indicator shows current state"
             ],
             "estimatedEffort": "small",
-            "status": "blocked",
+            "status": "not-started",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": "Requires BlockNote v0.20.0+ for isToggleable heading prop",
+            "blockedBy": null,
             "lastWorkedOn": "2025-06-19T18:30:00Z",
-            "notes": "BlockNote v0.17.1 does not support isToggleable prop on headings. Feature was added in later versions."
+            "notes": "UNBLOCKED: BlockNote v0.44.0 now supports isToggleable prop on headings. Set heading props: { isToggleable: true }."
         },
         {
             "id": "F063",
@@ -1640,14 +1642,14 @@
                 "Language selector is accessible via keyboard"
             ],
             "estimatedEffort": "small",
-            "status": "blocked",
+            "status": "not-started",
             "passes": false,
             "verifiedAt": null,
             "verifiedBy": null,
             "evidenceLinks": [],
-            "blockedBy": "Requires BlockNote upgrade - current v0.17.1 doesn't export createCodeBlockSpec. Need v0.44+ or @blocknote/code-block package",
+            "blockedBy": null,
             "lastWorkedOn": "2025-06-19T17:35:00Z",
-            "notes": "BlockNote v0.17.1 doesn't have createCodeBlockSpec API. The feature requires upgrading BlockNote to a newer version (0.44+) which provides codeBlockOptions with supportedLanguages configuration."
+            "notes": "UNBLOCKED: BlockNote v0.44.0 now has createCodeBlockSpec with supportedLanguages config. Can use @blocknote/code-block package for preconfigured language support with Shiki highlighting."
         },
         {
             "id": "F068",
