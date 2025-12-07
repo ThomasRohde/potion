@@ -1491,7 +1491,10 @@
             "passes": true,
             "verifiedAt": "2025-06-22T00:00:00Z",
             "verifiedBy": "agent-session-23",
-            "evidenceLinks": ["src/components/RichTextEditor.tsx", "src/components/TurnIntoSubmenu.tsx"],
+            "evidenceLinks": [
+                "src/components/RichTextEditor.tsx",
+                "src/components/TurnIntoSubmenu.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-22T00:00:00Z",
             "notes": "Added toggleListItem to SUPPORTED_BLOCK_TYPES in RichTextEditor and TurnIntoSubmenu. Slash menu shows 'Toggle List' option, toggle expands/collapses to show/hide nested content."
@@ -1516,7 +1519,9 @@
             "passes": true,
             "verifiedAt": "2025-06-22T00:00:00Z",
             "verifiedBy": "agent-session-23",
-            "evidenceLinks": ["src/components/TurnIntoSubmenu.tsx"],
+            "evidenceLinks": [
+                "src/components/TurnIntoSubmenu.tsx"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-22T00:00:00Z",
             "notes": "Added Toggle Heading 1/2/3 options to TurnIntoSubmenu with isToggleable: true prop. Regular headings set to isToggleable: false. Toggle headings expand/collapse to show/hide content below."
@@ -1646,7 +1651,10 @@
             "passes": true,
             "verifiedAt": "2025-06-22T00:00:00Z",
             "verifiedBy": "agent-session-23",
-            "evidenceLinks": ["src/components/RichTextEditor.tsx", "package.json"],
+            "evidenceLinks": [
+                "src/components/RichTextEditor.tsx",
+                "package.json"
+            ],
             "blockedBy": null,
             "lastWorkedOn": "2025-06-22T00:00:00Z",
             "notes": "Installed @blocknote/code-block package and configured custom schema with createCodeBlockSpec(codeBlockOptions) for Shiki syntax highlighting. Language selector dropdown available with 30+ languages including JavaScript, TypeScript, Python, etc."
