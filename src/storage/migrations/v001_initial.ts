@@ -16,7 +16,6 @@ registerMigration({
     async up() {
         // No-op - this migration just establishes the baseline
         // The IndexedDB stores are already created in the adapter's upgrade handler
-        console.log('[Migration v1] Baseline schema established')
     },
 
     async down() {

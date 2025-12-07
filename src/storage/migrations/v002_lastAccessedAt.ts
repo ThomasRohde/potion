@@ -36,8 +36,6 @@ registerMigration({
                 }
             }
         }
-
-        console.log('[Migration v2] Added lastAccessedAt to all pages')
     },
 
     async down(storage: StorageAdapter) {
@@ -57,7 +55,5 @@ registerMigration({
                 }
             }
         }
-
-        console.log('[Migration v2] Removed lastAccessedAt from all pages')
     }
 })

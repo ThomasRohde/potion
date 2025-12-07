@@ -94,9 +94,8 @@ async function createBackup(
     // Store in localStorage (limited but good for small backups)
     try {
         localStorage.setItem(backupKey, JSON.stringify(backupData))
-    } catch (e) {
-        // If localStorage is full, just log warning
-        console.warn('Could not create backup in localStorage:', e)
+    } catch {
+        // If localStorage is full, backup creation fails silently - migration continues
     }
 
     return backupKey
@@ -197,8 +196,6 @@ export async function runMigrations(storage: StorageAdapter): Promise<{
         return result
     }
 
-    console.log(`[Migrations] Running ${pending.length} pending migrations...`)
-
     for (const migration of pending) {
         const record: MigrationRecord = {
             version: migration.version,
@@ -210,11 +207,9 @@ export async function runMigrations(storage: StorageAdapter): Promise<{
         try {
             // Create backup before destructive migrations
             if (migration.destructive) {
-                console.log(`[Migrations] Creating backup before v${migration.version}...`)
                 record.backupKey = await createBackup(storage, state.currentVersion)
             }
 
-            console.log(`[Migrations] Running migration v${migration.version}: ${migration.name}`)
             await migration.up(storage)
 
             record.success = true
@@ -225,8 +220,6 @@ export async function runMigrations(storage: StorageAdapter): Promise<{
 
             result.migrationsRun++
             result.finalVersion = migration.version
-
-            console.log(`[Migrations] Completed v${migration.version}`)
         } catch (error) {
             const errorMsg = error instanceof Error ? error.message : String(error)
             record.error = errorMsg

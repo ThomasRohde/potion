@@ -6,12 +6,9 @@ export function PWAUpdatePrompt() {
         needRefresh: [needRefresh, setNeedRefresh],
         updateServiceWorker,
     } = useRegisterSW({
-        onRegistered(r) {
-            console.log('SW Registered: ' + r)
-        },
-        onRegisterError(error) {
-            console.log('SW registration error', error)
-        },
+        // Service worker lifecycle events - errors are handled gracefully by the SW itself
+        onRegistered: () => { /* SW registered successfully */ },
+        onRegisterError: () => { /* SW registration failed - app will work without offline support */ },
     })
 
     const close = () => {
