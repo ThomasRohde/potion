@@ -2043,14 +2043,24 @@
                 "Icon buttons use Button with size='icon' variant"
             ],
             "estimatedEffort": "large",
-            "status": "not-started",
-            "passes": false,
-            "verifiedAt": null,
-            "verifiedBy": null,
-            "evidenceLinks": [],
+            "status": "verified",
+            "passes": true,
+            "verifiedAt": "2025-12-07T00:00:00Z",
+            "verifiedBy": "agent-session-26",
+            "evidenceLinks": [
+                "src/components/ui/button.tsx",
+                "src/components/ConfirmDialog.tsx",
+                "src/components/SettingsDialog.tsx",
+                "src/components/ImportDialog.tsx",
+                "src/components/KeyboardShortcutsDialog.tsx",
+                "src/components/Topbar.tsx",
+                "src/components/Sidebar.tsx",
+                "src/components/ThemeToggle.tsx",
+                "src/components/PWAUpdatePrompt.tsx"
+            ],
             "blockedBy": null,
-            "lastWorkedOn": null,
-            "notes": "Button is the most used component. Migrate all custom button implementations to ShadCN Button."
+            "lastWorkedOn": "2025-12-07T00:00:00Z",
+            "notes": "Created ShadCN Button component with variants (default, destructive, outline, secondary, ghost, link) and sizes (default, sm, lg, icon). Migrated buttons in 9 components."
         },
         {
             "id": "F082",
@@ -2296,6 +2306,6 @@
         "createdAt": "2025-12-06T00:00:00Z",
         "lastUpdated": "2025-12-07T00:00:00Z",
         "totalFeatures": 90,
-        "passingFeatures": 72
+        "passingFeatures": 73
     }
 }

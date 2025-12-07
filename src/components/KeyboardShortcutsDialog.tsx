@@ -2,11 +2,17 @@
  * Keyboard Shortcuts Dialog
  * 
  * Displays a help dialog with all available keyboard shortcuts.
+ * Uses ShadCN Dialog with Radix for accessibility.
  */
 
 import React from 'react'
-import { X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 
 interface KeyboardShortcutsDialogProps {
     isOpen: boolean
@@ -61,47 +67,18 @@ const shortcutGroups: ShortcutGroup[] = [
 ]
 
 export function KeyboardShortcutsDialog({ isOpen, onClose }: KeyboardShortcutsDialogProps) {
-    if (!isOpen) return null
-
-    const handleBackdropClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose()
-        }
-    }
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Escape') {
-            onClose()
-        }
-    }
-
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            onClick={handleBackdropClick}
-            onKeyDown={handleKeyDown}
-        >
-            <div className="w-full max-w-lg max-h-[80vh] overflow-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl">
-                {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                        Keyboard Shortcuts
-                    </h2>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onClose}
-                    >
-                        <X className="w-5 h-5" />
-                    </Button>
-                </div>
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-auto">
+                <DialogHeader>
+                    <DialogTitle>Keyboard Shortcuts</DialogTitle>
+                    <DialogDescription>
+                        Use <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono">Cmd</kbd> instead of <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono">Ctrl</kbd> on macOS.
+                    </DialogDescription>
+                </DialogHeader>
 
                 {/* Content */}
-                <div className="px-6 py-4 space-y-6">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Use <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono">Cmd</kbd> instead of <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono">Ctrl</kbd> on macOS.
-                    </p>
-
+                <div className="space-y-6">
                     {shortcutGroups.map((group) => (
                         <div key={group.title}>
                             <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -136,12 +113,12 @@ export function KeyboardShortcutsDialog({ isOpen, onClose }: KeyboardShortcutsDi
                 </div>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
                         Press <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono">Esc</kbd> to close
                     </p>
                 </div>
-            </div>
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }

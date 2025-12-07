@@ -1,11 +1,19 @@
 /**
  * ConfirmDialog Component
  * 
- * A simple modal dialog for confirming destructive actions.
+ * A modal dialog for confirming destructive actions.
+ * Uses ShadCN Dialog with Radix for accessibility.
  */
 
-import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 
 export interface ConfirmDialogProps {
     isOpen: boolean
@@ -28,60 +36,16 @@ export function ConfirmDialog({
     onConfirm,
     onCancel
 }: ConfirmDialogProps) {
-    const dialogRef = useRef<HTMLDivElement>(null)
-
-    // Close on escape key
-    useEffect(() => {
-        if (!isOpen) return
-
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                onCancel()
-            }
-        }
-
-        document.addEventListener('keydown', handleKeyDown)
-        return () => document.removeEventListener('keydown', handleKeyDown)
-    }, [isOpen, onCancel])
-
-    // Focus trap
-    useEffect(() => {
-        if (isOpen && dialogRef.current) {
-            dialogRef.current.focus()
-        }
-    }, [isOpen])
-
-    if (!isOpen) return null
-
     const confirmVariant = variant === 'danger' || variant === 'warning' ? 'destructive' : 'default'
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/50"
-                onClick={onCancel}
-            />
-
-            {/* Dialog */}
-            <div
-                ref={dialogRef}
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="dialog-title"
-                tabIndex={-1}
-                className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6 outline-none"
-            >
-                <h2
-                    id="dialog-title"
-                    className="text-lg font-semibold text-gray-900 dark:text-white mb-2"
-                >
-                    {title}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    {message}
-                </p>
-                <div className="flex justify-end gap-3">
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>{title}</DialogTitle>
+                    <DialogDescription>{message}</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
                     <Button
                         variant="secondary"
                         onClick={onCancel}
@@ -94,8 +58,8 @@ export function ConfirmDialog({
                     >
                         {confirmLabel}
                     </Button>
-                </div>
-            </div>
-        </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }

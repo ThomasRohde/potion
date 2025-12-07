@@ -3,13 +3,21 @@
  * 
  * Shows import confirmation with preview of what will be imported.
  * Supports both replace and merge modes with conflict resolution.
+ * Uses ShadCN Dialog with Radix for accessibility.
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Check } from 'lucide-react'
 import { validateExportFile } from '../services'
 import type { WorkspaceExport } from '../types'
 import { Button } from '@/components/ui/button'
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog'
 
 export type ImportMode = 'replace' | 'merge'
 
@@ -83,22 +91,6 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
         validate()
     }, [isOpen, file, data])
 
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (!isOpen) return
-        if (e.key === 'Escape') {
-            onCancel()
-        } else if (e.key === 'Enter' && validation?.valid) {
-            onConfirm(importMode)
-        }
-    }, [isOpen, validation, onConfirm, onCancel, importMode])
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown)
-        return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [handleKeyDown])
-
-    if (!isOpen) return null
-
     const formatDate = (isoString: string | null) => {
         if (!isoString) return 'Unknown'
         try {
@@ -109,18 +101,11 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/50"
-                onClick={onCancel}
-            />
-
-            {/* Dialog */}
-            <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                    Import Workspace
-                </h2>
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Import Workspace</DialogTitle>
+                </DialogHeader>
 
                 {isValidating ? (
                     <div className="flex items-center gap-3 py-4">
@@ -130,7 +115,7 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
                 ) : validation ? (
                     <>
                         {validation.valid ? (
-                            <div className="space-y-4 mb-6">
+                            <div className="space-y-4">
                                 {/* File Info */}
                                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2">
                                     <div className="flex justify-between text-sm">
@@ -231,7 +216,7 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
                                 )}
                             </div>
                         ) : (
-                            <div className="mb-6">
+                            <div>
                                 <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
                                     <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
                                         Invalid file
@@ -248,7 +233,7 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
                 ) : null}
 
                 {/* Actions */}
-                <div className="flex gap-3 justify-end">
+                <DialogFooter>
                     <Button
                         variant="ghost"
                         onClick={onCancel}
@@ -261,9 +246,9 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
                     >
                         {importMode === 'replace' ? 'Import & Replace' : 'Import & Merge'}
                     </Button>
-                </div>
-            </div>
-        </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
 
@@ -271,6 +256,7 @@ export function ImportDialog({ isOpen, file, data, onConfirm, onCancel }: Import
  * Import Result Dialog Component
  * 
  * Shows the results of an import operation, including any conflicts.
+ * Uses ShadCN Dialog with Radix for accessibility.
  */
 export interface ImportResultData {
     success: boolean
@@ -294,19 +280,7 @@ interface ImportResultDialogProps {
 }
 
 export function ImportResultDialog({ isOpen, result, onClose }: ImportResultDialogProps) {
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (!isOpen) return
-        if (e.key === 'Escape' || e.key === 'Enter') {
-            onClose()
-        }
-    }, [isOpen, onClose])
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown)
-        return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [handleKeyDown])
-
-    if (!isOpen || !result) return null
+    if (!result) return null
 
     const formatDate = (isoString: string) => {
         try {
@@ -317,85 +291,76 @@ export function ImportResultDialog({ isOpen, result, onClose }: ImportResultDial
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/50"
-                onClick={onClose}
-            />
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="sm:max-w-md max-h-[80vh] flex flex-col">
+                <DialogHeader>
+                    <DialogTitle>Import {result.success ? 'Complete' : 'Failed'}</DialogTitle>
+                </DialogHeader>
 
-            {/* Dialog */}
-            <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] flex flex-col">
-                <div className="p-6">
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                        Import {result.success ? 'Complete' : 'Failed'}
-                    </h2>
+                {result.success ? (
+                    <div className="space-y-4 flex-1 overflow-y-auto">
+                        {/* Success summary */}
+                        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                <span className="font-medium text-green-800 dark:text-green-200">
+                                    Import successful!
+                                </span>
+                            </div>
+                            <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
+                                <p>Pages added: {result.pagesAdded}</p>
+                                <p>Pages updated: {result.pagesUpdated}</p>
+                            </div>
+                        </div>
 
-                    {result.success ? (
-                        <div className="space-y-4">
-                            {/* Success summary */}
-                            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
-                                    <span className="font-medium text-green-800 dark:text-green-200">
-                                        Import successful!
-                                    </span>
-                                </div>
-                                <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
-                                    <p>Pages added: {result.pagesAdded}</p>
-                                    <p>Pages updated: {result.pagesUpdated}</p>
+                        {/* Conflicts resolved */}
+                        {result.conflicts.length > 0 && (
+                            <div className="space-y-2">
+                                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Conflicts resolved ({result.conflicts.length})
+                                </h3>
+                                <div className="max-h-40 overflow-y-auto space-y-2">
+                                    {result.conflicts.map((conflict, i) => (
+                                        <div key={i} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-sm">
+                                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                                                {conflict.importedTitle || conflict.localTitle}
+                                            </p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Local: {formatDate(conflict.localUpdatedAt)} •
+                                                Imported: {formatDate(conflict.importedUpdatedAt)}
+                                            </p>
+                                            <p className="text-xs text-potion-600 dark:text-potion-400 mt-1">
+                                                → Kept {new Date(conflict.importedUpdatedAt) > new Date(conflict.localUpdatedAt) ? 'imported' : 'local'} version
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-
-                            {/* Conflicts resolved */}
-                            {result.conflicts.length > 0 && (
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Conflicts resolved ({result.conflicts.length})
-                                    </h3>
-                                    <div className="max-h-40 overflow-y-auto space-y-2">
-                                        {result.conflicts.map((conflict, i) => (
-                                            <div key={i} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 text-sm">
-                                                <p className="font-medium text-gray-900 dark:text-gray-100">
-                                                    {conflict.importedTitle || conflict.localTitle}
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                    Local: {formatDate(conflict.localUpdatedAt)} •
-                                                    Imported: {formatDate(conflict.importedUpdatedAt)}
-                                                </p>
-                                                <p className="text-xs text-potion-600 dark:text-potion-400 mt-1">
-                                                    → Kept {new Date(conflict.importedUpdatedAt) > new Date(conflict.localUpdatedAt) ? 'imported' : 'local'} version
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                            <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
-                                Import failed
-                            </p>
-                            <ul className="text-sm text-red-700 dark:text-red-300 list-disc list-inside">
-                                {result.errors.map((error, i) => (
-                                    <li key={i}>{error}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                        <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
+                            Import failed
+                        </p>
+                        <ul className="text-sm text-red-700 dark:text-red-300 list-disc list-inside">
+                            {result.errors.map((error, i) => (
+                                <li key={i}>{error}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
                 {/* Actions */}
-                <div className="px-6 pb-6">
+                <DialogFooter>
                     <Button
                         onClick={onClose}
                         className="w-full"
                     >
                         Done
                     </Button>
-                </div>
-            </div>
-        </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
